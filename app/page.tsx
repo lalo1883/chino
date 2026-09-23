@@ -5,11 +5,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 type Card = { id: string; hanzi: string; pinyin: string; meaning: string; sentence: string; sentencePinyin: string; translation: string; audio: string; tag: string; note: string };
 type Unit = { name: string; description: string; goal: string; cards: Card[] };
 type Review = { rating: 'difícil' | 'dudosa' | 'fácil'; interval: number; due: number; reviews: number; updatedAt: number };
+type Segment = { hanzi: string; pinyin: string; meaning: string };
 
 const units: Unit[] = [
   { name: 'Empieza aquí', description: 'Tus 6 primeras palabras', goal: 'Reconocer las palabras más básicas', cards: [
     { id:'ni-hao', hanzi:'你好', pinyin:'nǐ hǎo', meaning:'Hola', sentence:'你好！', sentencePinyin:'Nǐ hǎo!', translation:'¡Hola!', audio:'begin-ni-hao', tag:'SALUDO', note:'Se usa a cualquier hora del día.' },
-    { id:'wo', hanzi:'我', pinyin:'wǒ', meaning:'Yo / me', sentence:'我叫安娜。', sentencePinyin:'Wǒ jiào Ānnà.', translation:'Me llamo Ana.', audio:'begin-wo', tag:'PRONOMBRE', note:'El pronombre para hablar de ti.' },
+    { id:'wo', hanzi:'我', pinyin:'wǒ', meaning:'Yo / me', sentence:'我叫安娜。', sentencePinyin:'Wǒ jiào Ānnà.', translation:'Me llamo Ana.', audio:'begin-wo', tag:'PRONOMBRE', note:'我 (wǒ) significa “yo”. 叫 (jiào) introduce tu nombre.' },
     { id:'ni', hanzi:'你', pinyin:'nǐ', meaning:'Tú', sentence:'你好吗？', sentencePinyin:'Nǐ hǎo ma?', translation:'¿Cómo estás?', audio:'begin-ni', tag:'PRONOMBRE', note:'Forma informal y cotidiana de “tú”.' },
     { id:'shi', hanzi:'是', pinyin:'shì', meaning:'Ser / sí', sentence:'我是学生。', sentencePinyin:'Wǒ shì xuésheng.', translation:'Soy estudiante.', audio:'begin-shi', tag:'VERBO', note:'Une una persona o cosa con lo que es.' },
     { id:'bu', hanzi:'不', pinyin:'bù', meaning:'No', sentence:'我不知道。', sentencePinyin:'Wǒ bù zhīdào.', translation:'No lo sé.', audio:'begin-bu', tag:'NEGACIÓN', note:'Se coloca delante del verbo.' },
@@ -40,6 +41,33 @@ const units: Unit[] = [
     { id:'wo-xiang-he-shui', hanzi:'我想喝水', pinyin:'wǒ xiǎng hē shuǐ', meaning:'Quiero beber agua', sentence:'我想喝水。', sentencePinyin:'Wǒ xiǎng hē shuǐ.', translation:'Quiero beber agua.', audio:'begin-wo-xiang-he-shui', tag:'NECESIDAD', note:'我想… sirve para decir “quiero…”.' },
   ]},
 ];
+
+const breakdowns: Record<string, Segment[]> = {
+  'ni-hao': [{ hanzi:'你', pinyin:'nǐ', meaning:'tú' }, { hanzi:'好', pinyin:'hǎo', meaning:'bien / bueno' }],
+  'wo': [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'叫', pinyin:'jiào', meaning:'llamarse' }, { hanzi:'安娜', pinyin:'Ānnà', meaning:'Ana' }],
+  'ni': [{ hanzi:'你', pinyin:'nǐ', meaning:'tú' }, { hanzi:'好', pinyin:'hǎo', meaning:'bien' }, { hanzi:'吗', pinyin:'ma', meaning:'partícula de pregunta' }],
+  'shi': [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'是', pinyin:'shì', meaning:'ser' }, { hanzi:'学生', pinyin:'xuésheng', meaning:'estudiante' }],
+  'bu': [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'不', pinyin:'bù', meaning:'no' }, { hanzi:'知道', pinyin:'zhīdào', meaning:'saber' }],
+  'xie-xie': [{ hanzi:'谢谢', pinyin:'xièxie', meaning:'gracias' }, { hanzi:'你', pinyin:'nǐ', meaning:'a ti' }],
+  'zai-jian': [{ hanzi:'明天', pinyin:'míngtiān', meaning:'mañana' }, { hanzi:'见', pinyin:'jiàn', meaning:'ver / encontrarse' }, { hanzi:'再见', pinyin:'zàijiàn', meaning:'adiós' }],
+  'qing': [{ hanzi:'请', pinyin:'qǐng', meaning:'por favor' }, { hanzi:'坐', pinyin:'zuò', meaning:'sentarse' }],
+  'dui-bu-qi': [{ hanzi:'对不起', pinyin:'duìbuqǐ', meaning:'lo siento' }, { hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'来', pinyin:'lái', meaning:'venir / llegar' }, { hanzi:'晚', pinyin:'wǎn', meaning:'tarde' }, { hanzi:'了', pinyin:'le', meaning:'acción completada' }],
+  'mei-guan-xi': [{ hanzi:'没关系', pinyin:'méi guānxi', meaning:'no pasa nada' }],
+  'zao-shang-hao': [{ hanzi:'老师', pinyin:'lǎoshī', meaning:'profesor/a' }, { hanzi:'早上', pinyin:'zǎoshang', meaning:'mañana' }, { hanzi:'好', pinyin:'hǎo', meaning:'bien / bueno' }],
+  'wan-an': [{ hanzi:'晚安', pinyin:'wǎn’ān', meaning:'buenas noches' }, { hanzi:'明天', pinyin:'míngtiān', meaning:'mañana' }, { hanzi:'见', pinyin:'jiàn', meaning:'ver / encontrarse' }],
+  'yi': [{ hanzi:'一', pinyin:'yí', meaning:'uno / una' }, { hanzi:'个', pinyin:'ge', meaning:'clasificador general' }, { hanzi:'人', pinyin:'rén', meaning:'persona' }],
+  'er': [{ hanzi:'二', pinyin:'èr', meaning:'dos' }, { hanzi:'月', pinyin:'yuè', meaning:'mes' }],
+  'san': [{ hanzi:'三', pinyin:'sān', meaning:'tres' }, { hanzi:'杯', pinyin:'bēi', meaning:'taza / vaso de' }, { hanzi:'茶', pinyin:'chá', meaning:'té' }],
+  'si': [{ hanzi:'四', pinyin:'sì', meaning:'cuatro' }, { hanzi:'本', pinyin:'běn', meaning:'clasificador de libros' }, { hanzi:'书', pinyin:'shū', meaning:'libro' }],
+  'wu': [{ hanzi:'五', pinyin:'wǔ', meaning:'cinco' }, { hanzi:'分钟', pinyin:'fēnzhōng', meaning:'minutos' }],
+  'liu': [{ hanzi:'六', pinyin:'liù', meaning:'seis' }, { hanzi:'点', pinyin:'diǎn', meaning:'en punto / hora' }],
+  'wo-jiao': [{ hanzi:'你好', pinyin:'nǐ hǎo', meaning:'hola' }, { hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'叫', pinyin:'jiào', meaning:'llamarse' }, { hanzi:'安娜', pinyin:'Ānnà', meaning:'Ana' }],
+  'ni-jiao-shen-me': [{ hanzi:'你', pinyin:'nǐ', meaning:'tú' }, { hanzi:'叫', pinyin:'jiào', meaning:'llamarse' }, { hanzi:'什么', pinyin:'shénme', meaning:'qué' }, { hanzi:'名字', pinyin:'míngzi', meaning:'nombre' }],
+  'wo-shi-xi-ban-ya-ren': [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'是', pinyin:'shì', meaning:'ser' }, { hanzi:'西班牙', pinyin:'Xībānyá', meaning:'España' }, { hanzi:'人', pinyin:'rén', meaning:'persona' }],
+  'wo-bu-ming-bai': [{ hanzi:'对不起', pinyin:'duìbuqǐ', meaning:'lo siento' }, { hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'不', pinyin:'bù', meaning:'no' }, { hanzi:'明白', pinyin:'míngbai', meaning:'entender' }],
+  'qing-zai-shuo': [{ hanzi:'请', pinyin:'qǐng', meaning:'por favor' }, { hanzi:'再', pinyin:'zài', meaning:'otra vez' }, { hanzi:'说', pinyin:'shuō', meaning:'decir / hablar' }, { hanzi:'一遍', pinyin:'yí biàn', meaning:'una vez completa' }],
+  'wo-xiang-he-shui': [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'想', pinyin:'xiǎng', meaning:'querer' }, { hanzi:'喝', pinyin:'hē', meaning:'beber' }, { hanzi:'水', pinyin:'shuǐ', meaning:'agua' }],
+};
 
 const DAY = 86_400_000;
 
@@ -76,6 +104,7 @@ export default function Home() {
   const [revealed, setRevealed] = useState(false);
   const [records, setRecords] = useState<Record<string, Review>>({});
   const [studyDays, setStudyDays] = useState<string[]>([]);
+  const [speed, setSpeed] = useState(-15);
   const [ready, setReady] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const unit = units[unitIndex];
@@ -92,7 +121,7 @@ export default function Home() {
       if (saved) {
         const parsed = JSON.parse(saved);
         const savedRecords = parsed.records || {};
-        setRecords(savedRecords); setStudyDays(parsed.studyDays || []);
+        setRecords(savedRecords); setStudyDays(parsed.studyDays || []); setSpeed(typeof parsed.speed === 'number' ? parsed.speed : -15);
         setCardIndex(findPriorityCard(units[0].cards, savedRecords));
       }
     } catch {
@@ -102,14 +131,21 @@ export default function Home() {
 
   const persist = (nextRecords: Record<string, Review>, nextDays = studyDays) => {
     setRecords(nextRecords); setStudyDays(nextDays);
-    localStorage.setItem('mi-diario-beginner', JSON.stringify({ records: nextRecords, studyDays: nextDays }));
+    localStorage.setItem('mi-diario-beginner', JSON.stringify({ records: nextRecords, studyDays: nextDays, speed }));
+  };
+
+  const changeSpeed = (nextSpeed: number) => {
+    setSpeed(nextSpeed);
+    localStorage.setItem('mi-diario-beginner', JSON.stringify({ records, studyDays, speed: nextSpeed }));
   };
 
   const playAudio = useCallback(() => {
     audioRef.current?.pause();
     const audio = new Audio(`/audio/${card.audio}.mp3`);
+    audio.playbackRate = (100 + speed) / 85;
+    audio.preservesPitch = true;
     audioRef.current = audio; audio.play().catch(() => undefined);
-  }, [card.audio]);
+  }, [card.audio, speed]);
 
   const chooseUnit = (index: number) => { setUnitIndex(index); setCardIndex(findPriorityCard(units[index].cards, records)); setRevealed(false); setScreen('learn'); };
 
@@ -123,7 +159,7 @@ export default function Home() {
     const nextDays = studyDays.includes(today) ? studyDays : [...studyDays, today];
     persist(nextRecords, nextDays);
     setTimeout(() => { setCardIndex((current) => findPriorityCard(unit.cards, nextRecords, current + 1)); setRevealed(false); }, 180);
-  }, [card.id, records, studyDays, unit.cards.length]);
+  }, [card.id, records, speed, studyDays, unit.cards.length]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -140,7 +176,7 @@ export default function Home() {
       <header className="topbar">
         <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label="Mǐ diario, inicio"><span className="brand-mark">字</span><span>Mǐ diario</span></button>
         <nav className="main-nav" aria-label="Navegación principal"><button className={screen === 'learn' ? 'selected' : ''} onClick={() => setScreen('learn')}>Aprender</button><button className={screen === 'progress' ? 'selected' : ''} onClick={() => setScreen('progress')}>Mi progreso</button></nav>
-        <div className="header-actions"><span className="voice-pill"><i /> Xiaoxiao · −15%</span><div className="streak"><span>●</span> {ready ? streak : 0} día{streak === 1 ? '' : 's'}</div></div>
+        <div className="header-actions"><label className="voice-pill"><i /><span>Xiaoxiao</span><span aria-hidden="true">·</span><select aria-label="Velocidad de pronunciación" value={speed} onChange={(event) => changeSpeed(Number(event.target.value))}>{[-40,-30,-20,-15,-10,0,10,20].map((value) => <option key={value} value={value}>{value > 0 ? '+' : value === 0 ? '±' : ''}{value}%</option>)}</select></label><div className="streak"><span>●</span> {ready ? streak : 0} día{streak === 1 ? '' : 's'}</div></div>
       </header>
 
       {screen === 'learn' ? <>
@@ -164,7 +200,14 @@ export default function Home() {
               <div className={`hanzi ${card.hanzi.length > 5 ? 'hanzi-phrase' : ''}`}>{card.hanzi}</div>
               <div className="pinyin"><small>PINYIN</small>{card.pinyin}</div>
               <div className="translation"><small>ESPAÑOL</small><strong>{card.meaning}</strong></div>
-              {revealed && <div className="example-box"><span>{card.sentence}</span><em>{card.sentencePinyin}</em><p>{card.translation}</p><small>{card.note}</small></div>}
+              {revealed && <div className="example-box">
+                <div className="example-title"><span>Ejemplo completo</span><b>{card.sentence}</b><em>{card.sentencePinyin}</em><p>{card.translation}</p></div>
+                <div className="word-map" aria-label="Desglose palabra por palabra">
+                  <div className="map-head"><span>CARÁCTER</span><span>PINYIN</span><span>ESPAÑOL</span></div>
+                  {breakdowns[card.id].map((part, index) => <div className="map-row" key={`${part.hanzi}-${index}`}><b>{part.hanzi}</b><em>{part.pinyin}</em><span>{part.meaning}</span></div>)}
+                </div>
+                <small className="example-note">{card.note}</small>
+              </div>}
             </article>
             {!revealed ? <button className="reveal" onClick={() => setRevealed(true)}>Ver un ejemplo <kbd>Espacio</kbd></button> : <div className="rating" aria-label="¿Cómo te fue?"><button className="hard" onClick={() => rate('difícil')}><small>1</small> Difícil</button><button className="unsure" onClick={() => rate('dudosa')}><small>2</small> Dudosa</button><button className="easy" onClick={() => rate('fácil')}><small>3</small> Fácil</button></div>}
             <div className="hint">Escucha dos veces y repite en voz alta. No necesitas memorizarla hoy.</div>
