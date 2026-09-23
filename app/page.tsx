@@ -2,157 +2,195 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-type Card = { hanzi: string; pinyin: string; meaning: string; sentence: string; translation: string; audio: string; tag: string };
-type Level = { name: string; description: string; cards: Card[] };
+type Card = { id: string; hanzi: string; pinyin: string; meaning: string; sentence: string; sentencePinyin: string; translation: string; audio: string; tag: string; note: string };
+type Unit = { name: string; description: string; goal: string; cards: Card[] };
+type Review = { rating: 'difícil' | 'dudosa' | 'fácil'; interval: number; due: number; reviews: number; updatedAt: number };
 
-const course: Level[] = [
-  { name: 'HSK 1', description: 'Primeros pasos', cards: [
-    { hanzi: '你好', pinyin: 'nǐ hǎo', meaning: 'Hola', sentence: '你好，我叫安娜。', translation: 'Hola, me llamo Ana.', audio: 'ni-hao', tag: 'SALUDO' },
-    { hanzi: '谢谢', pinyin: 'xièxie', meaning: 'Gracias', sentence: '谢谢你的帮助。', translation: 'Gracias por tu ayuda.', audio: 'xie-xie', tag: 'CORTESÍA' },
-    { hanzi: '再见', pinyin: 'zàijiàn', meaning: 'Adiós', sentence: '明天见，再见！', translation: 'Nos vemos mañana, ¡adiós!', audio: 'zai-jian', tag: 'SALUDO' },
-    { hanzi: '请', pinyin: 'qǐng', meaning: 'Por favor / invitar', sentence: '请坐。', translation: 'Siéntate, por favor.', audio: 'qing', tag: 'CORTESÍA' },
-    { hanzi: '水', pinyin: 'shuǐ', meaning: 'Agua', sentence: '我想喝水。', translation: 'Quiero beber agua.', audio: 'shui', tag: 'SUSTANTIVO' },
-    { hanzi: '朋友', pinyin: 'péngyou', meaning: 'Amigo/a', sentence: '他是我的好朋友。', translation: 'Él es mi buen amigo.', audio: 'peng-you', tag: 'PERSONAS' },
+const units: Unit[] = [
+  { name: 'Empieza aquí', description: 'Tus 6 primeras palabras', goal: 'Reconocer las palabras más básicas', cards: [
+    { id:'ni-hao', hanzi:'你好', pinyin:'nǐ hǎo', meaning:'Hola', sentence:'你好！', sentencePinyin:'Nǐ hǎo!', translation:'¡Hola!', audio:'begin-ni-hao', tag:'SALUDO', note:'Se usa a cualquier hora del día.' },
+    { id:'wo', hanzi:'我', pinyin:'wǒ', meaning:'Yo / me', sentence:'我叫安娜。', sentencePinyin:'Wǒ jiào Ānnà.', translation:'Me llamo Ana.', audio:'begin-wo', tag:'PRONOMBRE', note:'El pronombre para hablar de ti.' },
+    { id:'ni', hanzi:'你', pinyin:'nǐ', meaning:'Tú', sentence:'你好吗？', sentencePinyin:'Nǐ hǎo ma?', translation:'¿Cómo estás?', audio:'begin-ni', tag:'PRONOMBRE', note:'Forma informal y cotidiana de “tú”.' },
+    { id:'shi', hanzi:'是', pinyin:'shì', meaning:'Ser / sí', sentence:'我是学生。', sentencePinyin:'Wǒ shì xuésheng.', translation:'Soy estudiante.', audio:'begin-shi', tag:'VERBO', note:'Une una persona o cosa con lo que es.' },
+    { id:'bu', hanzi:'不', pinyin:'bù', meaning:'No', sentence:'我不知道。', sentencePinyin:'Wǒ bù zhīdào.', translation:'No lo sé.', audio:'begin-bu', tag:'NEGACIÓN', note:'Se coloca delante del verbo.' },
+    { id:'xie-xie', hanzi:'谢谢', pinyin:'xièxie', meaning:'Gracias', sentence:'谢谢你。', sentencePinyin:'Xièxie nǐ.', translation:'Gracias a ti.', audio:'begin-xie-xie', tag:'CORTESÍA', note:'La segunda sílaba se pronuncia suave.' },
   ]},
-  { name: 'HSK 2', description: 'Vida cotidiana', cards: [
-    { hanzi: '因为', pinyin: 'yīnwèi', meaning: 'Porque', sentence: '因为下雨，我没去。', translation: 'No fui porque llovía.', audio: 'yin-wei', tag: 'CONECTOR' },
-    { hanzi: '所以', pinyin: 'suǒyǐ', meaning: 'Por eso', sentence: '我累了，所以想休息。', translation: 'Estoy cansado, por eso quiero descansar.', audio: 'suo-yi', tag: 'CONECTOR' },
-    { hanzi: '已经', pinyin: 'yǐjīng', meaning: 'Ya', sentence: '我已经吃饭了。', translation: 'Ya he comido.', audio: 'yi-jing', tag: 'ADVERBIO' },
-    { hanzi: '可能', pinyin: 'kěnéng', meaning: 'Quizás / posible', sentence: '他可能不来。', translation: 'Quizás no venga.', audio: 'ke-neng', tag: 'ADVERBIO' },
-    { hanzi: '意思', pinyin: 'yìsi', meaning: 'Significado', sentence: '这个字是什么意思？', translation: '¿Qué significa este carácter?', audio: 'yi-si', tag: 'SUSTANTIVO' },
-    { hanzi: '觉得', pinyin: 'juéde', meaning: 'Pensar / sentir', sentence: '我觉得中文很有意思。', translation: 'Me parece que el chino es interesante.', audio: 'jue-de', tag: 'VERBO' },
+  { name: 'Saludos', description: 'Habla con educación', goal: 'Saludar, despedirte y disculparte', cards: [
+    { id:'zai-jian', hanzi:'再见', pinyin:'zàijiàn', meaning:'Adiós', sentence:'明天见，再见！', sentencePinyin:'Míngtiān jiàn, zàijiàn!', translation:'Nos vemos mañana, ¡adiós!', audio:'begin-zai-jian', tag:'SALUDO', note:'Literalmente: “volver a ver”.' },
+    { id:'qing', hanzi:'请', pinyin:'qǐng', meaning:'Por favor', sentence:'请坐。', sentencePinyin:'Qǐng zuò.', translation:'Siéntate, por favor.', audio:'begin-qing', tag:'CORTESÍA', note:'También puede significar “invitar”.' },
+    { id:'dui-bu-qi', hanzi:'对不起', pinyin:'duìbuqǐ', meaning:'Lo siento', sentence:'对不起，我来晚了。', sentencePinyin:'Duìbuqǐ, wǒ lái wǎn le.', translation:'Lo siento, llegué tarde.', audio:'begin-dui-bu-qi', tag:'CORTESÍA', note:'Una disculpa clara y muy útil.' },
+    { id:'mei-guan-xi', hanzi:'没关系', pinyin:'méi guānxi', meaning:'No pasa nada', sentence:'没关系。', sentencePinyin:'Méi guānxi.', translation:'No pasa nada.', audio:'begin-mei-guan-xi', tag:'RESPUESTA', note:'Respuesta habitual a una disculpa.' },
+    { id:'zao-shang-hao', hanzi:'早上好', pinyin:'zǎoshang hǎo', meaning:'Buenos días', sentence:'老师，早上好！', sentencePinyin:'Lǎoshī, zǎoshang hǎo!', translation:'Profesor, ¡buenos días!', audio:'begin-zao-shang-hao', tag:'SALUDO', note:'Se usa por la mañana.' },
+    { id:'wan-an', hanzi:'晚安', pinyin:'wǎn’ān', meaning:'Buenas noches', sentence:'晚安，明天见。', sentencePinyin:'Wǎn’ān, míngtiān jiàn.', translation:'Buenas noches, nos vemos mañana.', audio:'begin-wan-an', tag:'SALUDO', note:'Se dice normalmente al ir a dormir.' },
   ]},
-  { name: 'HSK 3', description: 'Conversación', cards: [
-    { hanzi: '竞争', pinyin: 'jìngzhēng', meaning: 'Competencia', sentence: '这个行业的竞争很激烈。', translation: 'La competencia en este sector es intensa.', audio: 'jing-zheng', tag: 'SUSTANTIVO' },
-    { hanzi: '经济', pinyin: 'jīngjì', meaning: 'Economía', sentence: '经济正在慢慢恢复。', translation: 'La economía se recupera poco a poco.', audio: 'jing-ji', tag: 'SOCIEDAD' },
-    { hanzi: '结果', pinyin: 'jiéguǒ', meaning: 'Resultado', sentence: '考试结果明天公布。', translation: 'El resultado del examen se publica mañana.', audio: 'jie-guo', tag: 'SUSTANTIVO' },
-    { hanzi: '适应', pinyin: 'shìyìng', meaning: 'Adaptarse', sentence: '她很快适应了新生活。', translation: 'Se adaptó rápido a la nueva vida.', audio: 'shi-ying', tag: 'VERBO' },
-    { hanzi: '印象', pinyin: 'yìnxiàng', meaning: 'Impresión', sentence: '他给我留下了好印象。', translation: 'Me dejó una buena impresión.', audio: 'yin-xiang', tag: 'SUSTANTIVO' },
-    { hanzi: '收入', pinyin: 'shōurù', meaning: 'Ingresos', sentence: '他的收入比去年高。', translation: 'Sus ingresos son mayores que el año pasado.', audio: 'shou-ru', tag: 'ECONOMÍA' },
+  { name: 'Números', description: 'Cuenta del 1 al 6', goal: 'Reconocer y pronunciar seis números', cards: [
+    { id:'yi', hanzi:'一', pinyin:'yī', meaning:'Uno', sentence:'一个人。', sentencePinyin:'Yí ge rén.', translation:'Una persona.', audio:'begin-yi', tag:'NÚMERO', note:'El tono puede cambiar al combinarse.' },
+    { id:'er', hanzi:'二', pinyin:'èr', meaning:'Dos', sentence:'二月。', sentencePinyin:'Èr yuè.', translation:'Febrero.', audio:'begin-er', tag:'NÚMERO', note:'Para contar objetos suele usarse 两 (liǎng).' },
+    { id:'san', hanzi:'三', pinyin:'sān', meaning:'Tres', sentence:'三杯茶。', sentencePinyin:'Sān bēi chá.', translation:'Tres tazas de té.', audio:'begin-san', tag:'NÚMERO', note:'Primer tono: voz alta y sostenida.' },
+    { id:'si', hanzi:'四', pinyin:'sì', meaning:'Cuatro', sentence:'四本书。', sentencePinyin:'Sì běn shū.', translation:'Cuatro libros.', audio:'begin-si', tag:'NÚMERO', note:'Cuarto tono: breve y descendente.' },
+    { id:'wu', hanzi:'五', pinyin:'wǔ', meaning:'Cinco', sentence:'五分钟。', sentencePinyin:'Wǔ fēnzhōng.', translation:'Cinco minutos.', audio:'begin-wu', tag:'NÚMERO', note:'Tercer tono: baja y vuelve a subir.' },
+    { id:'liu', hanzi:'六', pinyin:'liù', meaning:'Seis', sentence:'六点。', sentencePinyin:'Liù diǎn.', translation:'Las seis en punto.', audio:'begin-liu', tag:'NÚMERO', note:'Empieza con un sonido parecido a “lio”.' },
   ]},
-  { name: 'HSK 4', description: 'Ideas complejas', cards: [
-    { hanzi: '承担', pinyin: 'chéngdān', meaning: 'Asumir / soportar', sentence: '我们要承担自己的责任。', translation: 'Debemos asumir nuestra responsabilidad.', audio: 'cheng-dan', tag: 'VERBO' },
-    { hanzi: '顾虑', pinyin: 'gùlǜ', meaning: 'Preocupación / considerar', sentence: '他做决定时有很多顾虑。', translation: 'Tiene muchas dudas al decidir.', audio: 'gu-lv', tag: 'ABSTRACTO' },
-    { hanzi: '抽象', pinyin: 'chōuxiàng', meaning: 'Abstracto', sentence: '这个概念比较抽象。', translation: 'Este concepto es bastante abstracto.', audio: 'chou-xiang', tag: 'ADJETIVO' },
-    { hanzi: '灵活', pinyin: 'línghuó', meaning: 'Flexible', sentence: '这个办法很灵活。', translation: 'Este método es muy flexible.', audio: 'ling-huo', tag: 'ADJETIVO' },
-    { hanzi: '权威', pinyin: 'quánwēi', meaning: 'Autoridad', sentence: '她是这个领域的权威。', translation: 'Ella es una autoridad en este campo.', audio: 'quan-wei', tag: 'SUSTANTIVO' },
-    { hanzi: '趋势', pinyin: 'qūshì', meaning: 'Tendencia', sentence: '这是未来的发展趋势。', translation: 'Esta es la tendencia de desarrollo futura.', audio: 'qu-shi', tag: 'SUSTANTIVO' },
+  { name: 'Primeras frases', description: 'Habla desde el día uno', goal: 'Presentarte y pedir ayuda', cards: [
+    { id:'wo-jiao', hanzi:'我叫安娜', pinyin:'wǒ jiào Ānnà', meaning:'Me llamo Ana', sentence:'你好，我叫安娜。', sentencePinyin:'Nǐ hǎo, wǒ jiào Ānnà.', translation:'Hola, me llamo Ana.', audio:'begin-wo-jiao', tag:'PRESENTARTE', note:'Cambia 安娜 por tu nombre.' },
+    { id:'ni-jiao-shen-me', hanzi:'你叫什么名字？', pinyin:'nǐ jiào shénme míngzi?', meaning:'¿Cómo te llamas?', sentence:'你叫什么名字？', sentencePinyin:'Nǐ jiào shénme míngzi?', translation:'¿Cómo te llamas?', audio:'begin-ni-jiao-shen-me', tag:'PREGUNTA', note:'什么 significa “qué”.' },
+    { id:'wo-shi-xi-ban-ya-ren', hanzi:'我是西班牙人', pinyin:'wǒ shì Xībānyá rén', meaning:'Soy español/a', sentence:'我是西班牙人。', sentencePinyin:'Wǒ shì Xībānyá rén.', translation:'Soy español/a.', audio:'begin-wo-shi-xi-ban-ya-ren', tag:'PRESENTARTE', note:'人 significa “persona”.' },
+    { id:'wo-bu-ming-bai', hanzi:'我不明白', pinyin:'wǒ bù míngbai', meaning:'No entiendo', sentence:'对不起，我不明白。', sentencePinyin:'Duìbuqǐ, wǒ bù míngbai.', translation:'Lo siento, no entiendo.', audio:'begin-wo-bu-ming-bai', tag:'AYUDA', note:'Una frase esencial cuando estás aprendiendo.' },
+    { id:'qing-zai-shuo', hanzi:'请再说一遍', pinyin:'qǐng zài shuō yí biàn', meaning:'Repítelo, por favor', sentence:'请再说一遍。', sentencePinyin:'Qǐng zài shuō yí biàn.', translation:'Repítelo, por favor.', audio:'begin-qing-zai-shuo', tag:'AYUDA', note:'再 significa “otra vez”.' },
+    { id:'wo-xiang-he-shui', hanzi:'我想喝水', pinyin:'wǒ xiǎng hē shuǐ', meaning:'Quiero beber agua', sentence:'我想喝水。', sentencePinyin:'Wǒ xiǎng hē shuǐ.', translation:'Quiero beber agua.', audio:'begin-wo-xiang-he-shui', tag:'NECESIDAD', note:'我想… sirve para decir “quiero…”.' },
   ]},
 ];
 
-const SESSION_SIZE = 6;
+const DAY = 86_400_000;
+
+function calculateStreak(days: string[]) {
+  const unique = [...new Set(days)].sort().reverse();
+  if (!unique.length) return 0;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const latest = new Date(`${unique[0]}T00:00:00`);
+  const gap = Math.round((today.getTime() - latest.getTime()) / DAY);
+  if (gap > 1) return 0;
+  let streak = 1;
+  for (let i = 1; i < unique.length; i++) {
+    const previous = new Date(`${unique[i - 1]}T00:00:00`).getTime();
+    const current = new Date(`${unique[i]}T00:00:00`).getTime();
+    if (Math.round((previous - current) / DAY) === 1) streak++; else break;
+  }
+  return streak;
+}
+
+function findPriorityCard(cards: Card[], records: Record<string, Review>, start = 0) {
+  const now = Date.now();
+  for (let offset = 0; offset < cards.length; offset++) {
+    const index = (start + offset) % cards.length;
+    const review = records[cards[index].id];
+    if (!review || review.due <= now) return index;
+  }
+  return start % cards.length;
+}
 
 export default function Home() {
-  const [levelIndex, setLevelIndex] = useState(0);
+  const [screen, setScreen] = useState<'learn' | 'progress'>('learn');
+  const [unitIndex, setUnitIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
-  const [ratings, setRatings] = useState<Record<string, string>>({});
-  const [streak, setStreak] = useState(1);
+  const [records, setRecords] = useState<Record<string, Review>>({});
+  const [studyDays, setStudyDays] = useState<string[]>([]);
+  const [ready, setReady] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const level = course[levelIndex];
-  const card = level.cards[cardIndex];
-  const key = `${level.name}-${card.hanzi}`;
+  const unit = units[unitIndex];
+  const card = unit.cards[cardIndex];
+  const allCards = useMemo(() => units.flatMap((item) => item.cards), []);
+  const learned = allCards.filter((item) => records[item.id]).length;
+  const dueNow = allCards.filter((item) => records[item.id] && records[item.id].due <= Date.now()).length;
+  const completedInUnit = unit.cards.filter((item) => records[item.id]).length;
+  const streak = calculateStreak(studyDays);
 
   useEffect(() => {
-    const saved = localStorage.getItem('mi-diario-progress');
-    if (saved) setRatings(JSON.parse(saved));
-    const savedStreak = Number(localStorage.getItem('mi-diario-streak') || 1);
-    setStreak(savedStreak);
+    try {
+      const saved = localStorage.getItem('mi-diario-beginner');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const savedRecords = parsed.records || {};
+        setRecords(savedRecords); setStudyDays(parsed.studyDays || []);
+        setCardIndex(findPriorityCard(units[0].cards, savedRecords));
+      }
+    } catch {
+      localStorage.removeItem('mi-diario-beginner');
+    } finally { setReady(true); }
   }, []);
 
-  const completed = useMemo(() => level.cards.filter((item) => ratings[`${level.name}-${item.hanzi}`]).length, [level, ratings]);
+  const persist = (nextRecords: Record<string, Review>, nextDays = studyDays) => {
+    setRecords(nextRecords); setStudyDays(nextDays);
+    localStorage.setItem('mi-diario-beginner', JSON.stringify({ records: nextRecords, studyDays: nextDays }));
+  };
 
   const playAudio = useCallback(() => {
     audioRef.current?.pause();
     const audio = new Audio(`/audio/${card.audio}.mp3`);
-    audioRef.current = audio;
-    audio.play().catch(() => undefined);
+    audioRef.current = audio; audio.play().catch(() => undefined);
   }, [card.audio]);
 
-  const chooseLevel = (index: number) => {
-    setLevelIndex(index); setCardIndex(0); setRevealed(false);
-  };
+  const chooseUnit = (index: number) => { setUnitIndex(index); setCardIndex(findPriorityCard(units[index].cards, records)); setRevealed(false); setScreen('learn'); };
 
-  const rate = useCallback((value: 'difícil' | 'dudosa' | 'fácil') => {
-    const next = { ...ratings, [key]: value };
-    setRatings(next);
-    localStorage.setItem('mi-diario-progress', JSON.stringify(next));
-    setTimeout(() => {
-      setCardIndex((current) => (current + 1) % level.cards.length);
-      setRevealed(false);
-    }, 180);
-  }, [key, level.cards.length, ratings]);
+  const rate = useCallback((rating: Review['rating']) => {
+    const old = records[card.id];
+    const previousInterval = old?.interval || 0;
+    const interval = rating === 'difícil' ? 0.007 : rating === 'dudosa' ? Math.max(1, previousInterval * 1.8) : Math.max(3, previousInterval * 2.5);
+    const now = Date.now();
+    const nextRecords = { ...records, [card.id]: { rating, interval, due: now + interval * DAY, reviews: (old?.reviews || 0) + 1, updatedAt: now } };
+    const today = new Date().toISOString().slice(0, 10);
+    const nextDays = studyDays.includes(today) ? studyDays : [...studyDays, today];
+    persist(nextRecords, nextDays);
+    setTimeout(() => { setCardIndex((current) => findPriorityCard(unit.cards, nextRecords, current + 1)); setRevealed(false); }, 180);
+  }, [card.id, records, studyDays, unit.cards.length]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
+      if (screen !== 'learn') return;
       if (event.code === 'Space') { event.preventDefault(); setRevealed((value) => !value); }
       if (event.key.toLowerCase() === 'p') playAudio();
       if (revealed && ['1', '2', '3'].includes(event.key)) rate(event.key === '1' ? 'difícil' : event.key === '2' ? 'dudosa' : 'fácil');
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [playAudio, rate, revealed]);
+    window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
+  }, [playAudio, rate, revealed, screen]);
 
   return (
     <main className="shell">
       <header className="topbar">
-        <a className="brand" href="#top" aria-label="Mǐ diario, inicio"><span className="brand-mark">字</span><span>Mǐ diario</span></a>
-        <div className="header-actions"><span className="voice-pill"><i /> Xiaoxiao · −15%</span><div className="streak" aria-label={`Racha de ${streak} días`}><span>●</span> {streak} día{streak === 1 ? '' : 's'}</div></div>
+        <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label="Mǐ diario, inicio"><span className="brand-mark">字</span><span>Mǐ diario</span></button>
+        <nav className="main-nav" aria-label="Navegación principal"><button className={screen === 'learn' ? 'selected' : ''} onClick={() => setScreen('learn')}>Aprender</button><button className={screen === 'progress' ? 'selected' : ''} onClick={() => setScreen('progress')}>Mi progreso</button></nav>
+        <div className="header-actions"><span className="voice-pill"><i /> Xiaoxiao · −15%</span><div className="streak"><span>●</span> {ready ? streak : 0} día{streak === 1 ? '' : 's'}</div></div>
       </header>
 
-      <section className="intro" id="top">
-        <div><p className="eyebrow">今天 · HOY</p><h1>Un poco de chino.<br />Todos los días.</h1><p className="lede">Aprende palabras útiles, escúchalas y vuelve a ellas justo antes de olvidarlas.</p></div>
-        <div className="progress-card">
-          <div className="progress-top"><span>Progreso de este nivel</span><strong>{completed}/{SESSION_SIZE}</strong></div>
-          <div className="week" aria-label={`${completed} de ${SESSION_SIZE} tarjetas completadas`}>
-            {Array.from({ length: SESSION_SIZE }, (_, index) => <span className={index < completed ? 'done' : index === cardIndex ? 'current' : ''} key={index}>{index < completed ? '✓' : index + 1}</span>)}
-          </div>
-        </div>
-      </section>
-
-      <section className="study-layout">
-        <aside className="levels-panel">
-          <div className="section-heading"><span>Niveles</span><small>{levelIndex + 1} de {course.length}</small></div>
-          <div className="level-list">
-            {course.map((item, index) => (
-              <button aria-pressed={index === levelIndex} className={`level ${index === levelIndex ? 'active' : ''}`} key={item.name} onClick={() => chooseLevel(index)}>
-                <span>{item.name}<em>{item.description}</em></span><small>{item.cards.length} palabras</small>
-              </button>
-            ))}
-          </div>
-          <div className="shortcuts"><strong>Atajos</strong><span><kbd>Espacio</kbd> revelar</span><span><kbd>P</kbd> escuchar</span><span><kbd>1–3</kbd> responder</span></div>
-        </aside>
-
-        <section className="lesson" aria-labelledby="lesson-title">
-          <div className="lesson-head"><div><p className="eyebrow">SESIÓN DE HOY</p><h2 id="lesson-title">{level.description}</h2></div><span className="count">{cardIndex + 1} / {level.cards.length}</span></div>
-          <article className={`flashcard ${revealed ? 'is-revealed' : ''}`} aria-live="polite">
-            <span className="tone">{card.tag}</span>
-            <button className="sound" onClick={playAudio} aria-label={`Escuchar ${card.hanzi}, voz Xiaoxiao a velocidad menos quince por ciento`}><span>♪</span><small>Escuchar</small></button>
-            <div className="hanzi">{card.hanzi}</div>
-            <div className="pinyin">{card.pinyin}</div>
-            {revealed ? <div className="answer"><div className="divider" /><p className="meaning">{card.meaning}</p><p className="example"><span>{card.sentence}</span><br />{card.translation}</p></div> : <p className="prompt">Piensa en el significado antes de revelar</p>}
-          </article>
-          {!revealed ? (
-            <button className="reveal" onClick={() => setRevealed(true)}>Mostrar respuesta <kbd>Espacio</kbd></button>
-          ) : (
-            <div className="rating" aria-label="Califica tu recuerdo">
-              <button className="hard" onClick={() => rate('difícil')}><small>1</small> Difícil</button>
-              <button className="unsure" onClick={() => rate('dudosa')}><small>2</small> Dudosa</button>
-              <button className="easy" onClick={() => rate('fácil')}><small>3</small> Fácil</button>
-            </div>
-          )}
-          <div className="hint">Escucha primero. Intenta decirlo en voz alta.</div>
+      {screen === 'learn' ? <>
+        <section className="intro compact" id="top">
+          <div><p className="eyebrow">CURSO CERO · CHINO SIMPLIFICADO</p><h1>Empieza sin saber nada.<br />Una palabra cada vez.</h1><p className="lede">Siempre verás el carácter chino, cómo se pronuncia en pinyin y su significado en español.</p></div>
+          <div className="tone-guide"><span>Los 4 tonos</span><div><b>mā</b><b>má</b><b>mǎ</b><b>mà</b></div><small>Plano · Sube · Baja y sube · Baja</small></div>
         </section>
 
-        <aside className="today-panel">
-          <div className="section-heading"><span>Tu sesión</span></div>
-          <div className="stat-ring" style={{ '--progress': `${Math.round((completed / SESSION_SIZE) * 100)}%` } as React.CSSProperties}><div><strong>{SESSION_SIZE}</strong><small>tarjetas</small></div></div>
-          <dl><div><dt>Nuevas</dt><dd>{SESSION_SIZE - completed}</dd></div><div><dt>Repasadas</dt><dd>{completed}</dd></div><div><dt>Tiempo aprox.</dt><dd>{Math.max(1, SESSION_SIZE - completed)} min</dd></div></dl>
-          <button className="reset" onClick={() => { const next = Object.fromEntries(Object.entries(ratings).filter(([savedKey]) => !savedKey.startsWith(level.name))); setRatings(next); localStorage.setItem('mi-diario-progress', JSON.stringify(next)); }}>Reiniciar nivel</button>
-          <p className="quote"><span>水滴石穿</span><br />La constancia vence la piedra.</p>
-        </aside>
-      </section>
-      <footer>24 palabras y frases para empezar · Tu progreso se guarda en este dispositivo</footer>
+        <section className="study-layout">
+          <aside className="levels-panel">
+            <div className="section-heading"><span>Tu camino</span><small>{unitIndex + 1} de {units.length}</small></div>
+            <div className="level-list">{units.map((item, index) => <button aria-pressed={index === unitIndex} className={`level ${index === unitIndex ? 'active' : ''}`} key={item.name} onClick={() => chooseUnit(index)}><span><b>{index + 1}. {item.name}</b><em>{item.description}</em></span><small>{item.cards.filter((entry) => records[entry.id]).length}/{item.cards.length}</small></button>)}</div>
+            <div className="shortcuts"><strong>Atajos</strong><span><kbd>Espacio</kbd> ejemplo</span><span><kbd>P</kbd> escuchar</span><span><kbd>1–3</kbd> recordar</span></div>
+          </aside>
+
+          <section className="lesson" aria-labelledby="lesson-title">
+            <div className="lesson-head"><div><p className="eyebrow">LECCIÓN {unitIndex + 1}</p><h2 id="lesson-title">{unit.name}</h2></div><span className="count">{cardIndex + 1} / {unit.cards.length}</span></div>
+            <article className={`flashcard beginner-card ${revealed ? 'is-revealed' : ''}`} aria-live="polite">
+              <span className="tone">{card.tag}</span>
+              <button className="sound" onClick={playAudio} aria-label={`Escuchar ${card.hanzi}`}><span>♪</span><small>Escuchar</small></button>
+              <div className={`hanzi ${card.hanzi.length > 5 ? 'hanzi-phrase' : ''}`}>{card.hanzi}</div>
+              <div className="pinyin"><small>PINYIN</small>{card.pinyin}</div>
+              <div className="translation"><small>ESPAÑOL</small><strong>{card.meaning}</strong></div>
+              {revealed && <div className="example-box"><span>{card.sentence}</span><em>{card.sentencePinyin}</em><p>{card.translation}</p><small>{card.note}</small></div>}
+            </article>
+            {!revealed ? <button className="reveal" onClick={() => setRevealed(true)}>Ver un ejemplo <kbd>Espacio</kbd></button> : <div className="rating" aria-label="¿Cómo te fue?"><button className="hard" onClick={() => rate('difícil')}><small>1</small> Difícil</button><button className="unsure" onClick={() => rate('dudosa')}><small>2</small> Dudosa</button><button className="easy" onClick={() => rate('fácil')}><small>3</small> Fácil</button></div>}
+            <div className="hint">Escucha dos veces y repite en voz alta. No necesitas memorizarla hoy.</div>
+          </section>
+
+          <aside className="today-panel">
+            <div className="section-heading"><span>Tu sesión</span></div>
+            <div className="stat-ring" style={{ '--progress': `${Math.round((completedInUnit / unit.cards.length) * 100)}%` } as React.CSSProperties}><div><strong>{completedInUnit}</strong><small>de {unit.cards.length}</small></div></div>
+            <dl><div><dt>Nuevas</dt><dd>{unit.cards.length - completedInUnit}</dd></div><div><dt>Para repasar</dt><dd>{dueNow}</dd></div><div><dt>Duración</dt><dd>5 min</dd></div></dl>
+            <div className="method"><b>Repaso inteligente</b><p>Lo difícil vuelve antes. Lo fácil espera más.</p></div>
+            <p className="quote"><span>慢慢来</span><br />Poco a poco.</p>
+          </aside>
+        </section>
+      </> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} onContinue={() => setScreen('learn')} onReset={() => { if (window.confirm('¿Borrar todo el progreso guardado en este dispositivo?')) persist({}, []); }} />}
+      <footer>24 palabras y frases para empezar · Chino simplificado · Progreso guardado en este dispositivo</footer>
     </main>
   );
+}
+
+function ProgressView({ records, studyDays, learned, dueNow, streak, onContinue, onReset }: { records: Record<string, Review>; studyDays: string[]; learned: number; dueNow: number; streak: number; onContinue: () => void; onReset: () => void }) {
+  const recent = Object.entries(records).sort(([, a], [, b]) => b.updatedAt - a.updatedAt).slice(0, 6);
+  const byId = new Map(units.flatMap((unit) => unit.cards).map((card) => [card.id, card]));
+  return <section className="progress-view">
+    <div className="progress-title"><div><p className="eyebrow">REGISTRO LOCAL</p><h1>Tu progreso, sin cuentas.</h1><p className="lede">Se guarda solamente en este dispositivo. El repaso se adapta a tus respuestas.</p></div><button className="reveal continue" onClick={onContinue}>Continuar aprendiendo →</button></div>
+    <div className="metric-grid"><article><span>字</span><strong>{learned}</strong><small>palabras vistas</small></article><article><span>复</span><strong>{dueNow}</strong><small>listas para repasar</small></article><article><span>火</span><strong>{streak}</strong><small>días de racha</small></article><article><span>日</span><strong>{studyDays.length}</strong><small>días de estudio</small></article></div>
+    <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>Avance por unidad</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}. {unit.name}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}/{unit.cards.length}</small></div>; })}</article><article className="activity"><div className="section-heading"><span>Últimos repasos</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card?.meaning}</small></div><em className={record.rating}>{record.rating}</em></div>; }) : <p className="empty">Aún no hay repasos. Empieza con 你好.</p>}</article></div>
+    <button className="danger-reset" onClick={onReset}>Borrar mi progreso</button>
+  </section>;
 }

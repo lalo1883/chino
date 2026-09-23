@@ -14,17 +14,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mi-diario-chino.lalo1883.chatgpt.site'),
-  title: 'Mǐ diario · Aprende chino cada día',
-  description: 'Flashcards de chino con pronunciación, frases y repaso inteligente.',
+  title: 'Mǐ diario · Chino desde cero',
+  description: 'Aprende chino simplificado desde cero con caracteres, pinyin, español, audio y repaso inteligente.',
   openGraph: {
-    title: 'Mǐ diario · Aprende chino cada día',
-    description: 'Un poco de chino. Todos los días.',
+    title: 'Mǐ diario · Chino desde cero',
+    description: 'Caracteres, pinyin y español. Un poco de chino todos los días.',
     images: ['/og.png'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Mǐ diario · Aprende chino cada día',
-    description: 'Un poco de chino. Todos los días.',
+    title: 'Mǐ diario · Chino desde cero',
+    description: 'Caracteres, pinyin y español. Un poco de chino todos los días.',
     images: ['/og.png'],
   },
 };
