@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { commonPhrases, commonWords, library, type LibraryItem } from './content';
 
 type Card = { id: string; hanzi: string; pinyin: string; meaning: string; sentence: string; sentencePinyin: string; translation: string; audio: string; tag: string; note: string };
 type Unit = { name: string; description: string; goal: string; cards: Card[] };
@@ -98,7 +99,7 @@ function findPriorityCard(cards: Card[], records: Record<string, Review>, start 
 }
 
 export default function Home() {
-  const [screen, setScreen] = useState<'learn' | 'progress'>('learn');
+  const [screen, setScreen] = useState<'learn' | 'cards' | 'words' | 'speak' | 'progress'>('learn');
   const [unitIndex, setUnitIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -111,10 +112,13 @@ export default function Home() {
   const card = unit.cards[cardIndex];
   const allCards = useMemo(() => units.flatMap((item) => item.cards), []);
   const learned = allCards.filter((item) => records[item.id]).length;
+  // The due count is a time-sensitive snapshot for this render.
+  // eslint-disable-next-line react-hooks/purity
   const dueNow = allCards.filter((item) => records[item.id] && records[item.id].due <= Date.now()).length;
   const completedInUnit = unit.cards.filter((item) => records[item.id]).length;
   const streak = calculateStreak(studyDays);
 
+  /* eslint-disable react-hooks/set-state-in-effect -- hydrate device-only progress after mount */
   useEffect(() => {
     try {
       const saved = localStorage.getItem('mi-diario-beginner');
@@ -128,11 +132,12 @@ export default function Home() {
       localStorage.removeItem('mi-diario-beginner');
     } finally { setReady(true); }
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
-  const persist = (nextRecords: Record<string, Review>, nextDays = studyDays) => {
+  const persist = useCallback((nextRecords: Record<string, Review>, nextDays = studyDays) => {
     setRecords(nextRecords); setStudyDays(nextDays);
     localStorage.setItem('mi-diario-beginner', JSON.stringify({ records: nextRecords, studyDays: nextDays, speed }));
-  };
+  }, [speed, studyDays]);
 
   const changeSpeed = (nextSpeed: number) => {
     setSpeed(nextSpeed);
@@ -159,7 +164,7 @@ export default function Home() {
     const nextDays = studyDays.includes(today) ? studyDays : [...studyDays, today];
     persist(nextRecords, nextDays);
     setTimeout(() => { setCardIndex((current) => findPriorityCard(unit.cards, nextRecords, current + 1)); setRevealed(false); }, 180);
-  }, [card.id, records, speed, studyDays, unit.cards.length]);
+  }, [card.id, persist, records, studyDays, unit.cards]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -175,7 +180,13 @@ export default function Home() {
     <main className="shell">
       <header className="topbar">
         <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label="Mǐ diario, inicio"><span className="brand-mark">字</span><span>Mǐ diario</span></button>
-        <nav className="main-nav" aria-label="Navegación principal"><button className={screen === 'learn' ? 'selected' : ''} onClick={() => setScreen('learn')}>Aprender</button><button className={screen === 'progress' ? 'selected' : ''} onClick={() => setScreen('progress')}>Mi progreso</button></nav>
+        <nav className="main-nav" aria-label="Navegación principal">
+          <button className={screen === 'learn' ? 'selected' : ''} onClick={() => setScreen('learn')}>Inicio</button>
+          <button className={screen === 'cards' ? 'selected' : ''} onClick={() => setScreen('cards')}>Tarjetas</button>
+          <button className={screen === 'words' ? 'selected' : ''} onClick={() => setScreen('words')}>Palabras</button>
+          <button className={screen === 'speak' ? 'selected' : ''} onClick={() => setScreen('speak')}>Hablar</button>
+          <button className={screen === 'progress' ? 'selected' : ''} onClick={() => setScreen('progress')}>Progreso</button>
+        </nav>
         <div className="header-actions"><label className="voice-pill"><i /><span>Xiaoxiao</span><span aria-hidden="true">·</span><select aria-label="Velocidad de pronunciación" value={speed} onChange={(event) => changeSpeed(Number(event.target.value))}>{[-40,-30,-20,-15,-10,0,10,20].map((value) => <option key={value} value={value}>{value > 0 ? '+' : value === 0 ? '±' : ''}{value}%</option>)}</select></label><div className="streak"><span>●</span> {ready ? streak : 0} día{streak === 1 ? '' : 's'}</div></div>
       </header>
 
@@ -221,8 +232,8 @@ export default function Home() {
             <p className="quote"><span>慢慢来</span><br />Poco a poco.</p>
           </aside>
         </section>
-      </> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} onContinue={() => setScreen('learn')} onReset={() => { if (window.confirm('¿Borrar todo el progreso guardado en este dispositivo?')) persist({}, []); }} />}
-      <footer>24 palabras y frases para empezar · Chino simplificado · Progreso guardado en este dispositivo</footer>
+      </> : screen === 'cards' ? <CardsView speed={speed} /> : screen === 'words' ? <WordsView speed={speed} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} onContinue={() => setScreen('learn')} onReset={() => { if (window.confirm('¿Borrar todo el progreso guardado en este dispositivo?')) persist({}, []); }} />}
+      <footer>200 palabras · 200 frases prácticas · Chino simplificado · Progreso guardado en este dispositivo</footer>
     </main>
   );
 }
@@ -235,5 +246,120 @@ function ProgressView({ records, studyDays, learned, dueNow, streak, onContinue,
     <div className="metric-grid"><article><span>字</span><strong>{learned}</strong><small>palabras vistas</small></article><article><span>复</span><strong>{dueNow}</strong><small>listas para repasar</small></article><article><span>火</span><strong>{streak}</strong><small>días de racha</small></article><article><span>日</span><strong>{studyDays.length}</strong><small>días de estudio</small></article></div>
     <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>Avance por unidad</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}. {unit.name}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}/{unit.cards.length}</small></div>; })}</article><article className="activity"><div className="section-heading"><span>Últimos repasos</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card?.meaning}</small></div><em className={record.rating}>{record.rating}</em></div>; }) : <p className="empty">Aún no hay repasos. Empieza con 你好.</p>}</article></div>
     <button className="danger-reset" onClick={onReset}>Borrar mi progreso</button>
+  </section>;
+}
+
+function playLibraryAudio(item: LibraryItem, speed: number) {
+  const audio = new Audio(`/audio/${item.audio}.mp3`);
+  audio.playbackRate = (100 + speed) / 85;
+  audio.preservesPitch = true;
+  audio.play().catch(() => undefined);
+}
+
+function CardsView({ speed }: { speed: number }) {
+  const [kind, setKind] = useState<'all' | 'word' | 'phrase'>('all');
+  const [index, setIndex] = useState(0);
+  const [revealed, setRevealed] = useState(false);
+  const items = kind === 'all' ? library : library.filter((item) => item.type === kind);
+  const card = items[index % items.length];
+  const changeKind = (next: typeof kind) => { setKind(next); setIndex(0); setRevealed(false); };
+  const move = (amount: number) => { setIndex((current) => (current + amount + items.length) % items.length); setRevealed(false); };
+  return <section className="library-view">
+    <div className="library-hero"><div><p className="eyebrow">BIBLIOTECA DE TARJETAS</p><h1>400 oportunidades<br />para practicar.</h1><p className="lede">200 palabras esenciales y 200 frases prácticas, todas con audio.</p></div><div className="library-count"><strong>{items.length}</strong><span>tarjetas</span></div></div>
+    <div className="filter-bar" role="group" aria-label="Tipo de tarjeta">{([['all','Todas'],['word','Palabras'],['phrase','Frases']] as const).map(([value,label]) => <button className={kind === value ? 'active' : ''} onClick={() => changeKind(value)} key={value}>{label}</button>)}</div>
+    <div className="deck-layout">
+      <button className="deck-arrow" onClick={() => move(-1)} aria-label="Tarjeta anterior">←</button>
+      <article className="library-card">
+        <div className="library-card-top"><span>{card.type === 'word' ? 'PALABRA' : 'FRASE'} · {card.category}</span><small>{index + 1} / {items.length}</small></div>
+        <button className="big-audio" onClick={() => playLibraryAudio(card, speed)}><span>♪</span> Escuchar</button>
+        <div className={card.type === 'phrase' ? 'deck-hanzi phrase' : 'deck-hanzi'}>{card.hanzi}</div>
+        <div className="deck-pinyin">{card.pinyin}</div>
+        {revealed ? <div className="deck-meaning">{card.spanish}</div> : <button className="ghost-reveal" onClick={() => setRevealed(true)}>Mostrar significado</button>}
+      </article>
+      <button className="deck-arrow" onClick={() => move(1)} aria-label="Tarjeta siguiente">→</button>
+    </div>
+  </section>;
+}
+
+function WordsView({ speed }: { speed: number }) {
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('Todas');
+  const categories = ['Todas', ...new Set(commonWords.map((item) => item.category))];
+  const query = search.trim().toLocaleLowerCase();
+  const filtered = commonWords.filter((item) => (category === 'Todas' || item.category === category) && (!query || `${item.hanzi} ${item.pinyin} ${item.spanish}`.toLocaleLowerCase().includes(query)));
+  return <section className="library-view words-view">
+    <div className="library-hero"><div><p className="eyebrow">DICCIONARIO VISUAL</p><h1>Las 200 palabras<br />esenciales.</h1><p className="lede">Busca en chino, pinyin o español. Escucha cualquier palabra con un toque.</p></div><div className="library-count"><strong>{filtered.length}</strong><span>resultados</span></div></div>
+    <div className="search-row"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar: agua, shuǐ, 水…" aria-label="Buscar palabras"/><select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="Filtrar por categoría">{categories.map((item) => <option key={item}>{item}</option>)}</select></div>
+    <div className="word-grid">{filtered.map((item) => <article key={item.id}><button onClick={() => playLibraryAudio(item, speed)} aria-label={`Escuchar ${item.hanzi}`}>♪</button><span>{item.hanzi}</span><em>{item.pinyin}</em><strong>{item.spanish}</strong><small>{item.category}</small></article>)}</div>
+  </section>;
+}
+
+type SpeechResult = { score: number; heard: string; feedback: string };
+type BrowserSpeechRecognitionEvent = { results: ArrayLike<ArrayLike<{ transcript: string }>> };
+type BrowserSpeechRecognition = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onstart: () => void;
+  onend: () => void;
+  onerror: () => void;
+  onresult: (event: BrowserSpeechRecognitionEvent) => void;
+  start: () => void;
+};
+type SpeechWindow = Window & {
+  SpeechRecognition?: new () => BrowserSpeechRecognition;
+  webkitSpeechRecognition?: new () => BrowserSpeechRecognition;
+};
+
+function normalizeChinese(value: string) { return value.replace(/[\s\p{P}\p{S}]/gu, ''); }
+
+function distance(a: string, b: string) {
+  const matrix = Array.from({ length: a.length + 1 }, (_, row) => Array.from({ length: b.length + 1 }, (_, column) => row === 0 ? column : column === 0 ? row : 0));
+  for (let row = 1; row <= a.length; row++) for (let column = 1; column <= b.length; column++) matrix[row][column] = a[row - 1] === b[column - 1] ? matrix[row - 1][column - 1] : 1 + Math.min(matrix[row - 1][column], matrix[row][column - 1], matrix[row - 1][column - 1]);
+  return matrix[a.length][b.length];
+}
+
+function SpeakView({ speed }: { speed: number }) {
+  const [index, setIndex] = useState(0);
+  const [listening, setListening] = useState(false);
+  const [result, setResult] = useState<SpeechResult | null>(null);
+  const [error, setError] = useState('');
+  const phrase = commonPhrases[index];
+
+  const listen = () => {
+    setResult(null); setError('');
+    const speechWindow = window as SpeechWindow;
+    const Recognition = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
+    if (!Recognition) { setError('Tu navegador no ofrece reconocimiento de voz. Prueba Chrome o Safari actualizado.'); return; }
+    const recognition = new Recognition();
+    recognition.lang = 'zh-CN'; recognition.continuous = false; recognition.interimResults = false; recognition.maxAlternatives = 5;
+    recognition.onstart = () => setListening(true);
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => { setListening(false); setError('No pude escuchar con claridad. Revisa el permiso del micrófono e inténtalo otra vez.'); };
+    recognition.onresult = (event: BrowserSpeechRecognitionEvent) => {
+      const target = normalizeChinese(phrase.hanzi);
+      const alternatives = Array.from(event.results[0] as ArrayLike<{ transcript: string }>);
+      const ranked = alternatives.map((entry) => { const heard = normalizeChinese(entry.transcript); const score = Math.max(0, Math.round((1 - distance(target, heard) / Math.max(target.length, heard.length, 1)) * 100)); return { score, heard: entry.transcript }; }).sort((a,b) => b.score - a.score);
+      const best = ranked[0];
+      const feedback = best.score >= 90 ? '¡Muy bien! El navegador entendió la frase completa.' : best.score >= 65 ? 'Casi. Escucha otra vez y repite con un ritmo más claro.' : 'Inténtalo de nuevo por partes, siguiendo el pinyin.';
+      setResult({ ...best, feedback });
+    };
+    recognition.start();
+  };
+
+  const next = () => { setIndex((current) => (current + 1) % commonPhrases.length); setResult(null); setError(''); };
+  return <section className="speak-view">
+    <div className="speak-copy"><p className="eyebrow">ENTRENADOR DE PRONUNCIACIÓN · BETA</p><h1>Escucha. Habla.<br />Comprueba.</h1><p className="lede">El navegador escucha en mandarín y compara los caracteres reconocidos con la frase objetivo.</p><div className="privacy-note"><b>Privacidad</b><span>La app no guarda tus grabaciones.</span></div></div>
+    <article className="speak-card">
+      <div className="speak-step">FRASE {index + 1} DE {commonPhrases.length}</div>
+      <div className="speak-hanzi">{phrase.hanzi}</div><div className="speak-pinyin">{phrase.pinyin}</div><p>{phrase.spanish}</p>
+      <button className="listen-model" onClick={() => playLibraryAudio(phrase, speed)}>♪ Escuchar modelo</button>
+      <button className={`mic-button ${listening ? 'listening' : ''}`} onClick={listen} disabled={listening}><span>{listening ? '●' : '●'}</span>{listening ? 'Escuchando…' : 'Hablar ahora'}</button>
+      {error && <div className="speech-error">{error}</div>}
+      {result && <div className={`speech-result ${result.score >= 90 ? 'great' : result.score >= 65 ? 'close' : 'retry'}`}><div className="score"><strong>{result.score}</strong><span>/100</span></div><div><b>{result.feedback}</b><p>Escuché: <span>{result.heard || '—'}</span></p></div></div>}
+      <button className="next-phrase" onClick={next}>Siguiente frase →</button>
+      <small className="tone-disclaimer">Esta versión mide inteligibilidad y palabras reconocidas. La calificación tonal fonema por fonema requiere un motor acústico especializado.</small>
+    </article>
   </section>;
 }
