@@ -6,6 +6,7 @@ export type LibraryItem = {
   spanish: string;
   category: string;
   audio: string;
+  breakdown?: Array<{ hanzi: string; pinyin: string; meaning: string }>;
 };
 
 const wordSource = `
@@ -236,6 +237,7 @@ const rawWords = wordSource.trim().split('\n').map((row) => row.split('|'));
 
 export const commonWords: LibraryItem[] = rawWords.slice(0, 200).map(([hanzi,pinyin,spanish,category], index) => ({
   id: `w-${String(index + 1).padStart(3, '0')}`, type:'word', hanzi, pinyin, spanish, category, audio:`w-${String(index + 1).padStart(3, '0')}`,
+  breakdown: [{ hanzi, pinyin, meaning: spanish }],
 }));
 
 export const commonPhrases: LibraryItem[] = objects.flatMap(([hanzi,pinyin,spanish], objectIndex) => {
@@ -249,7 +251,15 @@ export const commonPhrases: LibraryItem[] = objects.flatMap(([hanzi,pinyin,spani
   return templates.map(([phrase, phrasePinyin, phraseSpanish], templateIndex) => {
     const index = objectIndex * 5 + templateIndex + 1;
     const number = String(index).padStart(3, '0');
-    return { id:`f-${number}`, type:'phrase' as const, hanzi:phrase, pinyin:phrasePinyin, spanish:phraseSpanish, category:'Frases prácticas', audio:`f-${number}` };
+    const objectPart = { hanzi, pinyin, meaning: spanish };
+    const breakdowns = [
+      [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'需要', pinyin:'xūyào', meaning:'necesitar' }, objectPart],
+      [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'在', pinyin:'zài', meaning:'estar en' }, { hanzi:'找', pinyin:'zhǎo', meaning:'buscar' }, objectPart],
+      [{ hanzi:'这里', pinyin:'zhèlǐ', meaning:'aquí' }, { hanzi:'有', pinyin:'yǒu', meaning:'haber / tener' }, objectPart, { hanzi:'吗', pinyin:'ma', meaning:'partícula de pregunta' }],
+      [objectPart, { hanzi:'在', pinyin:'zài', meaning:'estar en' }, { hanzi:'哪里', pinyin:'nǎlǐ', meaning:'dónde' }],
+      [{ hanzi:'请', pinyin:'qǐng', meaning:'por favor' }, { hanzi:'给', pinyin:'gěi', meaning:'dar' }, { hanzi:'我', pinyin:'wǒ', meaning:'yo' }, objectPart],
+    ] as Array<Array<{ hanzi: string; pinyin: string; meaning: string }>>;
+    return { id:`f-${number}`, type:'phrase' as const, hanzi:phrase, pinyin:phrasePinyin, spanish:phraseSpanish, category:'Frases prácticas', audio:`f-${number}`, breakdown: breakdowns[templateIndex] };
   });
 });
 

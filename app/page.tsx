@@ -301,17 +301,22 @@ export default function Home() {
 
   const chooseUnit = (index: number) => { setUnitIndex(index); setCardIndex(findPriorityCard(units[index].cards, records)); setRevealed(false); setScreen('learn'); };
 
-  const rate = useCallback((rating: Review['rating']) => {
-    const old = records[card.id];
+  const recordReview = useCallback((cardId: string, rating: Review['rating']) => {
+    const old = records[cardId];
     const previousInterval = old?.interval || 0;
     const interval = rating === 'difícil' ? 0.007 : rating === 'dudosa' ? Math.max(1, previousInterval * 1.8) : Math.max(3, previousInterval * 2.5);
     const now = Date.now();
-    const nextRecords = { ...records, [card.id]: { rating, interval, due: now + interval * DAY, reviews: (old?.reviews || 0) + 1, updatedAt: now } };
+    const nextRecords = { ...records, [cardId]: { rating, interval, due: now + interval * DAY, reviews: (old?.reviews || 0) + 1, updatedAt: now } };
     const today = new Date().toISOString().slice(0, 10);
     const nextDays = studyDays.includes(today) ? studyDays : [...studyDays, today];
     persist(nextRecords, nextDays);
+    return nextRecords;
+  }, [persist, records, studyDays]);
+
+  const rate = useCallback((rating: Review['rating']) => {
+    const nextRecords = recordReview(card.id, rating);
     setTimeout(() => { setCardIndex((current) => findPriorityCard(unit.cards, nextRecords, current + 1)); setRevealed(false); }, 180);
-  }, [card.id, persist, records, studyDays, unit.cards]);
+  }, [card.id, recordReview, unit.cards]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -380,7 +385,7 @@ export default function Home() {
             <p className="quote"><span>慢慢来</span><br />Poco a poco.</p>
           </aside>
         </section>
-      </> : screen === 'cards' ? <CardsView speed={speed} /> : screen === 'words' ? <WordsView speed={speed} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} signedIn={Boolean(userId)} syncState={syncState} onContinue={() => setScreen('learn')} onReset={resetProgress} />}
+      </> : screen === 'cards' ? <CardsView speed={speed} onReview={recordReview} /> : screen === 'words' ? <WordsView speed={speed} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} signedIn={Boolean(userId)} syncState={syncState} onContinue={() => setScreen('learn')} onReset={resetProgress} />}
       <footer>200 palabras · 200 frases prácticas · Chino simplificado · {userId ? 'Progreso sincronizado con tu cuenta' : 'Crea una cuenta para sincronizar tu progreso'}</footer>
     </main>
   );
@@ -404,7 +409,7 @@ function playLibraryAudio(item: LibraryItem, speed: number) {
   audio.play().catch(() => undefined);
 }
 
-function CardsView({ speed }: { speed: number }) {
+function CardsView({ speed, onReview }: { speed: number; onReview: (id: string, rating: Review['rating']) => void }) {
   const [kind, setKind] = useState<'all' | 'word' | 'phrase'>('all');
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -435,6 +440,11 @@ function CardsView({ speed }: { speed: number }) {
     const dy = touch.clientY - start.y;
     if (Math.abs(dx) > 52 && Math.abs(dx) > Math.abs(dy) * 1.4) move(dx < 0 ? 1 : -1);
   };
+  const rateCard = (rating: Review['rating']) => {
+    onReview(card.id, rating);
+    setRevealed(false);
+    window.setTimeout(() => move(1), 180);
+  };
   return <section className="library-view">
     <div className="library-hero"><div><p className="eyebrow">BIBLIOTECA DE TARJETAS</p><h1><span>400 oportunidades</span> <span>para practicar.</span></h1><p className="lede">200 palabras esenciales y 200 frases prácticas, todas con audio.</p></div><div className="library-count"><strong>{items.length}</strong><span>tarjetas</span></div></div>
     <div className="filter-bar" role="group" aria-label="Tipo de tarjeta">{([['all','Todas'],['word','Palabras'],['phrase','Frases']] as const).map(([value,label]) => <button className={kind === value ? 'active' : ''} onClick={() => changeKind(value)} key={value}>{label}</button>)}</div>
@@ -445,7 +455,14 @@ function CardsView({ speed }: { speed: number }) {
         <button className="big-audio" onClick={() => playLibraryAudio(card, speed)}><span>♪</span> Escuchar</button>
         <div className={card.type === 'phrase' ? 'deck-hanzi phrase' : 'deck-hanzi'}>{card.hanzi}</div>
         <div className="deck-pinyin">{card.pinyin}</div>
-        {revealed ? <div className="deck-meaning">{card.spanish}</div> : <button className="ghost-reveal" onClick={() => setRevealed(true)}>Mostrar significado</button>}
+        {revealed ? <div className="deck-answer">
+          <div className="deck-meaning">{card.spanish}</div>
+          <div className="deck-breakdown" aria-label="Desglose de la tarjeta">
+            <div className="map-head"><span>CARÁCTER</span><span>PINYIN</span><span>ESPAÑOL</span></div>
+            {(card.breakdown || [{ hanzi: card.hanzi, pinyin: card.pinyin, meaning: card.spanish }]).map((part, partIndex) => <div className="map-row" key={`${part.hanzi}-${partIndex}`}><b>{part.hanzi}</b><em>{part.pinyin}</em><span>{part.meaning}</span></div>)}
+          </div>
+          <div className="deck-review" aria-label="Evalúa tu recuerdo"><strong>¿La supiste?</strong><span>Elige la dificultad para ajustar tus repasos.</span><div className="rating"><button className="hard" onClick={() => rateCard('difícil')}><small>1</small> Difícil</button><button className="unsure" onClick={() => rateCard('dudosa')}><small>2</small> Dudosa</button><button className="easy" onClick={() => rateCard('fácil')}><small>3</small> Fácil</button></div></div>
+        </div> : <button className="ghost-reveal" onClick={() => setRevealed(true)}>Mostrar significado</button>}
         <p className="swipe-hint">Desliza para cambiar de tarjeta</p>
       </article>
       <button className="deck-arrow" onClick={() => move(1)} aria-label="Tarjeta siguiente">→</button>
