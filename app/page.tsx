@@ -5,6 +5,18 @@ import { commonPhrases, commonWords, library, type LibraryItem } from './content
 import { AccountMenu } from '@/components/account-menu';
 import { authClient } from '@/lib/auth-client';
 
+const navIcons: Record<string, React.ReactNode> = {
+  learn: <path d="M3 9.6 10 4l7 5.6V16a1 1 0 0 1-1 1h-3.5v-4.2h-5V17H4a1 1 0 0 1-1-1z" />,
+  cards: <path d="M6.2 3.4h8.1a1.6 1.6 0 0 1 1.6 1.6v10a1.6 1.6 0 0 1-1.6 1.6H6.2A1.6 1.6 0 0 1 4.6 15V5a1.6 1.6 0 0 1 1.6-1.6Zm1.3 3.9h5.5M7.5 10h5.5M7.5 12.7h3.4" />,
+  words: <path d="M4 4.6A1.6 1.6 0 0 1 5.6 3H16v14H5.6A1.6 1.6 0 0 1 4 15.4zM16 13.6H5.6M8 6.6h5M8 9.4h5" />,
+  speak: <path d="M10 3.2a2.2 2.2 0 0 1 2.2 2.2v4.1a2.2 2.2 0 1 1-4.4 0V5.4A2.2 2.2 0 0 1 10 3.2ZM5.4 9.4a4.6 4.6 0 0 0 9.2 0M10 14v3" />,
+  progress: <path d="M3.6 16.4h12.8M6.2 13.6V8.4M10 13.6V4.6M13.8 13.6v-6" />,
+};
+
+function NavIcon({ name }: { name: string }) {
+  return <svg className="nav-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{navIcons[name]}</svg>;
+}
+
 type Card = { id: string; hanzi: string; pinyin: string; meaning: string; sentence: string; sentencePinyin: string; translation: string; audio: string; tag: string; note: string };
 type Unit = { name: string; description: string; goal: string; cards: Card[] };
 type Review = { rating: 'difícil' | 'dudosa' | 'fácil'; interval: number; due: number; reviews: number; updatedAt: number };
@@ -302,6 +314,10 @@ export default function Home() {
   }, [card.id, persist, records, studyDays, unit.cards]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [screen]);
+
+  useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (screen !== 'learn') return;
       if (event.code === 'Space') { event.preventDefault(); setRevealed((value) => !value); }
@@ -316,18 +332,15 @@ export default function Home() {
       <header className="topbar">
         <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label="Mǐ diario, inicio"><span className="brand-mark">字</span><span>Mǐ diario</span></button>
         <nav className="main-nav" aria-label="Navegación principal">
-          <button className={screen === 'learn' ? 'selected' : ''} onClick={() => setScreen('learn')}>Inicio</button>
-          <button className={screen === 'cards' ? 'selected' : ''} onClick={() => setScreen('cards')}>Tarjetas</button>
-          <button className={screen === 'words' ? 'selected' : ''} onClick={() => setScreen('words')}>Palabras</button>
-          <button className={screen === 'speak' ? 'selected' : ''} onClick={() => setScreen('speak')}>Hablar</button>
-          <button className={screen === 'progress' ? 'selected' : ''} onClick={() => setScreen('progress')}>Progreso</button>
+          {([['learn','Inicio'],['cards','Tarjetas'],['words','Palabras'],['speak','Hablar'],['progress','Progreso']] as const).map(([value, label]) =>
+            <button key={value} aria-current={screen === value ? 'page' : undefined} className={screen === value ? 'selected' : ''} onClick={() => setScreen(value)}><NavIcon name={value} /><span>{label}</span></button>)}
         </nav>
         <div className="header-actions"><label className="voice-pill"><i /><span>Xiaoxiao</span><span aria-hidden="true">·</span><select aria-label="Velocidad de pronunciación" value={speed} onChange={(event) => changeSpeed(Number(event.target.value))}>{[-40,-30,-20,-15,-10,0,10,20].map((value) => <option key={value} value={value}>{value > 0 ? '+' : value === 0 ? '±' : ''}{value}%</option>)}</select></label><div className="streak"><span>●</span> {ready ? streak : 0} día{streak === 1 ? '' : 's'}</div><AccountMenu syncState={syncState} onSignedOut={() => { setScreen('learn'); setSyncState('local'); }} /></div>
       </header>
 
       {screen === 'learn' ? <>
         <section className="intro compact" id="top">
-          <div><p className="eyebrow">CURSO CERO · CHINO SIMPLIFICADO</p><h1>Empieza sin saber nada.<br />Una palabra cada vez.</h1><p className="lede">Siempre verás el carácter chino, cómo se pronuncia en pinyin y su significado en español.</p></div>
+          <div><p className="eyebrow">CURSO CERO · CHINO SIMPLIFICADO</p><h1><span>Empieza sin saber nada.</span> <span>Una palabra cada vez.</span></h1><p className="lede">Siempre verás el carácter chino, cómo se pronuncia en pinyin y su significado en español.</p></div>
           <div className="tone-guide"><span>Los 4 tonos</span><div><b>mā</b><b>má</b><b>mǎ</b><b>mà</b></div><small>Plano · Sube · Baja y sube · Baja</small></div>
         </section>
 
@@ -397,19 +410,43 @@ function CardsView({ speed }: { speed: number }) {
   const [revealed, setRevealed] = useState(false);
   const items = kind === 'all' ? library : library.filter((item) => item.type === kind);
   const card = items[index % items.length];
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
   const changeKind = (next: typeof kind) => { setKind(next); setIndex(0); setRevealed(false); };
-  const move = (amount: number) => { setIndex((current) => (current + amount + items.length) % items.length); setRevealed(false); };
+  const move = useCallback((amount: number) => { setIndex((current) => (current + amount + items.length) % items.length); setRevealed(false); }, [items.length]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLElement && ['INPUT', 'SELECT', 'TEXTAREA'].includes(event.target.tagName)) return;
+      if (event.key === 'ArrowLeft') move(-1);
+      if (event.key === 'ArrowRight') move(1);
+      if (event.code === 'Space') { event.preventDefault(); setRevealed((value) => !value); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [move]);
+
+  const onTouchStart = (event: React.TouchEvent) => { const touch = event.changedTouches[0]; touchStart.current = { x: touch.clientX, y: touch.clientY }; };
+  const onTouchEnd = (event: React.TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start) return;
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) > 52 && Math.abs(dx) > Math.abs(dy) * 1.4) move(dx < 0 ? 1 : -1);
+  };
   return <section className="library-view">
-    <div className="library-hero"><div><p className="eyebrow">BIBLIOTECA DE TARJETAS</p><h1>400 oportunidades<br />para practicar.</h1><p className="lede">200 palabras esenciales y 200 frases prácticas, todas con audio.</p></div><div className="library-count"><strong>{items.length}</strong><span>tarjetas</span></div></div>
+    <div className="library-hero"><div><p className="eyebrow">BIBLIOTECA DE TARJETAS</p><h1><span>400 oportunidades</span> <span>para practicar.</span></h1><p className="lede">200 palabras esenciales y 200 frases prácticas, todas con audio.</p></div><div className="library-count"><strong>{items.length}</strong><span>tarjetas</span></div></div>
     <div className="filter-bar" role="group" aria-label="Tipo de tarjeta">{([['all','Todas'],['word','Palabras'],['phrase','Frases']] as const).map(([value,label]) => <button className={kind === value ? 'active' : ''} onClick={() => changeKind(value)} key={value}>{label}</button>)}</div>
     <div className="deck-layout">
       <button className="deck-arrow" onClick={() => move(-1)} aria-label="Tarjeta anterior">←</button>
-      <article className="library-card">
+      <article className="library-card" key={`${kind}-${index}`} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div className="library-card-top"><span>{card.type === 'word' ? 'PALABRA' : 'FRASE'} · {card.category}</span><small>{index + 1} / {items.length}</small></div>
         <button className="big-audio" onClick={() => playLibraryAudio(card, speed)}><span>♪</span> Escuchar</button>
         <div className={card.type === 'phrase' ? 'deck-hanzi phrase' : 'deck-hanzi'}>{card.hanzi}</div>
         <div className="deck-pinyin">{card.pinyin}</div>
         {revealed ? <div className="deck-meaning">{card.spanish}</div> : <button className="ghost-reveal" onClick={() => setRevealed(true)}>Mostrar significado</button>}
+        <p className="swipe-hint">Desliza para cambiar de tarjeta</p>
       </article>
       <button className="deck-arrow" onClick={() => move(1)} aria-label="Tarjeta siguiente">→</button>
     </div>
@@ -423,9 +460,13 @@ function WordsView({ speed }: { speed: number }) {
   const query = search.trim().toLocaleLowerCase();
   const filtered = commonWords.filter((item) => (category === 'Todas' || item.category === category) && (!query || `${item.hanzi} ${item.pinyin} ${item.spanish}`.toLocaleLowerCase().includes(query)));
   return <section className="library-view words-view">
-    <div className="library-hero"><div><p className="eyebrow">DICCIONARIO VISUAL</p><h1>Las 200 palabras<br />esenciales.</h1><p className="lede">Busca en chino, pinyin o español. Escucha cualquier palabra con un toque.</p></div><div className="library-count"><strong>{filtered.length}</strong><span>resultados</span></div></div>
-    <div className="search-row"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar: agua, shuǐ, 水…" aria-label="Buscar palabras"/><select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="Filtrar por categoría">{categories.map((item) => <option key={item}>{item}</option>)}</select></div>
-    <div className="word-grid">{filtered.map((item) => <article key={item.id}><button onClick={() => playLibraryAudio(item, speed)} aria-label={`Escuchar ${item.hanzi}`}>♪</button><span>{item.hanzi}</span><em>{item.pinyin}</em><strong>{item.spanish}</strong><small>{item.category}</small></article>)}</div>
+    <div className="library-hero"><div><p className="eyebrow">DICCIONARIO VISUAL</p><h1><span>Las 200 palabras</span> <span>esenciales.</span></h1><p className="lede">Busca en chino, pinyin o español. Escucha cualquier palabra con un toque.</p></div><div className="library-count"><strong>{filtered.length}</strong><span>resultados</span></div></div>
+    <div className="search-row">
+      <div className="search-field"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar: agua, shuǐ, 水…" aria-label="Buscar palabras" type="search" enterKeyHint="search" autoComplete="off" />{search && <button type="button" className="search-clear" onClick={() => setSearch('')} aria-label="Borrar búsqueda">×</button>}</div>
+      <select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="Filtrar por categoría">{categories.map((item) => <option key={item}>{item}</option>)}</select>
+    </div>
+    {filtered.length ? <div className="word-grid">{filtered.map((item) => <article key={item.id}><button onClick={() => playLibraryAudio(item, speed)} aria-label={`Escuchar ${item.hanzi}`}>♪</button><span>{item.hanzi}</span><em>{item.pinyin}</em><strong>{item.spanish}</strong><small>{item.category}</small></article>)}</div>
+      : <div className="no-results"><span aria-hidden="true">空</span><b>Sin resultados para “{search}”</b><p>Prueba con otra palabra, su pinyin o un carácter.</p><button onClick={() => { setSearch(''); setCategory('Todas'); }}>Limpiar filtros</button></div>}
   </section>;
 }
 
@@ -485,7 +526,7 @@ function SpeakView({ speed }: { speed: number }) {
 
   const next = () => { setIndex((current) => (current + 1) % commonPhrases.length); setResult(null); setError(''); };
   return <section className="speak-view">
-    <div className="speak-copy"><p className="eyebrow">ENTRENADOR DE PRONUNCIACIÓN · BETA</p><h1>Escucha. Habla.<br />Comprueba.</h1><p className="lede">El navegador escucha en mandarín y compara los caracteres reconocidos con la frase objetivo.</p><div className="privacy-note"><b>Privacidad</b><span>La app no guarda tus grabaciones.</span></div></div>
+    <div className="speak-copy"><p className="eyebrow">ENTRENADOR DE PRONUNCIACIÓN · BETA</p><h1><span>Escucha. Habla.</span> <span>Comprueba.</span></h1><p className="lede">El navegador escucha en mandarín y compara los caracteres reconocidos con la frase objetivo.</p><div className="privacy-note"><b>Privacidad</b><span>La app no guarda tus grabaciones.</span></div></div>
     <article className="speak-card">
       <div className="speak-step">FRASE {index + 1} DE {commonPhrases.length}</div>
       <div className="speak-hanzi">{phrase.hanzi}</div><div className="speak-pinyin">{phrase.pinyin}</div><p>{phrase.spanish}</p>
