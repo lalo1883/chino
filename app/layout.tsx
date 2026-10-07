@@ -14,17 +14,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chino-xi.vercel.app'),
-  title: 'Mǐ diario · Chino desde cero',
-  description: 'Aprende chino simplificado desde cero con caracteres, pinyin, español, audio y repaso inteligente.',
+  title: 'Chino desde cero',
+  description: 'Aprende chino simplificado con caracteres, pinyin, español, audio y repaso inteligente.',
   openGraph: {
-    title: 'Mǐ diario · Chino desde cero',
-    description: 'Caracteres, pinyin y español. Un poco de chino todos los días.',
+    title: 'Chino desde cero',
+    description: 'Caracteres, pinyin, español y audio para aprender chino simplificado.',
     images: ['/og.png'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Mǐ diario · Chino desde cero',
-    description: 'Caracteres, pinyin y español. Un poco de chino todos los días.',
+    title: 'Chino desde cero',
+    description: 'Caracteres, pinyin, español y audio para aprender chino simplificado.',
     images: ['/og.png'],
   },
 };
