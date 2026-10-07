@@ -12,10 +12,14 @@
     "build:sites": "vinext build",
     "start": "next start",
     "start:sites": "vinext start",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "db:auth": "npx auth@latest migrate",
+    "db:progress": "node scripts/migrate-progress.mjs"
   },
   "dependencies": {
-    "next": "16.2.6",
+    "better-auth": "^1.7.7",
+    "next": "^16.4.0",
+    "pg": "^8.23.1",
     "react": "19.2.6",
     "react-dom": "19.2.6"
   },
@@ -25,6 +29,7 @@
     "@openai/sites-vite-plugin": "^0.1.0 || ^0.2.0",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
+    "@types/pg": "^8.23.1",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",

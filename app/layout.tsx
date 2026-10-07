@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://mi-diario-chino.lalo1883.chatgpt.site'),
+  metadataBase: new URL('https://chino-xi.vercel.app'),
   title: 'Mǐ diario · Chino desde cero',
   description: 'Aprende chino simplificado desde cero con caracteres, pinyin, español, audio y repaso inteligente.',
   openGraph: {
