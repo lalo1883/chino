@@ -10,7 +10,7 @@ OUTPUT = ROOT / "public" / "audio"
 OUTPUT.mkdir(parents=True, exist_ok=True)
 
 word_block = re.search(r"const wordSource = `\n(.*?)\n`;", SOURCE, re.S).group(1)
-words = [line.split("|")[0] for line in word_block.splitlines() if line.strip()][:200]
+words = [line.split("|")[0] for line in word_block.splitlines() if line.strip()]
 objects_block = re.search(r"const objects = \[(.*?)\] as const;", SOURCE, re.S).group(1)
 objects = re.findall(r"\['([^']+)','([^']+)','([^']+)'\]", objects_block)
 
@@ -20,6 +20,11 @@ for object_index, (hanzi, _, _) in enumerate(objects):
     for template_index, text in enumerate(phrases):
         number = object_index * 5 + template_index + 1
         items.append((f"f-{number:03d}", text))
+
+lesson_block = re.search(r"const lessonRows: LessonRow\[\] = \[(.*?)\n\];", SOURCE, re.S).group(1)
+lesson_phrases = re.findall(r"^  \['([^']+)',", lesson_block, re.M)
+for index, text in enumerate(lesson_phrases, 1):
+    items.append((f"l-{index:03d}", text))
 
 semaphore = None
 

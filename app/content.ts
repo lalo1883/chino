@@ -218,6 +218,22 @@ const wordSource = `
 再见|zàijiàn|adiós|Cortesía
 不客气|bú kèqi|de nada|Cortesía
 没关系|méi guānxi|no pasa nada|Cortesía
+留学生|liúxuéshēng|estudiante extranjero|Personas
+同学|tóngxué|compañero de clase|Personas
+他们|tāmen|ellos / ellas|Personas
+大学生|dàxuéshēng|estudiante universitario|Personas
+职员|zhíyuán|empleado/a de oficina|Personas
+律师|lǜshī|abogado/a|Personas
+班|bān|clase / grupo|Vida diaria
+汉语|Hànyǔ|idioma chino|Vida diaria
+上课|shàngkè|tener clase|Verbos
+一起|yìqǐ|juntos|Expresiones
+几|jǐ|cuántos (pocos)|Preguntas
+多少|duōshao|cuánto / cuántos|Preguntas
+个|gè|clasificador general|Gramática
+口|kǒu|clasificador de personas de la familia|Gramática
+两|liǎng|dos (para contar)|Números y tiempo
+法国|Fǎguó|Francia|Lugares
 `;
 
 const objects = [
@@ -235,12 +251,12 @@ const objects = [
 
 const rawWords = wordSource.trim().split('\n').map((row) => row.split('|'));
 
-export const commonWords: LibraryItem[] = rawWords.slice(0, 200).map(([hanzi,pinyin,spanish,category], index) => ({
+export const commonWords: LibraryItem[] = rawWords.map(([hanzi,pinyin,spanish,category], index) => ({
   id: `w-${String(index + 1).padStart(3, '0')}`, type:'word', hanzi, pinyin, spanish, category, audio:`w-${String(index + 1).padStart(3, '0')}`,
   breakdown: [{ hanzi, pinyin, meaning: spanish }],
 }));
 
-export const commonPhrases: LibraryItem[] = objects.flatMap(([hanzi,pinyin,spanish], objectIndex) => {
+const objectPhrases: LibraryItem[] = objects.flatMap(([hanzi,pinyin,spanish], objectIndex) => {
   const templates = [
     [`我需要${hanzi}。`, `wǒ xūyào ${pinyin}`, `Necesito ${spanish}.`],
     [`我在找${hanzi}。`, `wǒ zài zhǎo ${pinyin}`, `Estoy buscando ${spanish}.`],
@@ -262,5 +278,48 @@ export const commonPhrases: LibraryItem[] = objects.flatMap(([hanzi,pinyin,spani
     return { id:`f-${number}`, type:'phrase' as const, hanzi:phrase, pinyin:phrasePinyin, spanish:phraseSpanish, category:'Frases prácticas', audio:`f-${number}`, breakdown: breakdowns[templateIndex] };
   });
 });
+
+type LessonRow = [string, string, string, Array<[string, string, string]>];
+
+const lessonRows: LessonRow[] = [
+  ['她是留学生。', 'Tā shì liúxuéshēng.', 'Ella es estudiante extranjera.', [['她','tā','ella'],['是','shì','ser'],['留学生','liúxuéshēng','estudiante extranjero']]],
+  ['他们学习汉语。', 'Tāmen xuéxí Hànyǔ.', 'Ellos estudian chino.', [['他们','tāmen','ellos'],['学习','xuéxí','estudiar'],['汉语','Hànyǔ','idioma chino']]],
+  ['你学习什么？', 'Nǐ xuéxí shénme?', '¿Qué estudias?', [['你','nǐ','tú'],['学习','xuéxí','estudiar'],['什么','shénme','qué']]],
+  ['我们一起上课。', 'Wǒmen yìqǐ shàngkè.', 'Tenemos clase juntos.', [['我们','wǒmen','nosotros'],['一起','yìqǐ','juntos'],['上课','shàngkè','tener clase']]],
+  ['我和同学一起说汉语。', 'Wǒ hé tóngxué yìqǐ shuō Hànyǔ.', 'Hablo chino junto con mis compañeros.', [['我','wǒ','yo'],['和','hé','y'],['同学','tóngxué','compañero de clase'],['一起','yìqǐ','juntos'],['说','shuō','hablar'],['汉语','Hànyǔ','idioma chino']]],
+  ['你是中国人吗？', 'Nǐ shì Zhōngguó rén ma?', '¿Eres chino?', [['你','nǐ','tú'],['是','shì','ser'],['中国','Zhōngguó','China'],['人','rén','persona'],['吗','ma','partícula de pregunta']]],
+  ['我不是中国人，我是法国留学生。', 'Wǒ bú shì Zhōngguó rén, wǒ shì Fǎguó liúxuéshēng.', 'No soy chino, soy estudiante extranjero de Francia.', [['不','bù','no'],['是','shì','ser'],['中国','Zhōngguó','China'],['法国','Fǎguó','Francia'],['留学生','liúxuéshēng','estudiante extranjero']]],
+  ['你们班有多少个学生？', 'Nǐmen bān yǒu duōshao ge xuésheng?', '¿Cuántos estudiantes hay en vuestra clase?', [['你们','nǐmen','ustedes'],['班','bān','clase'],['有','yǒu','haber'],['多少','duōshao','cuántos'],['个','gè','clasificador'],['学生','xuésheng','estudiante']]],
+  ['我们班有两个学生。', 'Wǒmen bān yǒu liǎng ge xuésheng.', 'En nuestra clase hay dos estudiantes.', [['我们','wǒmen','nosotros'],['班','bān','clase'],['有','yǒu','haber'],['两','liǎng','dos'],['个','gè','clasificador'],['学生','xuésheng','estudiante']]],
+  ['她是谁？', 'Tā shì shéi?', '¿Quién es ella?', [['她','tā','ella'],['是','shì','ser'],['谁','shéi','quién']]],
+  ['她是我的同学。', 'Tā shì wǒ de tóngxué.', 'Ella es mi compañera de clase.', [['她','tā','ella'],['是','shì','ser'],['我','wǒ','yo'],['的','de','partícula posesiva'],['同学','tóngxué','compañero de clase']]],
+  ['他们都是我的同学。', 'Tāmen dōu shì wǒ de tóngxué.', 'Todos ellos son mis compañeros de clase.', [['他们','tāmen','ellos'],['都','dōu','todos'],['是','shì','ser'],['同学','tóngxué','compañero de clase']]],
+  ['你家有几口人？', 'Nǐ jiā yǒu jǐ kǒu rén?', '¿Cuántas personas hay en tu familia?', [['你','nǐ','tú'],['家','jiā','familia'],['有','yǒu','haber'],['几','jǐ','cuántos'],['口','kǒu','clasificador de familiares'],['人','rén','persona']]],
+  ['我家有四口人。', 'Wǒ jiā yǒu sì kǒu rén.', 'En mi familia somos cuatro.', [['我','wǒ','yo'],['家','jiā','familia'],['有','yǒu','haber'],['四','sì','cuatro'],['口','kǒu','clasificador de familiares'],['人','rén','persona']]],
+  ['爸爸、妈妈、哥哥和我。', 'Bàba, māma, gēge hé wǒ.', 'Papá, mamá, mi hermano mayor y yo.', [['爸爸','bàba','papá'],['妈妈','māma','mamá'],['哥哥','gēge','hermano mayor'],['和','hé','y'],['我','wǒ','yo']]],
+  ['你爸爸做什么工作？', 'Nǐ bàba zuò shénme gōngzuò?', '¿En qué trabaja tu papá?', [['你','nǐ','tú'],['爸爸','bàba','papá'],['做','zuò','hacer'],['什么','shénme','qué'],['工作','gōngzuò','trabajo']]],
+  ['我爸爸是职员。', 'Wǒ bàba shì zhíyuán.', 'Mi papá es empleado de oficina.', [['我','wǒ','yo'],['爸爸','bàba','papá'],['是','shì','ser'],['职员','zhíyuán','empleado de oficina']]],
+  ['我妈妈是老师。', 'Wǒ māma shì lǎoshī.', 'Mi mamá es profesora.', [['我','wǒ','yo'],['妈妈','māma','mamá'],['是','shì','ser'],['老师','lǎoshī','profesora']]],
+  ['我哥哥是律师。', 'Wǒ gēge shì lǜshī.', 'Mi hermano mayor es abogado.', [['我','wǒ','yo'],['哥哥','gēge','hermano mayor'],['是','shì','ser'],['律师','lǜshī','abogado']]],
+  ['她妈妈是医生。', 'Tā māma shì yīshēng.', 'Su mamá es médica.', [['她','tā','ella'],['妈妈','māma','mamá'],['是','shì','ser'],['医生','yīshēng','médica']]],
+  ['哥哥和我都是大学生。', 'Gēge hé wǒ dōu shì dàxuéshēng.', 'Mi hermano mayor y yo somos universitarios.', [['哥哥','gēge','hermano mayor'],['和','hé','y'],['我','wǒ','yo'],['都','dōu','los dos'],['是','shì','ser'],['大学生','dàxuéshēng','estudiante universitario']]],
+  ['你们都是大学生吗？', 'Nǐmen dōu shì dàxuéshēng ma?', '¿Sois todos universitarios?', [['你们','nǐmen','ustedes'],['都','dōu','todos'],['是','shì','ser'],['大学生','dàxuéshēng','estudiante universitario'],['吗','ma','partícula de pregunta']]],
+];
+
+export const lessonPhrases: LibraryItem[] = lessonRows.map(([hanzi, pinyin, spanish, parts], index) => {
+  const number = String(index + 1).padStart(3, '0');
+  return {
+    id: `l-${number}`,
+    type: 'phrase' as const,
+    hanzi,
+    pinyin,
+    spanish,
+    category: 'Frases del libro',
+    audio: `l-${number}`,
+    breakdown: parts.map(([partHanzi, partPinyin, meaning]) => ({ hanzi: partHanzi, pinyin: partPinyin, meaning })),
+  };
+});
+
+export const commonPhrases: LibraryItem[] = [...objectPhrases, ...lessonPhrases];
 
 export const library = [...commonWords, ...commonPhrases];

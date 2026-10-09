@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { commonPhrases, commonWords, library, type LibraryItem } from './content';
 import { AccountMenu } from '@/components/account-menu';
+import { StudySession } from '@/components/study-session';
+import { scheduleReview } from '@/lib/learning';
 import { authClient } from '@/lib/auth-client';
 
 const navIcons: Record<string, React.ReactNode> = {
@@ -138,17 +140,14 @@ function calculateStreak(days: string[]) {
 
 function findPriorityCard(cards: Card[], records: Record<string, Review>, start = 0) {
   const now = Date.now();
-  for (let offset = 0; offset < cards.length; offset++) {
-    const index = (start + offset) % cards.length;
-    const review = records[cards[index].id];
-    if (!review || review.due <= now) return index;
-  }
+  const available = cards.map((card, index) => ({ index, review: records[card.id] })).filter(item => (!item.review || item.review.due <= now) && item.index !== (start - 1 + cards.length) % cards.length);
+  if (available.length) return available[Math.floor(Math.random() * available.length)].index;
   return start % cards.length;
 }
 
 export default function Home() {
   const { data: session, isPending: sessionPending } = authClient.useSession();
-  const [screen, setScreen] = useState<'learn' | 'cards' | 'words' | 'speak' | 'progress'>('learn');
+  const [screen, setScreen] = useState<'learn' | 'cards' | 'words' | 'speak' | 'progress'>('cards');
   const [unitIndex, setUnitIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -163,8 +162,8 @@ export default function Home() {
   const storageKey = userId ? `mi-diario-beginner:${userId}` : GUEST_STORAGE_KEY;
   const unit = units[unitIndex];
   const card = unit.cards[cardIndex];
-  const allCards = useMemo(() => units.flatMap((item) => item.cards), []);
-  const learned = allCards.filter((item) => records[item.id]).length;
+  const allCards = useMemo(() => [...units.flatMap((item) => item.cards), ...library], []);
+  const learned = allCards.filter((item) => records[item.id]?.rating === 'fácil' && records[item.id].interval >= 7).length;
   // The due count is a time-sensitive snapshot for this render.
   // eslint-disable-next-line react-hooks/purity
   const dueNow = allCards.filter((item) => records[item.id] && records[item.id].due <= Date.now()).length;
@@ -303,11 +302,10 @@ export default function Home() {
 
   const recordReview = useCallback((cardId: string, rating: Review['rating']) => {
     const old = records[cardId];
-    const previousInterval = old?.interval || 0;
-    const interval = rating === 'difícil' ? 0.007 : rating === 'dudosa' ? Math.max(1, previousInterval * 1.8) : Math.max(3, previousInterval * 2.5);
     const now = Date.now();
-    const nextRecords = { ...records, [cardId]: { rating, interval, due: now + interval * DAY, reviews: (old?.reviews || 0) + 1, updatedAt: now } };
-    const today = new Date().toISOString().slice(0, 10);
+    const nextRecords = { ...records, [cardId]: scheduleReview(old, rating === 'fácil', now) };
+    const date = new Date(now);
+    const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     const nextDays = studyDays.includes(today) ? studyDays : [...studyDays, today];
     persist(nextRecords, nextDays);
     return nextRecords;
@@ -324,10 +322,10 @@ export default function Home() {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (screen !== 'learn') return;
+      if (screen !== 'learn' || event.target instanceof HTMLElement && (event.target.closest('dialog') || ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(event.target.tagName))) return;
       if (event.code === 'Space') { event.preventDefault(); setRevealed((value) => !value); }
       if (event.key.toLowerCase() === 'p') playAudio();
-      if (revealed && ['1', '2', '3'].includes(event.key)) rate(event.key === '1' ? 'difícil' : event.key === '2' ? 'dudosa' : 'fácil');
+      if (revealed && ['1', '2'].includes(event.key)) rate(event.key === '1' ? 'difícil' : 'fácil');
     };
     window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
   }, [playAudio, rate, revealed, screen]);
@@ -335,9 +333,9 @@ export default function Home() {
   return (
     <main className="shell">
       <header className="topbar">
-        <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label="Mǐ diario, inicio"><span className="brand-mark">字</span><span>Mǐ diario</span></button>
+        <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label="Chino, inicio"><span className="brand-mark">字</span><span>Chino<span className="brand-caption">desde cero</span></span></button>
         <nav className="main-nav" aria-label="Navegación principal">
-          {([['learn','Inicio'],['cards','Tarjetas'],['words','Palabras'],['speak','Hablar'],['progress','Progreso']] as const).map(([value, label]) =>
+          {([['learn','Aprende'],['cards','Practicar'],['words','Palabras'],['speak','Hablar'],['progress','Progreso']] as const).map(([value, label]) =>
             <button key={value} aria-current={screen === value ? 'page' : undefined} className={screen === value ? 'selected' : ''} onClick={() => setScreen(value)}><NavIcon name={value} /><span>{label}</span></button>)}
         </nav>
         <div className="header-actions"><label className="voice-pill"><i /><span>Xiaoxiao</span><span aria-hidden="true">·</span><select aria-label="Velocidad de pronunciación" value={speed} onChange={(event) => changeSpeed(Number(event.target.value))}>{[-40,-30,-20,-15,-10,0,10,20].map((value) => <option key={value} value={value}>{value > 0 ? '+' : value === 0 ? '±' : ''}{value}%</option>)}</select></label><div className="streak"><span>●</span> {ready ? streak : 0} día{streak === 1 ? '' : 's'}</div><AccountMenu syncState={syncState} onSignedOut={() => { setScreen('learn'); setSyncState('local'); }} /></div>
@@ -353,7 +351,7 @@ export default function Home() {
           <aside className="levels-panel">
             <div className="section-heading"><span>Tu camino</span><small>{unitIndex + 1} de {units.length}</small></div>
             <div className="level-list">{units.map((item, index) => <button aria-pressed={index === unitIndex} className={`level ${index === unitIndex ? 'active' : ''}`} key={item.name} onClick={() => chooseUnit(index)}><span><b>{index + 1}. {item.name}</b><em>{item.description}</em></span><small>{item.cards.filter((entry) => records[entry.id]).length}/{item.cards.length}</small></button>)}</div>
-            <div className="shortcuts"><strong>Atajos</strong><span><kbd>Espacio</kbd> ejemplo</span><span><kbd>P</kbd> escuchar</span><span><kbd>1–3</kbd> recordar</span></div>
+            <div className="shortcuts"><strong>Atajos</strong><span><kbd>Espacio</kbd> ejemplo</span><span><kbd>P</kbd> escuchar</span><span><kbd>1–2</kbd> recordar</span></div>
           </aside>
 
           <section className="lesson" aria-labelledby="lesson-title">
@@ -373,7 +371,7 @@ export default function Home() {
                 <small className="example-note">{card.note}</small>
               </div>}
             </article>
-            {!revealed ? <button className="reveal" onClick={() => setRevealed(true)}>Ver un ejemplo <kbd>Espacio</kbd></button> : <div className="rating" aria-label="¿Cómo te fue?"><button className="hard" onClick={() => rate('difícil')}><small>1</small> Difícil</button><button className="unsure" onClick={() => rate('dudosa')}><small>2</small> Dudosa</button><button className="easy" onClick={() => rate('fácil')}><small>3</small> Fácil</button></div>}
+            {!revealed ? <button className="reveal" onClick={() => setRevealed(true)}>Ver un ejemplo <kbd>Espacio</kbd></button> : <div className="binary-rating"><button onClick={() => rate('difícil')}>No me la supe</button><button onClick={() => rate('fácil')}>Me la supe</button></div>}
             <div className="hint">Escucha dos veces y repite en voz alta. No necesitas memorizarla hoy.</div>
           </section>
 
@@ -385,19 +383,19 @@ export default function Home() {
             <p className="quote"><span>慢慢来</span><br />Poco a poco.</p>
           </aside>
         </section>
-      </> : screen === 'cards' ? <CardsView speed={speed} onReview={recordReview} /> : screen === 'words' ? <WordsView speed={speed} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} signedIn={Boolean(userId)} syncState={syncState} onContinue={() => setScreen('learn')} onReset={resetProgress} />}
-      <footer>200 palabras · 200 frases prácticas · Chino simplificado · {userId ? 'Progreso sincronizado con tu cuenta' : 'Crea una cuenta para sincronizar tu progreso'}</footer>
+      </> : screen === 'cards' ? <StudySession key={storageKey} speed={speed} records={records} ready={ready} onReview={recordReview} /> : screen === 'words' ? <WordsView speed={speed} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} signedIn={Boolean(userId)} syncState={syncState} onContinue={() => setScreen('learn')} onReset={resetProgress} />}
+      <footer>{commonWords.length} palabras · {commonPhrases.length} frases prácticas · Chino simplificado · {userId ? 'Progreso sincronizado con tu cuenta' : 'Crea una cuenta para sincronizar tu progreso'}</footer>
     </main>
   );
 }
 
 function ProgressView({ records, studyDays, learned, dueNow, streak, signedIn, syncState, onContinue, onReset }: { records: Record<string, Review>; studyDays: string[]; learned: number; dueNow: number; streak: number; signedIn: boolean; syncState: 'local' | 'saving' | 'synced' | 'error'; onContinue: () => void; onReset: () => void }) {
   const recent = Object.entries(records).sort(([, a], [, b]) => b.updatedAt - a.updatedAt).slice(0, 6);
-  const byId = new Map(units.flatMap((unit) => unit.cards).map((card) => [card.id, card]));
+  const byId = new Map([...units.flatMap((unit) => unit.cards), ...library.map(item => ({ ...item, meaning: item.spanish }))].map(card => [card.id, card]));
   return <section className="progress-view">
-    <div className="progress-title"><div><p className="eyebrow">{signedIn ? syncState === 'saving' ? 'SINCRONIZANDO…' : syncState === 'error' ? 'SIN CONEXIÓN · GUARDADO LOCAL' : 'PROGRESO SINCRONIZADO' : 'PROGRESO EN ESTE DISPOSITIVO'}</p><h1>{signedIn ? 'Tu avance viaja contigo.' : 'Tu progreso empieza aquí.'}</h1><p className="lede">{signedIn ? 'Se guarda en tu cuenta para continuar desde tu celular o computadora. El repaso se adapta a tus respuestas.' : 'Puedes practicar sin cuenta. Crea una cuando quieras conservar y sincronizar tu avance.'}</p></div><button className="reveal continue" onClick={onContinue}>Continuar aprendiendo →</button></div>
-    <div className="metric-grid"><article><span>字</span><strong>{learned}</strong><small>palabras vistas</small></article><article><span>复</span><strong>{dueNow}</strong><small>listas para repasar</small></article><article><span>火</span><strong>{streak}</strong><small>días de racha</small></article><article><span>日</span><strong>{studyDays.length}</strong><small>días de estudio</small></article></div>
-    <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>Avance por unidad</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}. {unit.name}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}/{unit.cards.length}</small></div>; })}</article><article className="activity"><div className="section-heading"><span>Últimos repasos</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card?.meaning}</small></div><em className={record.rating}>{record.rating}</em></div>; }) : <p className="empty">Aún no hay repasos. Empieza con 你好.</p>}</article></div>
+    <div className="progress-title"><div><p className="eyebrow">{signedIn ? syncState === 'saving' ? 'SINCRONIZANDO…' : syncState === 'error' ? 'SIN CONEXIÓN · GUARDADO LOCAL' : 'PROGRESO SINCRONIZADO' : 'PROGRESO EN ESTE DISPOSITIVO'}</p><h1>{signedIn ? 'Tu avance viaja contigo.' : 'Tu progreso empieza aquí.'}</h1><p className="lede">{signedIn ? 'Se guarda en tu cuenta para continuar desde tu celular o computadora. Consolidada significa recordar una tarjeta en días distintos y alcanzar un intervalo de al menos 7 días.' : 'Puedes practicar sin cuenta. Crea una cuando quieras conservar y sincronizar tu avance.'}</p></div><button className="reveal continue" onClick={onContinue}>Continuar aprendiendo →</button></div>
+    <div className="metric-grid"><article><span>字</span><strong>{learned}</strong><small>tarjetas consolidadas</small></article><article><span>复</span><strong>{dueNow}</strong><small>listas para repasar</small></article><article><span>火</span><strong>{streak}</strong><small>días de racha</small></article><article><span>日</span><strong>{studyDays.length}</strong><small>días de estudio</small></article></div>
+    <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>Tarjetas practicadas por unidad</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}. {unit.name}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}/{unit.cards.length}</small></div>; })}<div className="progress-row"><b>Biblioteca completa</b><div><i style={{ width: `${library.filter(item => records[item.id]).length / library.length * 100}%` }} /></div><small>{library.filter(item => records[item.id]).length}/{library.length}</small></div></article><article className="activity"><div className="section-heading"><span>Últimos repasos</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card?.meaning}</small></div><em className={record.rating}>{record.rating === 'fácil' ? 'Recordada' : 'Por reforzar'}</em></div>; }) : <p className="empty">Aún no hay repasos. Empieza con 你好.</p>}</article></div>
     <button className="danger-reset" onClick={onReset}>Borrar mi progreso</button>
   </section>;
 }
@@ -409,67 +407,6 @@ function playLibraryAudio(item: LibraryItem, speed: number) {
   audio.play().catch(() => undefined);
 }
 
-function CardsView({ speed, onReview }: { speed: number; onReview: (id: string, rating: Review['rating']) => void }) {
-  const [kind, setKind] = useState<'all' | 'word' | 'phrase'>('all');
-  const [index, setIndex] = useState(0);
-  const [revealed, setRevealed] = useState(false);
-  const items = kind === 'all' ? library : library.filter((item) => item.type === kind);
-  const card = items[index % items.length];
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const changeKind = (next: typeof kind) => { setKind(next); setIndex(0); setRevealed(false); };
-  const move = useCallback((amount: number) => { setIndex((current) => (current + amount + items.length) % items.length); setRevealed(false); }, [items.length]);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLElement && ['INPUT', 'SELECT', 'TEXTAREA'].includes(event.target.tagName)) return;
-      if (event.key === 'ArrowLeft') move(-1);
-      if (event.key === 'ArrowRight') move(1);
-      if (event.code === 'Space') { event.preventDefault(); setRevealed((value) => !value); }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [move]);
-
-  const onTouchStart = (event: React.TouchEvent) => { const touch = event.changedTouches[0]; touchStart.current = { x: touch.clientX, y: touch.clientY }; };
-  const onTouchEnd = (event: React.TouchEvent) => {
-    const start = touchStart.current;
-    touchStart.current = null;
-    if (!start) return;
-    const touch = event.changedTouches[0];
-    const dx = touch.clientX - start.x;
-    const dy = touch.clientY - start.y;
-    if (Math.abs(dx) > 52 && Math.abs(dx) > Math.abs(dy) * 1.4) move(dx < 0 ? 1 : -1);
-  };
-  const rateCard = (rating: Review['rating']) => {
-    onReview(card.id, rating);
-    setRevealed(false);
-    window.setTimeout(() => move(1), 180);
-  };
-  return <section className="library-view">
-    <div className="library-hero"><div><p className="eyebrow">BIBLIOTECA DE TARJETAS</p><h1><span>400 oportunidades</span> <span>para practicar.</span></h1><p className="lede">200 palabras esenciales y 200 frases prácticas, todas con audio.</p></div><div className="library-count"><strong>{items.length}</strong><span>tarjetas</span></div></div>
-    <div className="filter-bar" role="group" aria-label="Tipo de tarjeta">{([['all','Todas'],['word','Palabras'],['phrase','Frases']] as const).map(([value,label]) => <button className={kind === value ? 'active' : ''} onClick={() => changeKind(value)} key={value}>{label}</button>)}</div>
-    <div className="deck-layout">
-      <button className="deck-arrow" onClick={() => move(-1)} aria-label="Tarjeta anterior">←</button>
-      <article className="library-card" key={`${kind}-${index}`} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-        <div className="library-card-top"><span>{card.type === 'word' ? 'PALABRA' : 'FRASE'} · {card.category}</span><small>{index + 1} / {items.length}</small></div>
-        <button className="big-audio" onClick={() => playLibraryAudio(card, speed)}><span>♪</span> Escuchar</button>
-        <div className={card.type === 'phrase' ? 'deck-hanzi phrase' : 'deck-hanzi'}>{card.hanzi}</div>
-        <div className="deck-pinyin">{card.pinyin}</div>
-        {revealed ? <div className="deck-answer">
-          <div className="deck-meaning">{card.spanish}</div>
-          <div className="deck-breakdown" aria-label="Desglose de la tarjeta">
-            <div className="map-head"><span>CARÁCTER</span><span>PINYIN</span><span>ESPAÑOL</span></div>
-            {(card.breakdown || [{ hanzi: card.hanzi, pinyin: card.pinyin, meaning: card.spanish }]).map((part, partIndex) => <div className="map-row" key={`${part.hanzi}-${partIndex}`}><b>{part.hanzi}</b><em>{part.pinyin}</em><span>{part.meaning}</span></div>)}
-          </div>
-          <div className="deck-review" aria-label="Evalúa tu recuerdo"><strong>¿La supiste?</strong><span>Elige la dificultad para ajustar tus repasos.</span><div className="rating"><button className="hard" onClick={() => rateCard('difícil')}><small>1</small> Difícil</button><button className="unsure" onClick={() => rateCard('dudosa')}><small>2</small> Dudosa</button><button className="easy" onClick={() => rateCard('fácil')}><small>3</small> Fácil</button></div></div>
-        </div> : <button className="ghost-reveal" onClick={() => setRevealed(true)}>Mostrar significado</button>}
-        <p className="swipe-hint">Desliza para cambiar de tarjeta</p>
-      </article>
-      <button className="deck-arrow" onClick={() => move(1)} aria-label="Tarjeta siguiente">→</button>
-    </div>
-  </section>;
-}
-
 function WordsView({ speed }: { speed: number }) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todas');
@@ -477,7 +414,7 @@ function WordsView({ speed }: { speed: number }) {
   const query = search.trim().toLocaleLowerCase();
   const filtered = commonWords.filter((item) => (category === 'Todas' || item.category === category) && (!query || `${item.hanzi} ${item.pinyin} ${item.spanish}`.toLocaleLowerCase().includes(query)));
   return <section className="library-view words-view">
-    <div className="library-hero"><div><p className="eyebrow">DICCIONARIO VISUAL</p><h1><span>Las 200 palabras</span> <span>esenciales.</span></h1><p className="lede">Busca en chino, pinyin o español. Escucha cualquier palabra con un toque.</p></div><div className="library-count"><strong>{filtered.length}</strong><span>resultados</span></div></div>
+    <div className="library-hero"><div><p className="eyebrow">DICCIONARIO VISUAL</p><h1><span>Las {commonWords.length} palabras</span> <span>esenciales.</span></h1><p className="lede">Busca en chino, pinyin o español. Escucha cualquier palabra con un toque.</p></div><div className="library-count"><strong>{filtered.length}</strong><span>resultados</span></div></div>
     <div className="search-row">
       <div className="search-field"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar: agua, shuǐ, 水…" aria-label="Buscar palabras" type="search" enterKeyHint="search" autoComplete="off" />{search && <button type="button" className="search-clear" onClick={() => setSearch('')} aria-label="Borrar búsqueda">×</button>}</div>
       <select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="Filtrar por categoría">{categories.map((item) => <option key={item}>{item}</option>)}</select>
