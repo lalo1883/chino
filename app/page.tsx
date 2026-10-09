@@ -2,14 +2,18 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { commonPhrases, commonWords, library, type LibraryItem } from './content';
+import { LibraryView, playClip, type PracticeFilter } from '@/components/library-view';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { AccountMenu } from '@/components/account-menu';
 import { StudySession } from '@/components/study-session';
 import { scheduleReview } from '@/lib/learning';
 import { authClient } from '@/lib/auth-client';
+import { useOnline } from '@/components/use-online';
 
 const navIcons: Record<string, React.ReactNode> = {
   learn: <path d="M3 9.6 10 4l7 5.6V16a1 1 0 0 1-1 1h-3.5v-4.2h-5V17H4a1 1 0 0 1-1-1z" />,
   cards: <path d="M6.2 3.4h8.1a1.6 1.6 0 0 1 1.6 1.6v10a1.6 1.6 0 0 1-1.6 1.6H6.2A1.6 1.6 0 0 1 4.6 15V5a1.6 1.6 0 0 1 1.6-1.6Zm1.3 3.9h5.5M7.5 10h5.5M7.5 12.7h3.4" />,
+  book: <path d="M4.2 4.4c2.2-.9 4.1-.7 5.8.6v10.8c-1.7-1.3-3.6-1.5-5.8-.6zM15.8 4.4c-2.2-.9-4.1-.7-5.8.6v10.8c1.7-1.3 3.6-1.5 5.8-.6z" />,
   words: <path d="M4 4.6A1.6 1.6 0 0 1 5.6 3H16v14H5.6A1.6 1.6 0 0 1 4 15.4zM16 13.6H5.6M8 6.6h5M8 9.4h5" />,
   speak: <path d="M10 3.2a2.2 2.2 0 0 1 2.2 2.2v4.1a2.2 2.2 0 1 1-4.4 0V5.4A2.2 2.2 0 0 1 10 3.2ZM5.4 9.4a4.6 4.6 0 0 0 9.2 0M10 14v3" />,
   progress: <path d="M3.6 16.4h12.8M6.2 13.6V8.4M10 13.6V4.6M13.8 13.6v-6" />,
@@ -41,13 +45,17 @@ const units: Unit[] = [
     { id:'zao-shang-hao', hanzi:'早上好', pinyin:'zǎoshang hǎo', meaning:'Buenos días', sentence:'老师，早上好！', sentencePinyin:'Lǎoshī, zǎoshang hǎo!', translation:'Profesor, ¡buenos días!', audio:'begin-zao-shang-hao', tag:'SALUDO', note:'Se usa por la mañana.' },
     { id:'wan-an', hanzi:'晚安', pinyin:'wǎn’ān', meaning:'Buenas noches', sentence:'晚安，明天见。', sentencePinyin:'Wǎn’ān, míngtiān jiàn.', translation:'Buenas noches, nos vemos mañana.', audio:'begin-wan-an', tag:'SALUDO', note:'Se dice normalmente al ir a dormir.' },
   ]},
-  { name: 'Números', description: 'Cuenta del 1 al 6', goal: 'Reconocer y pronunciar seis números', cards: [
+  { name: 'Números', description: 'Cuenta del 1 al 10', goal: 'Reconocer y pronunciar diez números', cards: [
     { id:'yi', hanzi:'一', pinyin:'yī', meaning:'Uno', sentence:'一个人。', sentencePinyin:'Yí ge rén.', translation:'Una persona.', audio:'begin-yi', tag:'NÚMERO', note:'El tono puede cambiar al combinarse.' },
     { id:'er', hanzi:'二', pinyin:'èr', meaning:'Dos', sentence:'二月。', sentencePinyin:'Èr yuè.', translation:'Febrero.', audio:'begin-er', tag:'NÚMERO', note:'Para contar objetos suele usarse 两 (liǎng).' },
     { id:'san', hanzi:'三', pinyin:'sān', meaning:'Tres', sentence:'三杯茶。', sentencePinyin:'Sān bēi chá.', translation:'Tres tazas de té.', audio:'begin-san', tag:'NÚMERO', note:'Primer tono: voz alta y sostenida.' },
     { id:'si', hanzi:'四', pinyin:'sì', meaning:'Cuatro', sentence:'四本书。', sentencePinyin:'Sì běn shū.', translation:'Cuatro libros.', audio:'begin-si', tag:'NÚMERO', note:'Cuarto tono: breve y descendente.' },
     { id:'wu', hanzi:'五', pinyin:'wǔ', meaning:'Cinco', sentence:'五分钟。', sentencePinyin:'Wǔ fēnzhōng.', translation:'Cinco minutos.', audio:'begin-wu', tag:'NÚMERO', note:'Tercer tono: baja y vuelve a subir.' },
     { id:'liu', hanzi:'六', pinyin:'liù', meaning:'Seis', sentence:'六点。', sentencePinyin:'Liù diǎn.', translation:'Las seis en punto.', audio:'begin-liu', tag:'NÚMERO', note:'Empieza con un sonido parecido a “lio”.' },
+    { id:'qi', hanzi:'七', pinyin:'qī', meaning:'Siete', sentence:'七天。', sentencePinyin:'Qī tiān.', translation:'Siete días.', audio:'begin-qi', tag:'NÚMERO', note:'Primer tono: agudo y sostenido, como un “chi” alto.' },
+    { id:'ba', hanzi:'八', pinyin:'bā', meaning:'Ocho', sentence:'八个人。', sentencePinyin:'Bā ge rén.', translation:'Ocho personas.', audio:'begin-ba', tag:'NÚMERO', note:'Para los chinos es un número de buena suerte.' },
+    { id:'jiu', hanzi:'九', pinyin:'jiǔ', meaning:'Nueve', sentence:'九点上课。', sentencePinyin:'Jiǔ diǎn shàngkè.', translation:'La clase es a las nueve.', audio:'begin-jiu', tag:'NÚMERO', note:'Tercer tono: baja y vuelve a subir.' },
+    { id:'shi-10', hanzi:'十', pinyin:'shí', meaning:'Diez', sentence:'十块钱。', sentencePinyin:'Shí kuài qián.', translation:'Diez yuanes.', audio:'begin-shi-10', tag:'NÚMERO', note:'Con 十 se forman 11 (十一), 12 (十二)…' },
   ]},
   { name: 'Primeras frases', description: 'Habla desde el día uno', goal: 'Presentarte y pedir ayuda', cards: [
     { id:'wo-jiao', hanzi:'我叫安娜', pinyin:'wǒ jiào Ānnà', meaning:'Me llamo Ana', sentence:'你好，我叫安娜。', sentencePinyin:'Nǐ hǎo, wǒ jiào Ānnà.', translation:'Hola, me llamo Ana.', audio:'begin-wo-jiao', tag:'PRESENTARTE', note:'Cambia 安娜 por tu nombre.' },
@@ -78,6 +86,10 @@ const breakdowns: Record<string, Segment[]> = {
   'si': [{ hanzi:'四', pinyin:'sì', meaning:'cuatro' }, { hanzi:'本', pinyin:'běn', meaning:'clasificador de libros' }, { hanzi:'书', pinyin:'shū', meaning:'libro' }],
   'wu': [{ hanzi:'五', pinyin:'wǔ', meaning:'cinco' }, { hanzi:'分钟', pinyin:'fēnzhōng', meaning:'minutos' }],
   'liu': [{ hanzi:'六', pinyin:'liù', meaning:'seis' }, { hanzi:'点', pinyin:'diǎn', meaning:'en punto / hora' }],
+  'qi': [{ hanzi:'七', pinyin:'qī', meaning:'siete' }, { hanzi:'天', pinyin:'tiān', meaning:'día' }],
+  'ba': [{ hanzi:'八', pinyin:'bā', meaning:'ocho' }, { hanzi:'个', pinyin:'ge', meaning:'clasificador general' }, { hanzi:'人', pinyin:'rén', meaning:'persona' }],
+  'jiu': [{ hanzi:'九', pinyin:'jiǔ', meaning:'nueve' }, { hanzi:'点', pinyin:'diǎn', meaning:'en punto / hora' }, { hanzi:'上课', pinyin:'shàngkè', meaning:'tener clase' }],
+  'shi-10': [{ hanzi:'十', pinyin:'shí', meaning:'diez' }, { hanzi:'块', pinyin:'kuài', meaning:'yuan (dinero)' }, { hanzi:'钱', pinyin:'qián', meaning:'dinero' }],
   'wo-jiao': [{ hanzi:'你好', pinyin:'nǐ hǎo', meaning:'hola' }, { hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'叫', pinyin:'jiào', meaning:'llamarse' }, { hanzi:'安娜', pinyin:'Ānnà', meaning:'Ana' }],
   'ni-jiao-shen-me': [{ hanzi:'你', pinyin:'nǐ', meaning:'tú' }, { hanzi:'叫', pinyin:'jiào', meaning:'llamarse' }, { hanzi:'什么', pinyin:'shénme', meaning:'qué' }, { hanzi:'名字', pinyin:'míngzi', meaning:'nombre' }],
   'wo-shi-xi-ban-ya-ren': [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'是', pinyin:'shì', meaning:'ser' }, { hanzi:'西班牙', pinyin:'Xībānyá', meaning:'España' }, { hanzi:'人', pinyin:'rén', meaning:'persona' }],
@@ -89,6 +101,21 @@ const breakdowns: Record<string, Segment[]> = {
 const DAY = 86_400_000;
 const GUEST_STORAGE_KEY = 'mi-diario-beginner:guest';
 const LEGACY_STORAGE_KEY = 'mi-diario-beginner';
+const LAST_USER_KEY = 'mi-diario-last-user';
+const SCREENS = ['learn', 'cards', 'words', 'book', 'speak', 'progress'] as const;
+type Screen = typeof SCREENS[number];
+type CachedUser = { id: string; name: string; email: string };
+
+function readCachedUser(): CachedUser | null {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(LAST_USER_KEY) || 'null');
+    return parsed && typeof parsed.id === 'string' ? parsed : null;
+  } catch { return null; }
+}
+
+function haptic(pattern: number | number[] = 12) {
+  try { navigator.vibrate?.(pattern); } catch { /* sin soporte */ }
+}
 
 type StoredProgress = {
   records: Record<string, Review>;
@@ -146,8 +173,12 @@ function findPriorityCard(cards: Card[], records: Record<string, Review>, start 
 }
 
 export default function Home() {
-  const { data: session, isPending: sessionPending } = authClient.useSession();
-  const [screen, setScreen] = useState<'learn' | 'cards' | 'words' | 'speak' | 'progress'>('cards');
+  const { data: session, isPending: sessionPending, refetch: refetchSession } = authClient.useSession();
+  const online = useOnline();  const [cachedUser, setCachedUser] = useState<CachedUser | null>(null);
+  const [syncNonce, setSyncNonce] = useState(0);
+  const silentSync = useRef(false);
+  const [screen, setScreen] = useState<Screen>('cards');
+  const [practiceFilter, setPracticeFilter] = useState<{ filter: PracticeFilter; nonce: number } | null>(null);
   const [unitIndex, setUnitIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -158,7 +189,9 @@ export default function Home() {
   const [syncState, setSyncState] = useState<'local' | 'saving' | 'synced' | 'error'>('local');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const userId = session?.user.id;
+  // Sin conexión la sesión no se puede verificar: usamos el último usuario conocido para seguir estudiando.
+  const offlineUser = !session?.user && !online ? cachedUser : null;
+  const userId = session?.user.id ?? offlineUser?.id;
   const storageKey = userId ? `mi-diario-beginner:${userId}` : GUEST_STORAGE_KEY;
   const unit = units[unitIndex];
   const card = unit.cards[cardIndex];
@@ -176,7 +209,8 @@ export default function Home() {
     let active = true;
 
     const hydrate = async () => {
-      setReady(false);
+      const silent = silentSync.current; silentSync.current = false;
+      if (!silent) setReady(false);
       let cached = readProgress(storageKey);
       let importedGuest = false;
 
@@ -232,7 +266,7 @@ export default function Home() {
       setRecords(next.records);
       setStudyDays(next.studyDays);
       setSpeed(next.speed);
-      setCardIndex(findPriorityCard(units[0].cards, next.records));
+      if (!silent) setCardIndex(findPriorityCard(units[0].cards, next.records));
       setReady(true);
     };
 
@@ -241,7 +275,34 @@ export default function Home() {
       active = false;
       controller.abort();
     };
-  }, [sessionPending, storageKey, userId]);
+  }, [sessionPending, storageKey, userId, syncNonce]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCachedUser(readCachedUser());
+    const wanted = new URLSearchParams(window.location.search).get('screen');
+    if (SCREENS.includes(wanted as Screen)) setScreen(wanted as Screen);
+  }, []);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    const user = { id: session.user.id, name: session.user.name || '', email: session.user.email };
+    try { localStorage.setItem(LAST_USER_KEY, JSON.stringify(user)); } catch { /* almacenamiento no disponible */ }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCachedUser(user);
+  }, [session?.user]);
+
+  // Al recuperar la conexión, vuelve a verificar la sesión y sincroniza lo estudiado sin conexión.
+  const wasOffline = useRef(false);
+  useEffect(() => {
+    if (!online) { wasOffline.current = true; return; }
+    if (!wasOffline.current) return;
+    wasOffline.current = false;
+    silentSync.current = true;
+    refetchSession();
+    setSyncNonce((value) => value + 1);
+  }, [online, refetchSession]);
+
   const queueRemoteSave = useCallback((progress: StoredProgress) => {
     if (!userId) return;
     if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
@@ -298,6 +359,8 @@ export default function Home() {
     audioRef.current = audio; audio.play().catch(() => undefined);
   }, [card.audio, speed]);
 
+  const practiceWith = (filter: PracticeFilter) => { haptic(8); setPracticeFilter({ filter, nonce: Date.now() }); setScreen('cards'); };
+
   const chooseUnit = (index: number) => { setUnitIndex(index); setCardIndex(findPriorityCard(units[index].cards, records)); setRevealed(false); setScreen('learn'); };
 
   const recordReview = useCallback((cardId: string, rating: Review['rating']) => {
@@ -312,6 +375,7 @@ export default function Home() {
   }, [persist, records, studyDays]);
 
   const rate = useCallback((rating: Review['rating']) => {
+    haptic(rating === 'fácil' ? 14 : [10, 40, 10]);
     const nextRecords = recordReview(card.id, rating);
     setTimeout(() => { setCardIndex((current) => findPriorityCard(unit.cards, nextRecords, current + 1)); setRevealed(false); }, 180);
   }, [card.id, recordReview, unit.cards]);
@@ -334,13 +398,14 @@ export default function Home() {
     <main className="shell">
       <header className="topbar">
         <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label="Chino, inicio"><span className="brand-mark">字</span><span>Chino<span className="brand-caption">desde cero</span></span></button>
-        <nav className="main-nav" aria-label="Navegación principal">
-          {([['learn','Aprende'],['cards','Practicar'],['words','Palabras'],['speak','Hablar'],['progress','Progreso']] as const).map(([value, label]) =>
-            <button key={value} aria-current={screen === value ? 'page' : undefined} className={screen === value ? 'selected' : ''} onClick={() => setScreen(value)}><NavIcon name={value} /><span>{label}</span></button>)}
+        <nav className="main-nav" aria-label="Navegación principal" data-screen={screen}><i className="nav-indicator" aria-hidden="true" />
+          {([['learn','Aprende'],['cards','Practicar'],['words','Palabras'],['book','Libro'],['speak','Hablar'],['progress','Progreso']] as const).map(([value, label]) =>
+            <button key={value} aria-current={screen === value ? 'page' : undefined} className={screen === value ? 'selected' : ''} onClick={() => { haptic(8); setScreen(value); }}><NavIcon name={value} /><span>{label}</span></button>)}
         </nav>
-        <div className="header-actions"><label className="voice-pill"><i /><span>Xiaoxiao</span><span aria-hidden="true">·</span><select aria-label="Velocidad de pronunciación" value={speed} onChange={(event) => changeSpeed(Number(event.target.value))}>{[-40,-30,-20,-15,-10,0,10,20].map((value) => <option key={value} value={value}>{value > 0 ? '+' : value === 0 ? '±' : ''}{value}%</option>)}</select></label><div className="streak"><span>●</span> {ready ? streak : 0} día{streak === 1 ? '' : 's'}</div><AccountMenu syncState={syncState} onSignedOut={() => { setScreen('learn'); setSyncState('local'); }} /></div>
+        <div className="header-actions">{!online && <span className="offline-pill" role="status">Sin conexión</span>}<label className="voice-pill"><i /><span>Xiaoxiao</span><span aria-hidden="true">·</span><select aria-label="Velocidad de pronunciación" value={speed} onChange={(event) => changeSpeed(Number(event.target.value))}>{[-40,-30,-20,-15,-10,0,10,20].map((value) => <option key={value} value={value}>{value > 0 ? '+' : value === 0 ? '±' : ''}{value}%</option>)}</select></label><ThemeToggle /><div className="streak"><span>●</span> {ready ? streak : 0} día{streak === 1 ? '' : 's'}</div><AccountMenu syncState={syncState} fallbackUser={offlineUser} onSignedOut={() => { try { localStorage.removeItem(LAST_USER_KEY); } catch { /* noop */ } setCachedUser(null); setScreen('learn'); setSyncState('local'); }} /></div>
       </header>
 
+      <div className="screen" key={screen}>
       {screen === 'learn' ? <>
         <section className="intro compact" id="top">
           <div><p className="eyebrow">CURSO CERO · CHINO SIMPLIFICADO</p><h1><span>Empieza sin saber nada.</span> <span>Una palabra cada vez.</span></h1><p className="lede">Siempre verás el carácter chino, cómo se pronuncia en pinyin y su significado en español.</p></div>
@@ -383,8 +448,9 @@ export default function Home() {
             <p className="quote"><span>慢慢来</span><br />Poco a poco.</p>
           </aside>
         </section>
-      </> : screen === 'cards' ? <StudySession key={storageKey} speed={speed} records={records} ready={ready} onReview={recordReview} /> : screen === 'words' ? <WordsView speed={speed} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} signedIn={Boolean(userId)} syncState={syncState} onContinue={() => setScreen('learn')} onReset={resetProgress} />}
-      <footer>{commonWords.length} palabras · {commonPhrases.length} frases prácticas · Chino simplificado · {userId ? 'Progreso sincronizado con tu cuenta' : 'Crea una cuenta para sincronizar tu progreso'}</footer>
+      </> : screen === 'cards' ? <StudySession key={`${storageKey}:${practiceFilter?.nonce ?? 0}`} speed={speed} records={records} ready={ready} onReview={recordReview} initialFilter={practiceFilter?.filter} /> : screen === 'words' ? <LibraryView scope="all" speed={speed} records={records} onPractice={practiceWith} /> : screen === 'book' ? <LibraryView scope="book" speed={speed} records={records} onPractice={practiceWith} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} signedIn={Boolean(userId)} syncState={syncState} onContinue={() => setScreen('learn')} onReset={resetProgress} />}
+      </div>
+      <footer>{commonWords.length} palabras · {commonPhrases.length} frases · {library.filter((item) => item.book).length} del libro · Chino simplificado · {userId ? 'Progreso sincronizado con tu cuenta' : 'Crea una cuenta para sincronizar tu progreso'}</footer>
     </main>
   );
 }
@@ -395,34 +461,12 @@ function ProgressView({ records, studyDays, learned, dueNow, streak, signedIn, s
   return <section className="progress-view">
     <div className="progress-title"><div><p className="eyebrow">{signedIn ? syncState === 'saving' ? 'SINCRONIZANDO…' : syncState === 'error' ? 'SIN CONEXIÓN · GUARDADO LOCAL' : 'PROGRESO SINCRONIZADO' : 'PROGRESO EN ESTE DISPOSITIVO'}</p><h1>{signedIn ? 'Tu avance viaja contigo.' : 'Tu progreso empieza aquí.'}</h1><p className="lede">{signedIn ? 'Se guarda en tu cuenta para continuar desde tu celular o computadora. Consolidada significa recordar una tarjeta en días distintos y alcanzar un intervalo de al menos 7 días.' : 'Puedes practicar sin cuenta. Crea una cuando quieras conservar y sincronizar tu avance.'}</p></div><button className="reveal continue" onClick={onContinue}>Continuar aprendiendo →</button></div>
     <div className="metric-grid"><article><span>字</span><strong>{learned}</strong><small>tarjetas consolidadas</small></article><article><span>复</span><strong>{dueNow}</strong><small>listas para repasar</small></article><article><span>火</span><strong>{streak}</strong><small>días de racha</small></article><article><span>日</span><strong>{studyDays.length}</strong><small>días de estudio</small></article></div>
-    <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>Tarjetas practicadas por unidad</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}. {unit.name}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}/{unit.cards.length}</small></div>; })}<div className="progress-row"><b>Biblioteca completa</b><div><i style={{ width: `${library.filter(item => records[item.id]).length / library.length * 100}%` }} /></div><small>{library.filter(item => records[item.id]).length}/{library.length}</small></div></article><article className="activity"><div className="section-heading"><span>Últimos repasos</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card?.meaning}</small></div><em className={record.rating}>{record.rating === 'fácil' ? 'Recordada' : 'Por reforzar'}</em></div>; }) : <p className="empty">Aún no hay repasos. Empieza con 你好.</p>}</article></div>
+    <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>Tarjetas practicadas por unidad</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}. {unit.name}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}/{unit.cards.length}</small></div>; })}{(() => { const book = library.filter(item => item.book); const count = book.filter(item => records[item.id]).length; return <div className="progress-row"><b>Mi libro</b><div><i style={{ width:`${count / book.length * 100}%` }} /></div><small>{count}/{book.length}</small></div>; })()}<div className="progress-row"><b>Biblioteca completa</b><div><i style={{ width: `${library.filter(item => records[item.id]).length / library.length * 100}%` }} /></div><small>{library.filter(item => records[item.id]).length}/{library.length}</small></div></article><article className="activity"><div className="section-heading"><span>Últimos repasos</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card?.meaning}</small></div><em className={record.rating}>{record.rating === 'fácil' ? 'Recordada' : 'Por reforzar'}</em></div>; }) : <p className="empty">Aún no hay repasos. Empieza con 你好.</p>}</article></div>
     <button className="danger-reset" onClick={onReset}>Borrar mi progreso</button>
   </section>;
 }
 
-function playLibraryAudio(item: LibraryItem, speed: number) {
-  const audio = new Audio(`/audio/${item.audio}.mp3`);
-  audio.playbackRate = (100 + speed) / 85;
-  audio.preservesPitch = true;
-  audio.play().catch(() => undefined);
-}
-
-function WordsView({ speed }: { speed: number }) {
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('Todas');
-  const categories = ['Todas', ...new Set(commonWords.map((item) => item.category))];
-  const query = search.trim().toLocaleLowerCase();
-  const filtered = commonWords.filter((item) => (category === 'Todas' || item.category === category) && (!query || `${item.hanzi} ${item.pinyin} ${item.spanish}`.toLocaleLowerCase().includes(query)));
-  return <section className="library-view words-view">
-    <div className="library-hero"><div><p className="eyebrow">DICCIONARIO VISUAL</p><h1><span>Las {commonWords.length} palabras</span> <span>esenciales.</span></h1><p className="lede">Busca en chino, pinyin o español. Escucha cualquier palabra con un toque.</p></div><div className="library-count"><strong>{filtered.length}</strong><span>resultados</span></div></div>
-    <div className="search-row">
-      <div className="search-field"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar: agua, shuǐ, 水…" aria-label="Buscar palabras" type="search" enterKeyHint="search" autoComplete="off" />{search && <button type="button" className="search-clear" onClick={() => setSearch('')} aria-label="Borrar búsqueda">×</button>}</div>
-      <select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="Filtrar por categoría">{categories.map((item) => <option key={item}>{item}</option>)}</select>
-    </div>
-    {filtered.length ? <div className="word-grid">{filtered.map((item) => <article key={item.id}><button onClick={() => playLibraryAudio(item, speed)} aria-label={`Escuchar ${item.hanzi}`}>♪</button><span>{item.hanzi}</span><em>{item.pinyin}</em><strong>{item.spanish}</strong><small>{item.category}</small></article>)}</div>
-      : <div className="no-results"><span aria-hidden="true">空</span><b>Sin resultados para “{search}”</b><p>Prueba con otra palabra, su pinyin o un carácter.</p><button onClick={() => { setSearch(''); setCategory('Todas'); }}>Limpiar filtros</button></div>}
-  </section>;
-}
+function playLibraryAudio(item: LibraryItem, speed: number) { playClip(item.audio, speed); }
 
 type SpeechResult = { score: number; heard: string; feedback: string };
 type BrowserSpeechRecognitionEvent = { results: ArrayLike<ArrayLike<{ transcript: string }>> };
@@ -436,6 +480,10 @@ type BrowserSpeechRecognition = {
   onerror: () => void;
   onresult: (event: BrowserSpeechRecognitionEvent) => void;
   start: () => void;
+};
+type NativeSpeech = {
+  requestPermissions: () => Promise<{ speechRecognition: string }>;
+  start: (options: { language: string; maxResults: number; prompt: string; partialResults: boolean; popup: boolean }) => Promise<{ matches?: string[] }>;
 };
 type SpeechWindow = Window & {
   SpeechRecognition?: new () => BrowserSpeechRecognition;
@@ -457,8 +505,33 @@ function SpeakView({ speed }: { speed: number }) {
   const [error, setError] = useState('');
   const phrase = commonPhrases[index];
 
+  const showResult = (alternatives: string[]) => {
+    const target = normalizeChinese(phrase.hanzi);
+    const ranked = alternatives.map((transcript) => { const heard = normalizeChinese(transcript); const score = Math.max(0, Math.round((1 - distance(target, heard) / Math.max(target.length, heard.length, 1)) * 100)); return { score, heard: transcript }; }).sort((a, b) => b.score - a.score);
+    const best = ranked[0] || { score: 0, heard: '' };
+    const feedback = best.score >= 90 ? '¡Muy bien! El navegador entendió la frase completa.' : best.score >= 65 ? 'Casi. Escucha otra vez y repite con un ritmo más claro.' : 'Inténtalo de nuevo por partes, siguiendo el pinyin.';
+    setResult({ ...best, feedback });
+  };
+
+  // En la app Android el WebView no trae reconocimiento de voz: se usa el plugin nativo.
+  const listenNative = async (native: NativeSpeech) => {
+    try {
+      const permission = await native.requestPermissions();
+      if (permission.speechRecognition !== 'granted') { setError('Activa el permiso del micrófono para practicar la pronunciación.'); return; }
+      setListening(true);
+      const { matches } = await native.start({ language: 'zh-CN', maxResults: 5, prompt: phrase.hanzi, partialResults: false, popup: false });
+      setListening(false);
+      showResult(matches || []);
+    } catch {
+      setListening(false);
+      setError('No pude escuchar con claridad. Revisa el permiso del micrófono e inténtalo otra vez.');
+    }
+  };
+
   const listen = () => {
     setResult(null); setError('');
+    const native = (window as Window & { Capacitor?: { isNativePlatform?: () => boolean; Plugins?: { SpeechRecognition?: NativeSpeech } } }).Capacitor;
+    if (native?.isNativePlatform?.() && native.Plugins?.SpeechRecognition) { listenNative(native.Plugins.SpeechRecognition); return; }
     const speechWindow = window as SpeechWindow;
     const Recognition = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
     if (!Recognition) { setError('Tu navegador no ofrece reconocimiento de voz. Prueba Chrome o Safari actualizado.'); return; }
@@ -467,14 +540,7 @@ function SpeakView({ speed }: { speed: number }) {
     recognition.onstart = () => setListening(true);
     recognition.onend = () => setListening(false);
     recognition.onerror = () => { setListening(false); setError('No pude escuchar con claridad. Revisa el permiso del micrófono e inténtalo otra vez.'); };
-    recognition.onresult = (event: BrowserSpeechRecognitionEvent) => {
-      const target = normalizeChinese(phrase.hanzi);
-      const alternatives = Array.from(event.results[0] as ArrayLike<{ transcript: string }>);
-      const ranked = alternatives.map((entry) => { const heard = normalizeChinese(entry.transcript); const score = Math.max(0, Math.round((1 - distance(target, heard) / Math.max(target.length, heard.length, 1)) * 100)); return { score, heard: entry.transcript }; }).sort((a,b) => b.score - a.score);
-      const best = ranked[0];
-      const feedback = best.score >= 90 ? '¡Muy bien! El navegador entendió la frase completa.' : best.score >= 65 ? 'Casi. Escucha otra vez y repite con un ritmo más claro.' : 'Inténtalo de nuevo por partes, siguiendo el pinyin.';
-      setResult({ ...best, feedback });
-    };
+    recognition.onresult = (event: BrowserSpeechRecognitionEvent) => showResult(Array.from(event.results[0] as ArrayLike<{ transcript: string }>).map((entry) => entry.transcript));
     recognition.start();
   };
 

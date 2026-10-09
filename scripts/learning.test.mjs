@@ -24,3 +24,9 @@ test('sessions prioritize due reviews, cap new cards and exclude future reviews'
   assert.equal(makeSession(items, records, now, true).length, 10);
   assert.equal(makeSession([{id:'29'}], records, now).length, 0);
 });
+test('session size is configurable', () => {
+  const items = Array.from({length:60}, (_, i) => ({id:String(i)}));
+  assert.equal(makeSession(items, {}, now, false, 6).length, 6);
+  assert.equal(makeSession(items, {}, now, false, 24).length, 24);
+  assert.equal(makeSession(items.slice(0, 3), {}, now, false, 24).length, 3);
+});

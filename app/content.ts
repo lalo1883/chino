@@ -1,3 +1,7 @@
+import { exampleSource } from './examples.ts';
+
+export type Segment = { hanzi: string; pinyin: string; meaning: string };
+
 export type LibraryItem = {
   id: string;
   type: 'word' | 'phrase';
@@ -6,7 +10,19 @@ export type LibraryItem = {
   spanish: string;
   category: string;
   audio: string;
-  breakdown?: Array<{ hanzi: string; pinyin: string; meaning: string }>;
+  /** Aparece en las lecciones del libro. */
+  book: boolean;
+  breakdown?: Segment[];
+};
+
+export type Example = {
+  hanzi: string;
+  pinyin: string;
+  spanish: string;
+  audio: string;
+  breakdown: Segment[];
+  /** Si el ejemplo es una tarjeta de la biblioteca, su id. */
+  itemId?: string;
 };
 
 const wordSource = `
@@ -106,36 +122,36 @@ const wordSource = `
 容易|róngyì|fácil|Descripciones
 贵|guì|caro|Descripciones
 便宜|piányi|barato|Descripciones
-一|yī|uno|Números y tiempo
-二|èr|dos|Números y tiempo
-三|sān|tres|Números y tiempo
-四|sì|cuatro|Números y tiempo
-五|wǔ|cinco|Números y tiempo
-六|liù|seis|Números y tiempo
-七|qī|siete|Números y tiempo
-八|bā|ocho|Números y tiempo
-九|jiǔ|nueve|Números y tiempo
-十|shí|diez|Números y tiempo
-百|bǎi|cien|Números y tiempo
-千|qiān|mil|Números y tiempo
-今天|jīntiān|hoy|Números y tiempo
-明天|míngtiān|mañana|Números y tiempo
-昨天|zuótiān|ayer|Números y tiempo
-现在|xiànzài|ahora|Números y tiempo
-时候|shíhou|momento / cuando|Números y tiempo
-年|nián|año|Números y tiempo
-月|yuè|mes / luna|Números y tiempo
-日|rì|día (formal)|Números y tiempo
-星期|xīngqī|semana|Números y tiempo
-点|diǎn|hora en punto|Números y tiempo
-分钟|fēnzhōng|minuto|Números y tiempo
-早上|zǎoshang|mañana temprano|Números y tiempo
-上午|shàngwǔ|mañana (a. m.)|Números y tiempo
-中午|zhōngwǔ|mediodía|Números y tiempo
-下午|xiàwǔ|tarde|Números y tiempo
-晚上|wǎnshang|noche|Números y tiempo
-每天|měitiān|cada día|Números y tiempo
-时间|shíjiān|tiempo|Números y tiempo
+一|yī|uno|Números
+二|èr|dos|Números
+三|sān|tres|Números
+四|sì|cuatro|Números
+五|wǔ|cinco|Números
+六|liù|seis|Números
+七|qī|siete|Números
+八|bā|ocho|Números
+九|jiǔ|nueve|Números
+十|shí|diez|Números
+百|bǎi|cien|Números
+千|qiān|mil|Números
+今天|jīntiān|hoy|Tiempo
+明天|míngtiān|mañana|Tiempo
+昨天|zuótiān|ayer|Tiempo
+现在|xiànzài|ahora|Tiempo
+时候|shíhou|momento / cuando|Tiempo
+年|nián|año|Tiempo
+月|yuè|mes / luna|Tiempo
+日|rì|día (formal)|Tiempo
+星期|xīngqī|semana|Tiempo
+点|diǎn|hora en punto|Tiempo
+分钟|fēnzhōng|minuto|Tiempo
+早上|zǎoshang|mañana temprano|Tiempo
+上午|shàngwǔ|mañana (a. m.)|Tiempo
+中午|zhōngwǔ|mediodía|Tiempo
+下午|xiàwǔ|tarde|Tiempo
+晚上|wǎnshang|noche|Tiempo
+每天|měitiān|cada día|Tiempo
+时间|shíjiān|tiempo|Tiempo
 人|rén|persona|Personas
 名字|míngzi|nombre|Personas
 朋友|péngyou|amigo/a|Personas
@@ -232,8 +248,44 @@ const wordSource = `
 多少|duōshao|cuánto / cuántos|Preguntas
 个|gè|clasificador general|Gramática
 口|kǒu|clasificador de personas de la familia|Gramática
-两|liǎng|dos (para contar)|Números y tiempo
+两|liǎng|dos (para contar)|Números
 法国|Fǎguó|Francia|Lugares
+零|líng|cero|Números
+半|bàn|medio / y media|Tiempo
+块|kuài|yuan (dinero) / pieza|Compras
+岁|suì|años de edad|Números
+杯|bēi|vaso / taza (clasificador)|Gramática
+本|běn|clasificador de libros|Gramática
+哪里|nǎlǐ|dónde|Preguntas
+怎么样|zěnmeyàng|¿qué tal? / ¿cómo está?|Preguntas
+好吃|hǎochī|rico (de sabor)|Descripciones
+饺子|jiǎozi|dumplings (empanadillas)|Comida
+包子|bāozi|panecillo relleno|Comida
+水果|shuǐguǒ|fruta|Comida
+香蕉|xiāngjiāo|plátano|Comida
+面包|miànbāo|pan|Comida
+鸡蛋|jīdàn|huevo|Comida
+牛奶|niúnǎi|leche|Comida
+果汁|guǒzhī|zumo|Comida
+啤酒|píjiǔ|cerveza|Comida
+筷子|kuàizi|palillos|Comida
+勺子|sháozi|cuchara|Comida
+碗|wǎn|cuenco|Comida
+杯子|bēizi|taza / vaso|Comida
+纸巾|zhǐjīn|servilleta / pañuelo de papel|Objetos
+袋子|dàizi|bolsa|Objetos
+笔|bǐ|bolígrafo|Objetos
+纸|zhǐ|papel|Objetos
+充电器|chōngdiànqì|cargador|Objetos
+鞋|xié|zapatos|Objetos
+雨伞|yǔsǎn|paraguas|Objetos
+毛巾|máojīn|toalla|Objetos
+肥皂|féizào|jabón|Objetos
+地图|dìtú|mapa|Viaje
+护照|hùzhào|pasaporte|Viaje
+钥匙|yàoshi|llaves|Viaje
+药|yào|medicina|Vida diaria
+发票|fāpiào|factura|Compras
 `;
 
 const objects = [
@@ -249,35 +301,6 @@ const objects = [
   ['雨伞','yǔsǎn','paraguas'],['毛巾','máojīn','toalla'],['肥皂','féizào','jabón'],['发票','fāpiào','factura'],
 ] as const;
 
-const rawWords = wordSource.trim().split('\n').map((row) => row.split('|'));
-
-export const commonWords: LibraryItem[] = rawWords.map(([hanzi,pinyin,spanish,category], index) => ({
-  id: `w-${String(index + 1).padStart(3, '0')}`, type:'word', hanzi, pinyin, spanish, category, audio:`w-${String(index + 1).padStart(3, '0')}`,
-  breakdown: [{ hanzi, pinyin, meaning: spanish }],
-}));
-
-const objectPhrases: LibraryItem[] = objects.flatMap(([hanzi,pinyin,spanish], objectIndex) => {
-  const templates = [
-    [`我需要${hanzi}。`, `wǒ xūyào ${pinyin}`, `Necesito ${spanish}.`],
-    [`我在找${hanzi}。`, `wǒ zài zhǎo ${pinyin}`, `Estoy buscando ${spanish}.`],
-    [`这里有${hanzi}吗？`, `zhèlǐ yǒu ${pinyin} ma?`, `¿Hay ${spanish} aquí?`],
-    [`${hanzi}在哪里？`, `${pinyin} zài nǎlǐ?`, `¿Dónde está ${spanish}?`],
-    [`请给我${hanzi}。`, `qǐng gěi wǒ ${pinyin}`, `Dame ${spanish}, por favor.`],
-  ];
-  return templates.map(([phrase, phrasePinyin, phraseSpanish], templateIndex) => {
-    const index = objectIndex * 5 + templateIndex + 1;
-    const number = String(index).padStart(3, '0');
-    const objectPart = { hanzi, pinyin, meaning: spanish };
-    const breakdowns = [
-      [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'需要', pinyin:'xūyào', meaning:'necesitar' }, objectPart],
-      [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'在', pinyin:'zài', meaning:'estar en' }, { hanzi:'找', pinyin:'zhǎo', meaning:'buscar' }, objectPart],
-      [{ hanzi:'这里', pinyin:'zhèlǐ', meaning:'aquí' }, { hanzi:'有', pinyin:'yǒu', meaning:'haber / tener' }, objectPart, { hanzi:'吗', pinyin:'ma', meaning:'partícula de pregunta' }],
-      [objectPart, { hanzi:'在', pinyin:'zài', meaning:'estar en' }, { hanzi:'哪里', pinyin:'nǎlǐ', meaning:'dónde' }],
-      [{ hanzi:'请', pinyin:'qǐng', meaning:'por favor' }, { hanzi:'给', pinyin:'gěi', meaning:'dar' }, { hanzi:'我', pinyin:'wǒ', meaning:'yo' }, objectPart],
-    ] as Array<Array<{ hanzi: string; pinyin: string; meaning: string }>>;
-    return { id:`f-${number}`, type:'phrase' as const, hanzi:phrase, pinyin:phrasePinyin, spanish:phraseSpanish, category:'Frases prácticas', audio:`f-${number}`, breakdown: breakdowns[templateIndex] };
-  });
-});
 
 type LessonRow = [string, string, string, Array<[string, string, string]>];
 
@@ -306,6 +329,147 @@ const lessonRows: LessonRow[] = [
   ['你们都是大学生吗？', 'Nǐmen dōu shì dàxuéshēng ma?', '¿Sois todos universitarios?', [['你们','nǐmen','ustedes'],['都','dōu','todos'],['是','shì','ser'],['大学生','dàxuéshēng','estudiante universitario'],['吗','ma','partícula de pregunta']]],
 ];
 
+
+const rawWords = wordSource.trim().split('\n').map((row) => row.split('|'));
+const ORIGINAL_WORDS = 236;
+// Vocabulario de las lecciones del libro: desde 留学生 hasta 法国 (palabras 221–236).
+const BOOK_WORD_START = 220;
+
+// Palabras que solo sirven para analizar frases (no son tarjetas).
+const extraDictionary: Record<string, [string, string]> = {
+  '安娜': ['Ānnà', 'Ana'],
+  '得': ['de', 'partícula de complemento'],
+  '见': ['jiàn', 'ver / encontrarse'],
+};
+
+const dictionary = new Map<string, { pinyin: string; meaning: string; category?: string }>();
+for (const [hanzi, pinyin, spanish, category] of rawWords) if (!dictionary.has(hanzi)) dictionary.set(hanzi, { pinyin, meaning: spanish, category });
+for (const [hanzi, [pinyin, meaning]] of Object.entries(extraDictionary)) dictionary.set(hanzi, { pinyin, meaning });
+const MAX_WORD_LENGTH = Math.max(...[...dictionary.keys()].map((key) => key.length));
+
+const PUNCTUATION: Record<string, string> = { '。': '.', '？': '?', '！': '!', '，': ',', '、': ',' };
+const NUMERALS = new Set(['一', '二', '两', '三', '四', '五', '六', '七', '八', '九', '十', '几', '多少', '这', '那', '哪']);
+const COUNTER_SANDHI: Record<string, string> = { '个': 'yí', '块': 'yí', '岁': 'yí', '杯': 'yì', '本': 'yì', '口': 'yì', '年': 'yì' };
+const TONE_MARKS = 'āēīōūǖ|áéíóúǘ|ǎěǐǒǔǚ|àèìòùǜ';
+
+function firstTone(pinyin: string) {
+  for (const char of pinyin) {
+    const tone = TONE_MARKS.split('|').findIndex((group) => group.includes(char));
+    if (tone >= 0) return tone + 1;
+  }
+  return 5;
+}
+
+type Token = Segment & { punctuation?: string };
+
+/** Divide una frase en palabras del diccionario (la más larga primero). */
+export function segment(text: string): Token[] {
+  const tokens: Token[] = [];
+  for (let i = 0; i < text.length;) {
+    const char = text[i];
+    if (PUNCTUATION[char]) { tokens.push({ hanzi: char, pinyin: '', meaning: '', punctuation: PUNCTUATION[char] }); i++; continue; }
+    let size = Math.min(MAX_WORD_LENGTH, text.length - i);
+    while (size > 1 && !dictionary.has(text.slice(i, i + size))) size--;
+    const word = text.slice(i, i + size);
+    const entry = dictionary.get(word);
+    tokens.push(entry ? { hanzi: word, pinyin: entry.pinyin, meaning: entry.meaning } : { hanzi: word, pinyin: '?', meaning: '?' });
+    i += size;
+  }
+  return tokens;
+}
+
+/** Pinyin natural de una frase, con 不 / 一 y el clasificador 个 en tono neutro. */
+function sentencePinyin(tokens: Token[]) {
+  let result = '';
+  tokens.forEach((token, index) => {
+    if (token.punctuation) { result += token.punctuation; return; }
+    const next = tokens[index + 1];
+    const previous = tokens[index - 1];
+    let pinyin = token.pinyin;
+    if (token.hanzi === '不' && next && !next.punctuation && firstTone(next.pinyin) === 4) pinyin = 'bú';
+    if (token.hanzi === '一' && next && COUNTER_SANDHI[next.hanzi]) pinyin = COUNTER_SANDHI[next.hanzi];
+    if (token.hanzi === '个' && previous && NUMERALS.has(previous.hanzi)) pinyin = 'ge';
+    result += (result ? ' ' : '') + pinyin;
+  });
+  return result.replace(/(^|[.?!] )(\p{L})/gu, (_, start: string, letter: string) => start + letter.toUpperCase());
+}
+
+function toSegments(tokens: Token[]): Segment[] {
+  return tokens.filter((token) => !token.punctuation).map(({ hanzi, pinyin, meaning }) => ({ hanzi, pinyin, meaning }));
+}
+
+/** Caracteres sueltos de una palabra que también existen como palabra propia. */
+export function characterParts(hanzi: string): Segment[] {
+  const chars = [...hanzi];
+  if (chars.length < 2) return [];
+  return chars.flatMap((char) => { const entry = dictionary.get(char); return entry ? [{ hanzi: char, pinyin: entry.pinyin, meaning: entry.meaning }] : []; });
+}
+
+export function analyze(hanzi: string) {
+  const tokens = segment(hanzi);
+  return { pinyin: sentencePinyin(tokens), breakdown: toSegments(tokens), unknown: tokens.filter((token) => token.pinyin === '?').map((token) => token.hanzi) };
+}
+
+const lessonPhraseSource = lessonRows;
+const bookHanzi = new Set(lessonPhraseSource.flatMap(([, , , parts]) => parts.map(([hanzi]) => hanzi)));
+
+export const commonWords: LibraryItem[] = rawWords.map(([hanzi, pinyin, spanish, category], index) => {
+  const number = String(index + 1).padStart(3, '0');
+  return {
+    id: `w-${number}`, type: 'word', hanzi, pinyin, spanish, category, audio: `w-${number}`,
+    book: (index >= BOOK_WORD_START && index < ORIGINAL_WORDS) || bookHanzi.has(hanzi),
+    breakdown: [{ hanzi, pinyin, meaning: spanish }],
+  };
+});
+
+const objectPhrases: LibraryItem[] = objects.flatMap(([hanzi,pinyin,spanish], objectIndex) => {
+  const category = dictionary.get(hanzi)?.category || 'Objetos';
+  const templates = [
+    [`我需要${hanzi}。`, `wǒ xūyào ${pinyin}`, `Necesito ${spanish}.`],
+    [`我在找${hanzi}。`, `wǒ zài zhǎo ${pinyin}`, `Estoy buscando ${spanish}.`],
+    [`这里有${hanzi}吗？`, `zhèlǐ yǒu ${pinyin} ma?`, `¿Hay ${spanish} aquí?`],
+    [`${hanzi}在哪里？`, `${pinyin} zài nǎlǐ?`, `¿Dónde está ${spanish}?`],
+    [`请给我${hanzi}。`, `qǐng gěi wǒ ${pinyin}`, `Dame ${spanish}, por favor.`],
+  ];
+  return templates.map(([phrase, phrasePinyin, phraseSpanish], templateIndex) => {
+    const index = objectIndex * 5 + templateIndex + 1;
+    const number = String(index).padStart(3, '0');
+    const objectPart = { hanzi, pinyin, meaning: spanish };
+    const breakdowns = [
+      [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'需要', pinyin:'xūyào', meaning:'necesitar' }, objectPart],
+      [{ hanzi:'我', pinyin:'wǒ', meaning:'yo' }, { hanzi:'在', pinyin:'zài', meaning:'estar en' }, { hanzi:'找', pinyin:'zhǎo', meaning:'buscar' }, objectPart],
+      [{ hanzi:'这里', pinyin:'zhèlǐ', meaning:'aquí' }, { hanzi:'有', pinyin:'yǒu', meaning:'haber / tener' }, objectPart, { hanzi:'吗', pinyin:'ma', meaning:'partícula de pregunta' }],
+      [objectPart, { hanzi:'在', pinyin:'zài', meaning:'estar en' }, { hanzi:'哪里', pinyin:'nǎlǐ', meaning:'dónde' }],
+      [{ hanzi:'请', pinyin:'qǐng', meaning:'por favor' }, { hanzi:'给', pinyin:'gěi', meaning:'dar' }, { hanzi:'我', pinyin:'wǒ', meaning:'yo' }, objectPart],
+    ] as Segment[][];
+    return { id:`f-${number}`, type:'phrase' as const, hanzi:phrase, pinyin:phrasePinyin, spanish:phraseSpanish, category, audio:`f-${number}`, book:false, breakdown: breakdowns[templateIndex] };
+  });
+});
+
+const NUMBER_HANZI = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+const NUMBER_SPANISH = ['un', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'];
+
+/** Frases de conteo del 1 al 10: personas, hora, dinero y bebidas. */
+export const numberPhrases: LibraryItem[] = NUMBER_HANZI.flatMap((numeral, index) => {
+  const n = index + 1;
+  const counted = n === 2 ? '两' : numeral;
+  const es = NUMBER_SPANISH[index];
+  const rows = [
+    [`我有${counted}个朋友。`, n === 1 ? 'Tengo un amigo.' : `Tengo ${es} amigos.`],
+    [`现在${counted}点。`, n === 1 ? 'Es la una.' : `Son las ${es}.`],
+    [`这个${counted}块钱。`, n === 1 ? 'Esto cuesta un yuan.' : `Esto cuesta ${es} yuanes.`],
+    [`我要${counted}杯茶。`, n === 1 ? 'Quiero un té.' : `Quiero ${es} tés.`],
+  ];
+  return rows.map(([hanzi, spanish], rowIndex) => {
+    const number = String(index * rows.length + rowIndex + 1).padStart(3, '0');
+    const { pinyin, breakdown } = analyze(hanzi);
+    return { id: `n-${number}`, type: 'phrase' as const, hanzi, pinyin, spanish, category: 'Números', audio: `n-${number}`, book: false, breakdown };
+  });
+});
+
+const lessonTopics: Array<[number, string]> = [[5, 'Estudios'], [7, 'Nacionalidad'], [9, 'Mi clase'], [12, 'Compañeros'], [15, 'Mi familia'], [22, 'Trabajo y estudios']];
+const topicFor = (index: number) => lessonTopics.find(([end]) => index < end)![1];
+
 export const lessonPhrases: LibraryItem[] = lessonRows.map(([hanzi, pinyin, spanish, parts], index) => {
   const number = String(index + 1).padStart(3, '0');
   return {
@@ -314,12 +478,77 @@ export const lessonPhrases: LibraryItem[] = lessonRows.map(([hanzi, pinyin, span
     hanzi,
     pinyin,
     spanish,
-    category: 'Frases del libro',
+    category: topicFor(index),
     audio: `l-${number}`,
+    book: true,
     breakdown: parts.map(([partHanzi, partPinyin, meaning]) => ({ hanzi: partHanzi, pinyin: partPinyin, meaning })),
   };
 });
 
-export const commonPhrases: LibraryItem[] = [...objectPhrases, ...lessonPhrases];
+export const commonPhrases: LibraryItem[] = [...objectPhrases, ...numberPhrases, ...lessonPhrases];
 
 export const library = [...commonWords, ...commonPhrases];
+
+/** Ejemplos escritos a mano para cada palabra, con pinyin y desglose automáticos. */
+export const handwrittenExamples: Array<Example & { word: string }> = exampleSource.trim().split('\n').map((row, index) => {
+  const [word, hanzi, spanish] = row.split('|');
+  const { pinyin, breakdown } = analyze(hanzi);
+  return { word, hanzi, pinyin, spanish, breakdown, audio: `e-${String(index + 1).padStart(3, '0')}` };
+});
+
+const examplesByWord = new Map<string, Example[]>();
+for (const { word, ...example } of handwrittenExamples) examplesByWord.set(word, [...(examplesByWord.get(word) || []), example]);
+
+const phrasesByHanzi = new Map<string, LibraryItem[]>();
+for (const phrase of commonPhrases) for (const part of new Set((phrase.breakdown || []).map((segmentPart) => segmentPart.hanzi))) phrasesByHanzi.set(part, [...(phrasesByHanzi.get(part) || []), phrase]);
+
+// Palabras de enlace que no hacen "parecidas" a dos frases.
+const FUNCTION_WORDS = new Set(['我', '你', '他', '她', '的', '了', '吗', '呢', '是', '有', '不', '在', '个', '口', '和', '也', '都', '很', '太', '什么', '这', '那', '这里', '请', '给', '哪里', '吧', '们']);
+
+const asExample = (phrase: LibraryItem): Example => ({ hanzi: phrase.hanzi, pinyin: phrase.pinyin, spanish: phrase.spanish, audio: phrase.audio, breakdown: phrase.breakdown || [], itemId: phrase.id });
+
+const exampleCache = new Map<string, Example[]>();
+
+/** Frases que muestran una tarjeta en uso: ejemplos propios y frases de la biblioteca que la contienen. */
+export function getExamples(item: LibraryItem, limit = 4): Example[] {
+  const cached = exampleCache.get(item.id);
+  if (cached) return cached;
+  let result: Example[];
+  if (item.type === 'word') {
+    const own = examplesByWord.get(item.hanzi) || [];
+    const related = (phrasesByHanzi.get(item.hanzi) || []).filter((phrase) => !own.some((example) => example.hanzi === phrase.hanzi)).sort((a, b) => a.hanzi.length - b.hanzi.length).map(asExample);
+    result = [...own, ...related].slice(0, limit);
+  } else {
+    const keys = (item.breakdown || []).map((part) => part.hanzi).filter((hanzi) => !FUNCTION_WORDS.has(hanzi));
+    const scores = new Map<string, number>();
+    for (const key of keys) for (const phrase of phrasesByHanzi.get(key) || []) if (phrase.id !== item.id && phrase.hanzi !== item.hanzi) scores.set(phrase.id, (scores.get(phrase.id) || 0) + 1);
+    const byId = new Map(commonPhrases.map((phrase) => [phrase.id, phrase]));
+    result = [...scores.entries()].sort((a, b) => b[1] - a[1] || byId.get(a[0])!.hanzi.length - byId.get(b[0])!.hanzi.length).slice(0, limit).map(([id]) => asExample(byId.get(id)!));
+  }
+  exampleCache.set(item.id, result);
+  return result;
+}
+
+export type LibraryFilter = { kind: 'all' | 'word' | 'phrase'; book: boolean; category: string; query?: string };
+export const ALL_CATEGORIES = 'Todas';
+
+export function filterLibrary(items: LibraryItem[], filter: LibraryFilter) {
+  const query = (filter.query || '').trim().toLocaleLowerCase();
+  return items.filter((item) =>
+    (filter.kind === 'all' || item.type === filter.kind) &&
+    (!filter.book || item.book) &&
+    (filter.category === ALL_CATEGORIES || item.category === filter.category) &&
+    (!query || `${item.hanzi} ${item.pinyin} ${item.spanish}`.toLocaleLowerCase().includes(query)));
+}
+
+/** Categorías disponibles (con cantidad) para un tipo de tarjeta y origen. */
+export function categoriesFor(items: LibraryItem[], kind: LibraryFilter['kind'], book: boolean) {
+  const counts = new Map<string, number>();
+  for (const item of items) if ((kind === 'all' || item.type === kind) && (!book || item.book)) counts.set(item.category, (counts.get(item.category) || 0) + 1);
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'es'));
+}
+
+const wordByHanzi = new Map(commonWords.map((word) => [word.hanzi, word]));
+
+/** Tarjeta de palabra para un fragmento de frase (para escucharla). */
+export function findWord(hanzi: string) { return wordByHanzi.get(hanzi); }

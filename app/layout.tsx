@@ -33,8 +33,12 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#f6f3ed',
+  themeColor: '#f3f6f4',
+  interactiveWidget: 'resizes-content',
 };
+
+// Aplica la versión elegida antes de pintar para evitar un destello de color.
+const themeScript = `try{if(localStorage.getItem('chino-theme')==='bw'){document.documentElement.dataset.theme='bw';var m=document.querySelector('meta[name="theme-color"]');m&&m.setAttribute('content','#ffffff')}}catch(e){}`;
 
 export default function RootLayout({
   children,
@@ -42,7 +46,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

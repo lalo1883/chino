@@ -6,9 +6,10 @@ import { authClient } from '@/lib/auth-client';
 type Props = {
   syncState: 'local' | 'saving' | 'synced' | 'error';
   onSignedOut: () => void;
+  fallbackUser?: { id: string; name: string; email: string } | null;
 };
 
-export function AccountMenu({ syncState, onSignedOut }: Props) {
+export function AccountMenu({ syncState, onSignedOut, fallbackUser }: Props) {
   const { data: session, isPending } = authClient.useSession();
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<'register' | 'login'>('register');
@@ -61,7 +62,10 @@ export function AccountMenu({ syncState, onSignedOut }: Props) {
   };
 
   return <>
-    {session?.user ? <div className="account-signed-in">
+    {!session?.user && fallbackUser ? <div className="account-signed-in">
+      <span aria-hidden="true">{(fallbackUser.name || fallbackUser.email).slice(0, 1).toUpperCase()}</span>
+      <div><b>{fallbackUser.name || 'Estudiante'}</b><small>Sin conexión · guardado local</small></div>
+    </div> : session?.user ? <div className="account-signed-in">
       <span aria-hidden="true">{(session.user.name || session.user.email).slice(0, 1).toUpperCase()}</span>
       <div><b>{session.user.name || 'Estudiante'}</b><small>{syncState === 'saving' ? 'Sincronizando…' : syncState === 'error' ? 'Guardado local' : 'Progreso sincronizado'}</small></div>
       <button onClick={signOut}>Salir</button>

@@ -17,11 +17,14 @@ export function shuffled<T>(items: T[]): T[] {
   return copy;
 }
 
-export function makeSession<T extends { id: string }>(items: T[], records: Record<string, Review>, now: number, onlyDue = false): T[] {
+export const SESSION_SIZES = [6, 12, 24] as const;
+
+export function makeSession<T extends { id: string }>(items: T[], records: Record<string, Review>, now: number, onlyDue = false, size = 12): T[] {
   const due = shuffled(items.filter(item => records[item.id] && records[item.id].due <= now));
-  if (onlyDue) return due.slice(0, 12);
+  if (onlyDue) return due.slice(0, size);
   const fresh = shuffled(items.filter(item => !records[item.id]));
-  const chosen = [...due.slice(0, 8), ...fresh.slice(0, 12 - Math.min(8, due.length))];
+  const dueShare = Math.round(size * 2 / 3);
+  const chosen = [...due.slice(0, dueShare), ...fresh.slice(0, size - Math.min(dueShare, due.length))];
   // Fill spare slots with due cards, never with future reviews.
-  return shuffled([...chosen, ...due.slice(8, 8 + Math.max(0, 12 - chosen.length))]);
+  return shuffled([...chosen, ...due.slice(dueShare, dueShare + Math.max(0, size - chosen.length))]);
 }
