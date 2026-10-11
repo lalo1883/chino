@@ -12,6 +12,8 @@ export type PracticeFilter = Omit<LibraryFilter, 'query'>;
 
 let currentClip: HTMLAudioElement | null = null;
 
+export function stopClip() { currentClip?.pause(); currentClip = null; }
+
 export function playClip(name: string, speed: number, slow = false) {
   currentClip?.pause();
   const audio = new Audio(`/audio/${name}.mp3`);
