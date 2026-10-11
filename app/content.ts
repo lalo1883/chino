@@ -1,3 +1,4 @@
+import { courseEntries, lessonsFor, matchesLessonRange, normalizeLessonHanzi, type LessonRange } from './course-lessons.ts';
 import { exampleSource } from './examples.ts';
 
 export type Segment = { hanzi: string; pinyin: string; meaning: string };
@@ -12,6 +13,8 @@ export type LibraryItem = {
   audio: string;
   /** Aparece en las lecciones del libro. */
   book: boolean;
+  /** Lecciones verificadas contra el vocabulario del curso. */
+  lessons?: number[];
   breakdown?: Segment[];
 };
 
@@ -346,6 +349,12 @@ const lessonRows: LessonRow[] = [
 
 
 const rawWords = wordSource.trim().split('\n').map((row) => row.split('|'));
+const knownWords = new Set(rawWords.map(([hanzi]) => normalizeLessonHanzi(hanzi)));
+for (const entry of courseEntries) if (entry.type === 'word' && !knownWords.has(normalizeLessonHanzi(entry.hanzi))) {
+  rawWords.push([entry.hanzi, entry.pinyin, entry.spanish, ['Saludos', 'Nacionalidad', 'Presentaciones', 'Estudios', 'Mi familia'][entry.lesson - 1]]);
+  knownWords.add(normalizeLessonHanzi(entry.hanzi));
+}
+
 // Vocabulario y nombres visibles en las páginas del libro compartidas.
 // Se identifica por hanzi para conservar los ids y audios de las tarjetas existentes.
 const referenceBookWords = new Set([
@@ -453,7 +462,8 @@ export const commonWords: LibraryItem[] = rawWords.map(([hanzi, pinyin, spanish,
   const number = String(index + 1).padStart(3, '0');
   return {
     id: `w-${number}`, type: 'word', hanzi, pinyin, spanish, category, audio: `w-${number}`,
-    book: referenceBookWords.has(hanzi) || bookHanzi.has(hanzi),
+    book: referenceBookWords.has(hanzi) || bookHanzi.has(hanzi) || lessonsFor(hanzi, 'word').length > 0,
+    lessons: lessonsFor(hanzi, 'word'),
     breakdown: [{ hanzi, pinyin, meaning: spanish }],
   };
 });
@@ -515,13 +525,31 @@ export const lessonPhrases: LibraryItem[] = lessonRows.map(([hanzi, pinyin, span
     pinyin,
     spanish,
     category: topicFor(index),
+    lessons: lessonsFor(hanzi, 'phrase'),
     audio: `l-${number}`,
     book: true,
     breakdown: parts.map(([partHanzi, partPinyin, meaning]) => ({ hanzi: partHanzi, pinyin: partPinyin, meaning })),
   };
 });
 
-export const commonPhrases: LibraryItem[] = [...objectPhrases, ...numberPhrases, ...lessonPhrases];
+// Conserva las tarjetas y audios existentes; agrega solo las frases ausentes.
+const knownPhrases = new Set([...objectPhrases, ...numberPhrases, ...lessonPhrases].map(item => normalizeLessonHanzi(item.hanzi)));
+const coursePhrases: LibraryItem[] = courseEntries.flatMap((entry, index) => {
+  const normalized = normalizeLessonHanzi(entry.hanzi);
+  if (entry.type !== 'phrase' || knownPhrases.has(normalized)) return [];
+  knownPhrases.add(normalized);
+  const id = `course-${entry.lesson}-${index + 1}`;
+  return [{ id, audio: id, type: 'phrase' as const, hanzi: entry.hanzi, pinyin: entry.pinyin, spanish: entry.spanish,
+    category: ['Saludos', 'Nacionalidad', 'Presentaciones', 'Estudios', 'Mi familia'][entry.lesson - 1],
+    book: true, lessons: lessonsFor(entry.hanzi, 'phrase'),
+    breakdown: analyze(entry.hanzi).breakdown.map(part => part.hanzi === '杜' ? { hanzi: '杜', pinyin: 'Dù', meaning: 'Du (apellido)' } : part.hanzi === '丽' ? { hanzi: '丽', pinyin: 'Lì', meaning: 'Li (nombre)' } : part),
+  }];
+});
+
+export const commonPhrases: LibraryItem[] = [...objectPhrases, ...numberPhrases, ...lessonPhrases, ...coursePhrases].map(item => {
+  const lessons = lessonsFor(item.hanzi, 'phrase');
+  return lessons.length ? { ...item, book: true, lessons } : item;
+});
 
 export const library = [...commonWords, ...commonPhrases];
 
@@ -565,7 +593,7 @@ export function getExamples(item: LibraryItem, limit = 4): Example[] {
   return result;
 }
 
-export type LibraryFilter = { kind: 'all' | 'word' | 'phrase'; book: boolean; category: string; query?: string };
+export type LibraryFilter = { kind: 'all' | 'word' | 'phrase'; book: boolean; category: string; query?: string; lessons?: LessonRange };
 export const ALL_CATEGORIES = 'Todas';
 
 export function filterLibrary(items: LibraryItem[], filter: LibraryFilter) {
@@ -573,14 +601,15 @@ export function filterLibrary(items: LibraryItem[], filter: LibraryFilter) {
   return items.filter((item) =>
     (filter.kind === 'all' || item.type === filter.kind) &&
     (!filter.book || item.book) &&
+    matchesLessonRange(item, filter.lessons) &&
     (filter.category === ALL_CATEGORIES || item.category === filter.category) &&
     (!query || `${item.hanzi} ${item.pinyin} ${item.spanish}`.toLocaleLowerCase().includes(query)));
 }
 
 /** Categorías disponibles (con cantidad) para un tipo de tarjeta y origen. */
-export function categoriesFor(items: LibraryItem[], kind: LibraryFilter['kind'], book: boolean) {
+export function categoriesFor(items: LibraryItem[], kind: LibraryFilter['kind'], book: boolean, lessons?: LessonRange) {
   const counts = new Map<string, number>();
-  for (const item of items) if ((kind === 'all' || item.type === kind) && (!book || item.book)) counts.set(item.category, (counts.get(item.category) || 0) + 1);
+  for (const item of items) if ((kind === 'all' || item.type === kind) && (!book || item.book) && matchesLessonRange(item, lessons)) counts.set(item.category, (counts.get(item.category) || 0) + 1);
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'es'));
 }
 
@@ -588,3 +617,8 @@ const wordByHanzi = new Map(commonWords.map((word) => [word.hanzi, word]));
 
 /** Tarjeta de palabra para un fragmento de frase (para escucharla). */
 export function findWord(hanzi: string) { return wordByHanzi.get(hanzi); }
+
+/** Audios de las palabras del diccionario que solo aparecen en los desgloses. */
+export const extraWordAudio = Object.keys(extraDictionary).map((hanzi, index) => ({ hanzi, audio: `s-${String(index + 1).padStart(3, '0')}` }));
+const extraAudioByHanzi = new Map(extraWordAudio.map(({ hanzi, audio }) => [hanzi, audio]));
+export function findWordAudio(hanzi: string) { return wordByHanzi.get(hanzi)?.audio || extraAudioByHanzi.get(hanzi); }

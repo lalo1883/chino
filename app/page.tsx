@@ -1,7 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { commonPhrases, commonWords, library, type LibraryItem } from './content';
+import { commonPhrases, commonWords, library, ALL_CATEGORIES, filterLibrary, type LibraryItem } from './content';
+import { type LessonRange } from './course-lessons';
+import { LessonFilter } from '@/components/lesson-filter';
 import { LibraryView, playClip, type PracticeFilter } from '@/components/library-view';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { AccountMenu } from '@/components/account-menu';
@@ -481,6 +483,7 @@ type BrowserSpeechRecognition = {
   onerror: () => void;
   onresult: (event: BrowserSpeechRecognitionEvent) => void;
   start: () => void;
+  abort: () => void;
 };
 type NativeSpeech = {
   requestPermissions: () => Promise<{ speechRecognition: string }>;
@@ -501,12 +504,29 @@ function distance(a: string, b: string) {
 
 function SpeakView({ speed }: { speed: number }) {
   const [index, setIndex] = useState(0);
+  const [bookMode, setBookMode] = useState(false);
+  const [lessons, setLessons] = useState<LessonRange>();
+  const [bookKind, setBookKind] = useState<'all' | 'word' | 'phrase'>('all');
   const [listening, setListening] = useState(false);
   const [result, setResult] = useState<SpeechResult | null>(null);
   const [error, setError] = useState('');
-  const phrase = commonPhrases[index];
+  const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
+  useEffect(() => () => {
+    const recognition = recognitionRef.current;
+    if (!recognition) return;
+    recognition.onresult = () => {};
+    recognition.onend = () => {};
+    recognition.onerror = () => {};
+    recognition.abort();
+  }, []);
+  const speechItems = useMemo(() => filterLibrary(library, { kind: bookKind, book: bookMode, category: ALL_CATEGORIES, lessons }), [bookMode, bookKind, lessons]);
+  const phrase = speechItems[index];
+  const resetSpeech = () => { setIndex(0); setResult(null); setError(''); };
+  const selectBook = (value: boolean) => { setBookMode(value); resetSpeech(); };
+  const selectKind = (value: 'all' | 'word' | 'phrase') => { setBookKind(value); resetSpeech(); };
 
   const showResult = (alternatives: string[]) => {
+    if (!phrase) return;
     const target = normalizeChinese(phrase.hanzi);
     const ranked = alternatives.map((transcript) => { const heard = normalizeChinese(transcript); const score = Math.max(0, Math.round((1 - distance(target, heard) / Math.max(target.length, heard.length, 1)) * 100)); return { score, heard: transcript }; }).sort((a, b) => b.score - a.score);
     const best = ranked[0] || { score: 0, heard: '' };
@@ -517,8 +537,9 @@ function SpeakView({ speed }: { speed: number }) {
   // En la app Android el WebView no trae reconocimiento de voz: se usa el plugin nativo.
   const listenNative = async (native: NativeSpeech) => {
     try {
+      if (!phrase) return;
       const permission = await native.requestPermissions();
-      if (permission.speechRecognition !== 'granted') { setError('Activa el permiso del micrófono para practicar la pronunciación.'); return; }
+      if (permission.speechRecognition !== 'granted') { setListening(false); setError('Activa el permiso del micrófono para practicar la pronunciación.'); return; }
       setListening(true);
       const { matches } = await native.start({ language: 'zh-CN', maxResults: 5, prompt: phrase.hanzi, partialResults: false, popup: false });
       setListening(false);
@@ -530,34 +551,40 @@ function SpeakView({ speed }: { speed: number }) {
   };
 
   const listen = () => {
-    setResult(null); setError('');
+    if (!phrase) return;
+    setResult(null); setError(''); setListening(true);
     const native = (window as Window & { Capacitor?: { isNativePlatform?: () => boolean; Plugins?: { SpeechRecognition?: NativeSpeech } } }).Capacitor;
     if (native?.isNativePlatform?.() && native.Plugins?.SpeechRecognition) { listenNative(native.Plugins.SpeechRecognition); return; }
     const speechWindow = window as SpeechWindow;
     const Recognition = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
-    if (!Recognition) { setError('Tu navegador no ofrece reconocimiento de voz. Prueba Chrome o Safari actualizado.'); return; }
+    if (!Recognition) { setListening(false); setError('Tu navegador no ofrece reconocimiento de voz. Prueba Chrome o Safari actualizado.'); return; }
     const recognition = new Recognition();
+    recognitionRef.current = recognition;
     recognition.lang = 'zh-CN'; recognition.continuous = false; recognition.interimResults = false; recognition.maxAlternatives = 5;
     recognition.onstart = () => setListening(true);
     recognition.onend = () => setListening(false);
     recognition.onerror = () => { setListening(false); setError('No pude escuchar con claridad. Revisa el permiso del micrófono e inténtalo otra vez.'); };
     recognition.onresult = (event: BrowserSpeechRecognitionEvent) => showResult(Array.from(event.results[0] as ArrayLike<{ transcript: string }>).map((entry) => entry.transcript));
-    recognition.start();
+    try { recognition.start(); } catch { setListening(false); setError('No se pudo iniciar el micrófono. Revisa el permiso e inténtalo otra vez.'); }
   };
 
-  const next = () => { setIndex((current) => (current + 1) % commonPhrases.length); setResult(null); setError(''); };
+  const next = () => { setIndex((current) => speechItems.length ? (current + 1) % speechItems.length : 0); setResult(null); setError(''); };
   return <section className="speak-view">
     <div className="speak-copy"><p className="eyebrow">ENTRENADOR DE PRONUNCIACIÓN · BETA</p><h1><span>Escucha.</span><span>Habla.</span><span>Comprueba.</span></h1><p className="lede">El navegador escucha en mandarín y compara los caracteres reconocidos con la frase objetivo.</p><div className="privacy-note"><UiIcon name="lock" /><div><b>Privacidad</b><span>La app no guarda tus grabaciones.</span></div></div><div className="speech-features"><div><UiIcon name="mic" /><b>Reconocimiento<br />en mandarín</b></div><div><UiIcon name="book" /><b>Comparación<br />de caracteres</b></div><div><UiIcon name="chart" /><b>Retroalimentación<br />instantánea</b></div></div></div>
     <article className="speak-card">
-      <div className="speak-step">FRASE {index + 1} DE {commonPhrases.length}</div><progress className="speech-progress" value={index + 1} max={commonPhrases.length} aria-label="Avance de frases de pronunciación" />
+      <div className="speech-selection"><div className="seg" role="group" aria-label="Contenido de pronunciación"><button type="button" aria-pressed={!bookMode} className={!bookMode ? 'active' : ''} disabled={listening} onClick={() => selectBook(false)}>Todo el contenido</button><button type="button" aria-pressed={bookMode} className={bookMode ? 'active' : ''} disabled={listening} onClick={() => selectBook(true)}><UiIcon name="book" />Libro</button></div>{<div className="seg speech-kind" role="group" aria-label="Tipo de contenido de pronunciación">{([['all', 'Todo'], ['word', 'Palabras'], ['phrase', 'Frases']] as const).map(([value, label]) => <button type="button" key={value} aria-pressed={bookKind === value} className={bookKind === value ? 'active' : ''} disabled={listening} onClick={() => selectKind(value)}>{label}</button>)}</div>}</div>
+      <LessonFilter value={lessons} disabled={listening} onChange={value => { setLessons(value); resetSpeech(); }} />
+      {phrase ? <>
+      <div className="speak-step">{phrase.type === 'word' ? 'PALABRA' : 'FRASE'} {index + 1} DE {speechItems.length}{bookMode ? ' · LIBRO' : ''}{phrase.lessons?.length ? ` · Lección ${phrase.lessons.join(', ')}` : ''}</div><progress className="speech-progress" value={index + 1} max={speechItems.length} aria-label="Avance de frases de pronunciación" />
       <div className="speak-target"><div className="speak-hanzi">{phrase.hanzi}</div><button className="speak-audio-icon" onClick={() => playLibraryAudio(phrase, speed)} aria-label={`Escuchar ${phrase.hanzi}`}><UiIcon name="audio" /></button></div><div className="speak-pinyin">{phrase.pinyin}</div><p>{phrase.spanish}</p>
-      <div className="speech-instruction"><UiIcon name="mic" /><div><b>Presiona el botón y repite la frase en mandarín</b><span>Habla con naturalidad, no tiene que ser perfecto.</span></div></div>
+      <div className="speech-instruction"><UiIcon name="mic" /><div><b>Presiona el botón y repite {phrase.type === 'word' ? 'la palabra' : 'la frase'} en mandarín</b><span>Habla con naturalidad, no tiene que ser perfecto.</span></div></div>
       <button className={`mic-button ${listening ? 'listening' : ''}`} onClick={listen} disabled={listening} aria-label={listening ? 'Escuchando…' : 'Hablar ahora'}><UiIcon name="mic" /></button><p className="mic-status" aria-live="polite">{listening ? 'Escuchando…' : 'Toca para hablar'}</p>
       <button className="listen-model" onClick={() => playLibraryAudio(phrase, speed)}><UiIcon name="audio" />Escuchar modelo</button>
       {error && <div className="speech-error" role="alert">{error}</div>}
       {result && <div className={`speech-result ${result.score >= 90 ? 'great' : result.score >= 65 ? 'close' : 'retry'}`}><div className="score"><strong>{result.score}</strong><span>/100</span></div><div><b>{result.feedback}</b><p>Escuché: <span>{result.heard || '—'}</span></p></div></div>}
-      <button className="next-phrase" onClick={next}>Siguiente frase →</button>
+      <button className="next-phrase" disabled={listening} onClick={next}>Siguiente {phrase.type === 'word' ? 'palabra' : 'frase'} →</button>
       <small className="tone-disclaimer">La puntuación se basa en las palabras que reconoce el navegador; no evalúa cada tono.</small>
+      </> : <p role="status" className="empty">No hay palabras o frases con estos filtros. Prueba otro tipo o rango de lecciones.</p>}
     </article>
   </section>;
 }

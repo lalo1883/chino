@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { findWord, type Segment } from '@/app/content';
+import { findWordAudio, type Segment } from '@/app/content';
 import { playClip } from './library-view';
 
 type Piece = { text: string; segment?: Segment };
@@ -55,14 +55,14 @@ export function TappableSentence({ hanzi, breakdown, speed, highlight = '', clas
   };
 
   const current = open ? pieces[open.index]?.segment : undefined;
-  const word = current ? findWord(current.hanzi) : undefined;
+  const word = current ? findWordAudio(current.hanzi) : undefined;
   return <span ref={box} className={`tappable ${className}`}>
     {pieces.map((piece, index) => piece.segment
       ? <button key={index} type="button" className={`tap-word ${open?.index === index ? 'open' : ''} ${highlight && piece.text === highlight ? 'hit' : ''}`} aria-expanded={open?.index === index} aria-label={`${piece.text}: ver significado`} onClick={(event) => toggle(index, event.currentTarget)}>{piece.text}</button>
       : <span key={index}>{piece.text}</span>)}
     {current && open && <span className={`tap-pop ${word ? 'has-audio' : ''}`} role="dialog" aria-label={`Significado de ${current.hanzi}`} style={{ left: open.left }}>
       <b>{current.hanzi}</b><em>{current.pinyin}</em><span>{current.meaning}</span>
-      {word && <button className="tap-pop-audio" type="button" onClick={() => playClip(word.audio, speed)} aria-label={`Escuchar ${current.hanzi}`} title={`Escuchar ${current.hanzi}`}><span aria-hidden="true">♪</span></button>}
+      {word && <button className="tap-pop-audio" type="button" onClick={() => playClip(word, speed)} aria-label={`Escuchar ${current.hanzi}`} title={`Escuchar ${current.hanzi}`}><span aria-hidden="true">♪</span></button>}
     </span>}
   </span>;
 }
