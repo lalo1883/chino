@@ -260,4 +260,19 @@ export const exampleSource = `
 钥匙|我的钥匙在哪里？|¿Dónde están mis llaves?
 药|我需要药。|Necesito medicina.
 发票|请给我发票。|Dame la factura, por favor.
+国|你是哪国人？|¿De qué país eres?
+姓|你姓什么？|¿Cuál es tu apellido?
+们|我们是学生。|Somos estudiantes.
+英国|他是英国人。|Él es británico.
+印度|她是印度人。|Ella es india.
+泰国|我是泰国人。|Soy tailandés.
+日本|她是日本人。|Ella es japonesa.
+德国|他是德国人。|Él es alemán.
+韩国|我们班有四个韩国人。|En nuestra clase hay cuatro coreanos.
+山田佑|他叫山田佑。|Él se llama Yamada Yu.
+朱云|她叫朱云。|Ella se llama Zhu Yun.
+林娜|林娜是法国留学生。|Linna es estudiante extranjera de Francia.
+李一民|他叫李一民。|Él se llama Li Yimin.
+阿明|阿明学习汉语。|Aming estudia chino.
+马丁|马丁说汉语。|Martin habla chino.
 `;

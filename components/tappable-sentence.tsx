@@ -30,7 +30,13 @@ export function TappableSentence({ hanzi, breakdown, speed, highlight = '', clas
   useEffect(() => {
     if (!open) return;
     const close = (event: Event) => { if (!box.current?.contains(event.target as Node)) setOpen(null); };
-    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.stopPropagation(); setOpen(null); } };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      event.stopPropagation();
+      box.current?.querySelector<HTMLButtonElement>('.tap-word.open')?.focus();
+      setOpen(null);
+    };
     document.addEventListener('pointerdown', close);
     document.addEventListener('keydown', escape, true);
     return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', escape, true); };
@@ -38,10 +44,14 @@ export function TappableSentence({ hanzi, breakdown, speed, highlight = '', clas
 
   const toggle = (index: number, button: HTMLButtonElement) => {
     if (open?.index === index) { setOpen(null); return; }
-    const width = box.current?.offsetWidth ?? 0;
-    const center = button.offsetLeft + button.offsetWidth / 2;
-    // El popover mide ~220px: lo mantenemos dentro del contenedor.
-    setOpen({ index, left: Math.min(Math.max(center, 110), Math.max(width - 110, 110)) });
+    const container = box.current?.getBoundingClientRect();
+    if (!container) return;
+    const anchor = button.getBoundingClientRect();
+    const halfWidth = Math.min(240, window.innerWidth - 32) / 2;
+    const center = anchor.left + anchor.width / 2;
+    // Mantener la tarjeta dentro de la pantalla, incluso en frases cortas.
+    const left = Math.min(Math.max(center, halfWidth + 16), window.innerWidth - halfWidth - 16);
+    setOpen({ index, left: left - container.left });
   };
 
   const current = open ? pieces[open.index]?.segment : undefined;
@@ -50,9 +60,9 @@ export function TappableSentence({ hanzi, breakdown, speed, highlight = '', clas
     {pieces.map((piece, index) => piece.segment
       ? <button key={index} type="button" className={`tap-word ${open?.index === index ? 'open' : ''} ${highlight && piece.text === highlight ? 'hit' : ''}`} aria-expanded={open?.index === index} aria-label={`${piece.text}: ver significado`} onClick={(event) => toggle(index, event.currentTarget)}>{piece.text}</button>
       : <span key={index}>{piece.text}</span>)}
-    {current && open && <span className="tap-pop" role="dialog" aria-label={`Significado de ${current.hanzi}`} style={{ left: open.left }}>
+    {current && open && <span className={`tap-pop ${word ? 'has-audio' : ''}`} role="dialog" aria-label={`Significado de ${current.hanzi}`} style={{ left: open.left }}>
       <b>{current.hanzi}</b><em>{current.pinyin}</em><span>{current.meaning}</span>
-      {word && <button type="button" onClick={() => playClip(word.audio, speed)} aria-label={`Escuchar ${current.hanzi}`}>♪ Escuchar</button>}
+      {word && <button className="tap-pop-audio" type="button" onClick={() => playClip(word.audio, speed)} aria-label={`Escuchar ${current.hanzi}`} title={`Escuchar ${current.hanzi}`}><span aria-hidden="true">♪</span></button>}
     </span>}
   </span>;
 }

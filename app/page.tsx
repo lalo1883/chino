@@ -9,6 +9,7 @@ import { StudySession } from '@/components/study-session';
 import { scheduleReview } from '@/lib/learning';
 import { authClient } from '@/lib/auth-client';
 import { useOnline } from '@/components/use-online';
+import { UiIcon } from '@/components/ui-icon';
 
 const navIcons: Record<string, React.ReactNode> = {
   learn: <path d="M3 9.6 10 4l7 5.6V16a1 1 0 0 1-1 1h-3.5v-4.2h-5V17H4a1 1 0 0 1-1-1z" />,
@@ -546,16 +547,17 @@ function SpeakView({ speed }: { speed: number }) {
 
   const next = () => { setIndex((current) => (current + 1) % commonPhrases.length); setResult(null); setError(''); };
   return <section className="speak-view">
-    <div className="speak-copy"><p className="eyebrow">ENTRENADOR DE PRONUNCIACIÓN · BETA</p><h1><span>Escucha. Habla.</span> <span>Comprueba.</span></h1><p className="lede">El navegador escucha en mandarín y compara los caracteres reconocidos con la frase objetivo.</p><div className="privacy-note"><b>Privacidad</b><span>La app no guarda tus grabaciones.</span></div></div>
+    <div className="speak-copy"><p className="eyebrow">ENTRENADOR DE PRONUNCIACIÓN · BETA</p><h1><span>Escucha.</span><span>Habla.</span><span>Comprueba.</span></h1><p className="lede">El navegador escucha en mandarín y compara los caracteres reconocidos con la frase objetivo.</p><div className="privacy-note"><UiIcon name="lock" /><div><b>Privacidad</b><span>La app no guarda tus grabaciones.</span></div></div><div className="speech-features"><div><UiIcon name="mic" /><b>Reconocimiento<br />en mandarín</b></div><div><UiIcon name="book" /><b>Comparación<br />de caracteres</b></div><div><UiIcon name="chart" /><b>Retroalimentación<br />instantánea</b></div></div></div>
     <article className="speak-card">
-      <div className="speak-step">FRASE {index + 1} DE {commonPhrases.length}</div>
-      <div className="speak-hanzi">{phrase.hanzi}</div><div className="speak-pinyin">{phrase.pinyin}</div><p>{phrase.spanish}</p>
-      <button className="listen-model" onClick={() => playLibraryAudio(phrase, speed)}>♪ Escuchar modelo</button>
-      <button className={`mic-button ${listening ? 'listening' : ''}`} onClick={listen} disabled={listening}><span>{listening ? '●' : '●'}</span>{listening ? 'Escuchando…' : 'Hablar ahora'}</button>
-      {error && <div className="speech-error">{error}</div>}
+      <div className="speak-step">FRASE {index + 1} DE {commonPhrases.length}</div><progress className="speech-progress" value={index + 1} max={commonPhrases.length} aria-label="Avance de frases de pronunciación" />
+      <div className="speak-target"><div className="speak-hanzi">{phrase.hanzi}</div><button className="speak-audio-icon" onClick={() => playLibraryAudio(phrase, speed)} aria-label={`Escuchar ${phrase.hanzi}`}><UiIcon name="audio" /></button></div><div className="speak-pinyin">{phrase.pinyin}</div><p>{phrase.spanish}</p>
+      <div className="speech-instruction"><UiIcon name="mic" /><div><b>Presiona el botón y repite la frase en mandarín</b><span>Habla con naturalidad, no tiene que ser perfecto.</span></div></div>
+      <button className={`mic-button ${listening ? 'listening' : ''}`} onClick={listen} disabled={listening} aria-label={listening ? 'Escuchando…' : 'Hablar ahora'}><UiIcon name="mic" /></button><p className="mic-status" aria-live="polite">{listening ? 'Escuchando…' : 'Toca para hablar'}</p>
+      <button className="listen-model" onClick={() => playLibraryAudio(phrase, speed)}><UiIcon name="audio" />Escuchar modelo</button>
+      {error && <div className="speech-error" role="alert">{error}</div>}
       {result && <div className={`speech-result ${result.score >= 90 ? 'great' : result.score >= 65 ? 'close' : 'retry'}`}><div className="score"><strong>{result.score}</strong><span>/100</span></div><div><b>{result.feedback}</b><p>Escuché: <span>{result.heard || '—'}</span></p></div></div>}
       <button className="next-phrase" onClick={next}>Siguiente frase →</button>
-      <small className="tone-disclaimer">Esta versión mide inteligibilidad y palabras reconocidas. La calificación tonal fonema por fonema requiere un motor acústico especializado.</small>
+      <small className="tone-disclaimer">La puntuación se basa en las palabras que reconoce el navegador; no evalúa cada tono.</small>
     </article>
   </section>;
 }

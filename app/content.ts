@@ -286,6 +286,21 @@ const wordSource = `
 钥匙|yàoshi|llaves|Viaje
 药|yào|medicina|Vida diaria
 发票|fāpiào|factura|Compras
+国|guó|país / nación|Lugares
+姓|xìng|apellidarse / apellido|Verbos
+们|men|sufijo de plural para personas|Gramática
+英国|Yīngguó|Reino Unido|Lugares
+印度|Yìndù|India|Lugares
+泰国|Tàiguó|Tailandia|Lugares
+日本|Rìběn|Japón|Lugares
+德国|Déguó|Alemania|Lugares
+韩国|Hánguó|Corea del Sur|Lugares
+山田佑|Shāntián Yòu|Yamada Yu (nombre japonés)|Personas
+朱云|Zhū Yún|Zhu Yun (nombre chino)|Personas
+林娜|Línnà|Linna (nombre propio)|Personas
+李一民|Lǐ Yīmín|Li Yimin (nombre chino)|Personas
+阿明|Āmíng|Aming (nombre propio)|Personas
+马丁|Mǎdīng|Martin (nombre propio)|Personas
 `;
 
 const objects = [
@@ -331,9 +346,17 @@ const lessonRows: LessonRow[] = [
 
 
 const rawWords = wordSource.trim().split('\n').map((row) => row.split('|'));
-const ORIGINAL_WORDS = 236;
-// Vocabulario de las lecciones del libro: desde 留学生 hasta 法国 (palabras 221–236).
-const BOOK_WORD_START = 220;
+// Vocabulario y nombres visibles en las páginas del libro compartidas.
+// Se identifica por hanzi para conservar los ids y audios de las tarjetas existentes.
+const referenceBookWords = new Set([
+  '零', '一', '二', '五', '八', '六', '七', '九',
+  '是', '哪', '国', '名字', '姓', '认识', '很', '高兴', '也',
+  '留学生', '她', '学习', '他们', '们', '一起', '上课', '说',
+  '吗', '不', '谁', '同学', '几', '做', '工作', '律师', '医生',
+  '你们', '班', '多少', '个', '学生', '我们', '两',
+  '法国', '英国', '印度', '泰国', '日本', '德国', '中国', '韩国', '汉语',
+  '山田佑', '朱云', '林娜', '李一民', '阿明', '马丁',
+]);
 
 // Palabras que solo sirven para analizar frases (no son tarjetas).
 const extraDictionary: Record<string, [string, string]> = {
@@ -410,6 +433,19 @@ export function analyze(hanzi: string) {
   return { pinyin: sentencePinyin(tokens), breakdown: toSegments(tokens), unknown: tokens.filter((token) => token.pinyin === '?').map((token) => token.hanzi) };
 }
 
+lessonRows.push(
+  ['你好！', 'Nǐ hǎo!', '¡Hola!', analyze('你好！').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+  ['您好！', 'Nín hǎo!', '¡Hola! (trato de usted)', analyze('您好！').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+  ['早上好！', 'Zǎoshang hǎo!', '¡Buenos días!', analyze('早上好！').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+  ['十六个。', 'Shíliù ge.', 'Dieciséis.', analyze('十六个。').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+  ['你们班有几个法国人？', 'Nǐmen bān yǒu jǐ ge Fǎguó rén?', '¿Cuántos franceses hay en su clase?', analyze('你们班有几个法国人？').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+  ['我们班有两个法国人。', 'Wǒmen bān yǒu liǎng ge Fǎguó rén.', 'En nuestra clase hay dos franceses.', analyze('我们班有两个法国人。').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+  ['你们班有韩国人吗？', 'Nǐmen bān yǒu Hánguó rén ma?', '¿Hay coreanos en su clase?', analyze('你们班有韩国人吗？').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+  ['有。', 'Yǒu.', 'Sí, hay.', analyze('有。').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+  ['有几个韩国人？', 'Yǒu jǐ ge Hánguó rén?', '¿Cuántos coreanos hay?', analyze('有几个韩国人？').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+  ['有四个韩国人。', 'Yǒu sì ge Hánguó rén.', 'Hay cuatro coreanos.', analyze('有四个韩国人。').breakdown.map((part) => [part.hanzi, part.pinyin, part.meaning])],
+);
+
 const lessonPhraseSource = lessonRows;
 const bookHanzi = new Set(lessonPhraseSource.flatMap(([, , , parts]) => parts.map(([hanzi]) => hanzi)));
 
@@ -417,7 +453,7 @@ export const commonWords: LibraryItem[] = rawWords.map(([hanzi, pinyin, spanish,
   const number = String(index + 1).padStart(3, '0');
   return {
     id: `w-${number}`, type: 'word', hanzi, pinyin, spanish, category, audio: `w-${number}`,
-    book: (index >= BOOK_WORD_START && index < ORIGINAL_WORDS) || bookHanzi.has(hanzi),
+    book: referenceBookWords.has(hanzi) || bookHanzi.has(hanzi),
     breakdown: [{ hanzi, pinyin, meaning: spanish }],
   };
 });
@@ -467,7 +503,7 @@ export const numberPhrases: LibraryItem[] = NUMBER_HANZI.flatMap((numeral, index
   });
 });
 
-const lessonTopics: Array<[number, string]> = [[5, 'Estudios'], [7, 'Nacionalidad'], [9, 'Mi clase'], [12, 'Compañeros'], [15, 'Mi familia'], [22, 'Trabajo y estudios']];
+const lessonTopics: Array<[number, string]> = [[5, 'Estudios'], [7, 'Nacionalidad'], [9, 'Mi clase'], [12, 'Compañeros'], [15, 'Mi familia'], [22, 'Trabajo y estudios'], [25, 'Saludos'], [32, 'Mi clase']];
 const topicFor = (index: number) => lessonTopics.find(([end]) => index < end)![1];
 
 export const lessonPhrases: LibraryItem[] = lessonRows.map(([hanzi, pinyin, spanish, parts], index) => {
