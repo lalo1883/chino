@@ -24,7 +24,7 @@ export function speechErrorMessage(code: string) {
   }
 }
 
-// One attempt owns its callbacks and timers; late events cannot change a later attempt.
+// A session remains active across the browser's silence/end events until explicit stop.
 export function createSpeechAttempt({ recognition, onStatus, onTranscript, onResult, onError, schedule = setTimeout, cancel = clearTimeout }: {
   recognition: BrowserSpeechRecognition;
   onStatus: (status: SpeechStatus) => void;
@@ -35,39 +35,68 @@ export function createSpeechAttempt({ recognition, onStatus, onTranscript, onRes
   cancel?: (timer: ReturnType<typeof setTimeout>) => void;
 }) {
   let active = true;
+  let stopping = false;
+  let running = false;
   let phase: SpeechStatus = 'idle';
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let completed: string[] = [''];
+  let current: RecognitionResult[] = [];
   const clear = () => { if (timer !== undefined) cancel(timer); timer = undefined; };
   const abort = () => { try { recognition.abort(); } catch { /* Already ended. */ } };
+  const alternatives = () => {
+    let candidates = completed;
+    for (const result of current.filter(result => result.isFinal)) {
+      candidates = candidates.flatMap(prefix => Array.from(result).map(entry => prefix + entry.transcript)).slice(0, 5);
+    }
+    return candidates;
+  };
   const finish = (error?: string) => {
     if (!active) return;
     active = false; clear(); phase = 'idle'; onStatus(phase);
     if (error) onError(speechErrorMessage(error));
+    else { const matches = alternatives().filter(Boolean); if (matches.length) onResult(matches); else onError(speechErrorMessage('no-speech')); }
   };
   const deadline = (milliseconds: number, error: string) => { clear(); timer = schedule(() => { finish(error); abort(); }, milliseconds); };
-  const stop = () => {
-    if (!active) return;
-    if (phase === 'starting') { finish(); abort(); return; }
-    if (phase !== 'listening') return;
-    phase = 'processing'; onStatus(phase); deadline(5000, 'result-timeout');
-    try { recognition.stop(); } catch { finish('aborted'); abort(); }
+  const startRun = () => {
+    if (!active || stopping) return;
+    clear(); current = []; deadline(15000, 'start-timeout');
+    try { recognition.start(); } catch { finish('start-failed'); abort(); }
   };
-  recognition.onstart = () => { if (!active) return; phase = 'listening'; onStatus(phase); clear(); timer = schedule(stop, 30000); };
-  recognition.onerror = event => finish(event.error);
-  recognition.onnomatch = () => finish('no-speech');
-  recognition.onend = () => finish('no-speech');
+  const stop = () => {
+    if (!active || stopping) return;
+    stopping = true; clear();
+    if (phase === 'starting') { active = false; phase = 'idle'; onStatus(phase); abort(); return; }
+    if (!running) { finish(); return; }
+    phase = 'processing'; onStatus(phase);
+    // A browser may never send onend; accept collected speech on the deadline.
+    timer = schedule(() => { finish(); abort(); }, 5000);
+    try { recognition.stop(); } catch { finish(); abort(); }
+  };
+  recognition.onstart = () => { if (!active) return; running = true; phase = stopping ? 'processing' : 'listening'; onStatus(phase); if (!stopping) clear(); };
+  recognition.onerror = event => {
+    if (!active) return;
+    // Silence is a normal pause, not the end of the user's session.
+    if (event.error === 'no-speech' && !stopping) return;
+    if (event.error === 'no-speech' && stopping) finish();
+    else { finish(event.error); abort(); }
+  };
+  recognition.onnomatch = () => { /* Keep listening; user may continue after a pause. */ };
+  recognition.onend = () => {
+    if (!active) return;
+    running = false;
+    if (stopping) { finish(); return; }
+    completed = alternatives(); current = []; clear();
+    // Avoid a tight restart loop when the platform ends immediately.
+    timer = schedule(startRun, 300);
+  };
   recognition.onresult = event => {
     if (!active) return;
-    const all = Array.from(event.results);
-    onTranscript(all.map(result => result[0]?.transcript || '').join(''));
-    const final = all.filter(result => result.isFinal);
-    if (!final.length) return;
-    const alternatives = Array.from(final[0]).map(entry => entry.transcript);
-    finish(); onResult(alternatives); abort();
+    current = Array.from(event.results);
+    onTranscript(completed[0] + current.map(result => result[0]?.transcript || '').join(''));
   };
   return {
-    start: () => { phase = 'starting'; onStatus(phase); deadline(15000, 'start-timeout'); try { recognition.start(); } catch { finish('start-failed'); abort(); } },
+    start: () => { if (!active || phase !== 'idle') return; phase = 'starting'; onStatus(phase); startRun(); },
     stop,
-    dispose: () => { active = false; clear(); abort(); },
+    dispose: () => { active = false; stopping = true; clear(); abort(); },
   };
 }

@@ -1,13 +1,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { library, filterLibrary, categoriesFor, ALL_CATEGORIES } from '../app/content.ts';
-import { courseEntries, normalizeLessonHanzi } from '../app/course-lessons.ts';
+import { courseEntries, normalizeLessonHanzi, LESSONS } from '../app/course-lessons.ts';
+import { newCourseEntries } from '../app/new-course-lessons.ts';
 import { makeSession } from '../lib/learning.ts';
 
 const base = { kind: 'all', book: false, category: ALL_CATEGORIES };
 
-test('all 82 course entries have a library card in the correct lesson', () => {
-  assert.equal(courseEntries.length, 82);
+test('all 222 course entries have a unique library card in the correct lesson', () => {
+  assert.equal(courseEntries.length, 222);
+  assert.equal(new Set(courseEntries.map(entry => `${entry.type}:${normalizeLessonHanzi(entry.hanzi)}`)).size, 222);
+  assert.deepEqual(LESSONS, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   for (const entry of courseEntries) {
     const matches = library.filter(item => item.type === entry.type && normalizeLessonHanzi(item.hanzi) === normalizeLessonHanzi(entry.hanzi));
     assert.equal(matches.length, 1, `Unique card for ${entry.hanzi}`);
@@ -19,14 +23,64 @@ test('all 82 course entries have a library card in the correct lesson', () => {
 });
 
 test('single lessons and all inclusive ranges contain exactly the supplied entries', () => {
-  for (let from = 1; from <= 5; from++) for (let to = from; to <= 5; to++) {
+  for (let from = 1; from <= 10; from++) for (let to = from; to <= 10; to++) {
     const actual = filterLibrary(library, { ...base, lessons: { from, to } });
     const expected = courseEntries.filter(entry => entry.lesson >= from && entry.lesson <= to);
     assert.equal(actual.length, expected.length, `${from}–${to}`);
+    assert.deepEqual(actual.map(item => `${item.type}:${normalizeLessonHanzi(item.hanzi)}`).sort(), expected.map(entry => `${entry.type}:${normalizeLessonHanzi(entry.hanzi)}`).sort(), `${from}–${to}: exact vocabulary`);
     assert.ok(actual.every(item => item.lessons.some(lesson => lesson >= from && lesson <= to)));
   }
   assert.equal(filterLibrary(library, { ...base, lessons: { from: 1, to: 5 } }).length, 82);
-  assert.ok(filterLibrary(library, base).length > 82);
+  assert.equal(filterLibrary(library, { ...base, lessons: { from: 6, to: 10 } }).length, 140);
+  assert.equal(filterLibrary(library, { ...base, lessons: { from: 1, to: 10 } }).length, 222);
+  assert.ok(filterLibrary(library, base).length > 222);
+});
+
+// Parse CSV quoting rather than splitting on commas inside Spanish definitions.
+function csvRows(text) {
+  const rows = []; let row = [], field = '', quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (char === '"') {
+      if (quoted && text[i + 1] === '"') { field += '"'; i++; }
+      else quoted = !quoted;
+    } else if (char === ',' && !quoted) { row.push(field); field = ''; }
+    else if (char === '\n' && !quoted) { row.push(field.replace(/\r$/, '')); rows.push(row); row = []; field = ''; }
+    else field += char;
+  }
+  if (field || row.length) { row.push(field.replace(/\r$/, '')); rows.push(row); }
+  assert.equal(quoted, false, 'All CSV quoted fields must terminate');
+  return rows;
+}
+
+test('all 140 supplied CSV rows retain their lesson, characters, pinyin and Spanish meaning', () => {
+  const [header, ...rows] = csvRows(readFileSync(new URL('../table_20261012.csv', import.meta.url), 'utf8'));
+  assert.deepEqual(header, ['Lección', 'Caracteres', 'Pinyin', 'Español']);
+  assert.equal(rows.length, 140);
+  const expected = rows.map(([lesson, hanzi, pinyin, spanish]) => ({ lesson: Number(lesson.slice(1)), type: /[。？！!?]/u.test(hanzi) ? 'phrase' : 'word', hanzi, pinyin, spanish }));
+  assert.deepEqual(newCourseEntries, expected);
+  assert.deepEqual(courseEntries.slice(82), expected);
+  assert.deepEqual([6, 7, 8, 9, 10].map(lesson => [lesson, expected.filter(entry => entry.lesson === lesson && entry.type === 'word').length, expected.filter(entry => entry.lesson === lesson && entry.type === 'phrase').length]), [[6, 26, 2], [7, 30, 3], [8, 23, 3], [9, 20, 3], [10, 27, 3]]);
+  for (const kind of ['word', 'phrase']) {
+    const actual = filterLibrary(library, { ...base, book: true, kind, lessons: { from: 6, to: 10 } });
+    assert.equal(actual.length, kind === 'word' ? 126 : 14);
+    assert.deepEqual(actual.map(item => normalizeLessonHanzi(item.hanzi)).sort(), expected.filter(entry => entry.type === kind).map(entry => normalizeLessonHanzi(entry.hanzi)).sort());
+  }
+});
+
+test('adding lessons preserves original card and audio identities across every existing source', () => {
+  const originalCards = [
+    ['我', 'w-001'], ['医生', 'w-141'], ['汉语', 'w-216'], ['你好', 'w-276'],
+    ['我需要手机。', 'f-131'], ['我家有四口人。', 'l-014'],
+    ['你叫什么名字？', 'course-3-50'], ['我叫杜丽。', 'course-3-51'],
+    ['我有一个朋友。', 'n-001'],
+  ];
+  for (const [hanzi, id] of originalCards) {
+    const card = library.find(item => item.hanzi === hanzi);
+    assert.ok(card, hanzi);
+    assert.equal(card.id, id, `${hanzi}: saved progress identity`);
+    assert.equal(card.audio, id, `${hanzi}: existing recording identity`);
+  }
 });
 
 test('lesson ranges combine with type, book, topic, search, category counts and session creation', () => {

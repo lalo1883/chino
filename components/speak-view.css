@@ -1,0 +1,37 @@
+.speak-view.speak-compact { display:block; max-width:880px; padding:24px 0; }
+.speak-compact .speak-copy { margin:0 0 20px; }
+.speak-compact .speak-copy h1 { font-size:clamp(28px,3.2vw,40px); margin:8px 0; }
+.speak-compact .speak-copy .lede { max-width:640px; margin:0; font-size:14px; }
+.speak-compact .speak-card { padding:24px; }
+.speak-compact .speech-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:12px; width:100%; padding-bottom:16px; border-bottom:1px solid var(--line); margin-bottom:20px; text-align:left; }
+.speak-compact .speech-toolbar .seg { width:auto; margin:0; padding:3px; }
+.speak-compact .speech-toolbar .seg button { padding:8px 13px; min-height:36px; font-size:12px; }
+.speak-compact .speech-kind-select { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); }
+.speak-compact .speech-kind-select select { padding:8px 24px 8px 10px; min-height:40px; border:1px solid var(--line); border-radius:9px; background:var(--card); color:var(--ink); }
+.speak-compact .speech-lessons { margin-left:auto; position:relative; }
+.speak-compact .speech-lessons summary { cursor:pointer; font-size:12px; min-height:40px; display:flex; align-items:center; padding:8px 12px; border:1px solid var(--line); border-radius:9px; }
+.speak-compact .speech-lessons summary::after { content:'⌄'; margin-left:10px; }
+.speak-compact .speech-lessons[open] { width:100%; }
+.speak-compact .lesson-filter { margin:12px 0 0; padding:12px; }
+.speak-compact .lesson-filter small { display:none; }
+.speak-compact .lesson-filter select { min-height:40px; padding:8px; }
+.speak-compact .speech-progress { margin-bottom:24px; height:4px; }
+.speak-compact .speak-step { font-size:10px; }
+.speak-compact .speak-pinyin { font-size:22px; }
+.speak-compact .speech-recording { display:flex; align-items:center; justify-content:center; gap:24px; margin:20px 0; text-align:left; }
+.speak-compact .mic-button { width:60px; height:60px; min-height:60px; flex-shrink:0; margin:0; box-shadow:0 0 0 5px var(--jade-soft); }
+.speak-compact .mic-status { margin:0 0 5px; font-size:13px; font-weight:600; }
+.speak-compact .speech-recording small { font-size:11px; color:var(--muted); }
+.speak-compact .speech-actions { display:flex; justify-content:space-between; gap:12px; width:100%; margin:16px 0; }
+.speak-compact .speech-actions button { min-height:40px; padding:9px 14px; margin:0; font-size:12px; }
+.speak-compact .speech-transcript { width:100%; }
+.speak-compact .speech-result { width:100%; }
+.speak-compact .tone-disclaimer { max-width:600px; color:var(--muted); }
+@media (max-width:600px) {
+  .speak-view.speak-compact { padding:16px 0; }
+  .speak-compact .speak-card { padding:18px 14px; }
+  .speak-compact .speech-toolbar { gap:8px; }
+  .speak-compact .speech-lessons { margin-left:0; }
+  .speak-compact .speech-recording { gap:18px; }
+  .speak-compact .speech-recording small { display:block; max-width:200px; line-height:1.5; }
+}

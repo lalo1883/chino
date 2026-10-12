@@ -1,5 +1,8 @@
 'use client';
 
+import { useLanguage } from '@/components/language-provider';
+import { meaningFor } from '@/lib/translations';
+
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { findWordAudio, type Segment } from '@/app/content';
 import { playClip } from './library-view';
@@ -23,6 +26,7 @@ function toPieces(hanzi: string, breakdown: Segment[]): Piece[] {
 
 /** Frase en chino cuyas palabras se pueden tocar para ver pinyin y traducción sin salir de la pantalla. */
 export function TappableSentence({ hanzi, breakdown, speed, highlight = '', className = '' }: { hanzi: string; breakdown: Segment[]; speed: number; highlight?: string; className?: string }) {
+  const { language, t } = useLanguage();
   const pieces = useMemo(() => toPieces(hanzi, breakdown), [hanzi, breakdown]);
   const [open, setOpen] = useState<{ index: number; left: number } | null>(null);
   const box = useRef<HTMLSpanElement>(null);
@@ -58,11 +62,11 @@ export function TappableSentence({ hanzi, breakdown, speed, highlight = '', clas
   const word = current ? findWordAudio(current.hanzi) : undefined;
   return <span ref={box} className={`tappable ${className}`}>
     {pieces.map((piece, index) => piece.segment
-      ? <button key={index} type="button" className={`tap-word ${open?.index === index ? 'open' : ''} ${highlight && piece.text === highlight ? 'hit' : ''}`} aria-expanded={open?.index === index} aria-label={`${piece.text}: ver significado`} onClick={(event) => toggle(index, event.currentTarget)}>{piece.text}</button>
+      ? <button key={index} type="button" className={`tap-word ${open?.index === index ? 'open' : ''} ${highlight && piece.text === highlight ? 'hit' : ''}`} aria-expanded={open?.index === index} aria-label={t(`${piece.text}: ver significado`)} onClick={(event) => toggle(index, event.currentTarget)}>{piece.text}</button>
       : <span key={index}>{piece.text}</span>)}
-    {current && open && <span className={`tap-pop ${word ? 'has-audio' : ''}`} role="dialog" aria-label={`Significado de ${current.hanzi}`} style={{ left: open.left }}>
-      <b>{current.hanzi}</b><em>{current.pinyin}</em><span>{current.meaning}</span>
-      {word && <button className="tap-pop-audio" type="button" onClick={() => playClip(word, speed)} aria-label={`Escuchar ${current.hanzi}`} title={`Escuchar ${current.hanzi}`}><span aria-hidden="true">♪</span></button>}
+    {current && open && <span className={`tap-pop ${word ? 'has-audio' : ''}`} role="dialog" aria-label={t(`Significado de ${current.hanzi}`)} style={{ left: open.left }}>
+      <b>{current.hanzi}</b><em>{current.pinyin}</em><span>{meaningFor(current, language)}</span>
+      {word && <button className="tap-pop-audio" type="button" onClick={() => playClip(word, speed)} aria-label={t(`Escuchar ${current.hanzi}`)} title={t(`Escuchar ${current.hanzi}`)}><span aria-hidden="true">{t("♪")}</span></button>}
     </span>}
   </span>;
 }

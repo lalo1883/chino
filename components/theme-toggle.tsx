@@ -1,5 +1,7 @@
 'use client';
 
+import { useLanguage } from '@/components/language-provider';
+
 import { useEffect, useState } from 'react';
 
 export const THEME_KEY = 'chino-theme';
@@ -11,6 +13,7 @@ function applyTheme(bw: boolean) {
 
 /** Alterna entre la versión a color y la versión blanco y negro. */
 export function ThemeToggle() {
+  const { t } = useLanguage();
   const [bw, setBw] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -22,5 +25,5 @@ export function ThemeToggle() {
     applyTheme(next);
     try { localStorage.setItem(THEME_KEY, next ? 'bw' : 'color'); } catch { /* almacenamiento no disponible */ }
   };
-  return <button className="theme-pill" onClick={toggle} aria-pressed={bw} title={bw ? 'Volver a color' : 'Versión blanco y negro'} aria-label="Versión blanco y negro"><i aria-hidden="true" /><span>B/N</span></button>;
+  return <button className="theme-pill" onClick={toggle} aria-pressed={bw} title={bw ? t('Volver a color') : t('Versión blanco y negro')} aria-label={t("Versión blanco y negro")}><i aria-hidden="true" /><span>{t("B/N")}</span></button>;
 }

@@ -1,3 +1,4 @@
+import { englishFor } from '../lib/translations.ts';
 import { courseEntries, lessonsFor, matchesLessonRange, normalizeLessonHanzi, type LessonRange } from './course-lessons.ts';
 import { exampleSource } from './examples.ts';
 
@@ -348,10 +349,12 @@ const lessonRows: LessonRow[] = [
 ];
 
 
+const courseTopics = ['Saludos', 'Nacionalidad', 'Presentaciones', 'Estudios', 'Mi familia', 'Compras', 'Lugares', 'Fechas y cumpleaños', 'Rutina diaria', 'Naturaleza'];
+
 const rawWords = wordSource.trim().split('\n').map((row) => row.split('|'));
 const knownWords = new Set(rawWords.map(([hanzi]) => normalizeLessonHanzi(hanzi)));
 for (const entry of courseEntries) if (entry.type === 'word' && !knownWords.has(normalizeLessonHanzi(entry.hanzi))) {
-  rawWords.push([entry.hanzi, entry.pinyin, entry.spanish, ['Saludos', 'Nacionalidad', 'Presentaciones', 'Estudios', 'Mi familia'][entry.lesson - 1]]);
+  rawWords.push([entry.hanzi, entry.pinyin, entry.spanish, courseTopics[entry.lesson - 1]]);
   knownWords.add(normalizeLessonHanzi(entry.hanzi));
 }
 
@@ -540,9 +543,9 @@ const coursePhrases: LibraryItem[] = courseEntries.flatMap((entry, index) => {
   knownPhrases.add(normalized);
   const id = `course-${entry.lesson}-${index + 1}`;
   return [{ id, audio: id, type: 'phrase' as const, hanzi: entry.hanzi, pinyin: entry.pinyin, spanish: entry.spanish,
-    category: ['Saludos', 'Nacionalidad', 'Presentaciones', 'Estudios', 'Mi familia'][entry.lesson - 1],
+    category: courseTopics[entry.lesson - 1],
     book: true, lessons: lessonsFor(entry.hanzi, 'phrase'),
-    breakdown: analyze(entry.hanzi).breakdown.map(part => part.hanzi === '杜' ? { hanzi: '杜', pinyin: 'Dù', meaning: 'Du (apellido)' } : part.hanzi === '丽' ? { hanzi: '丽', pinyin: 'Lì', meaning: 'Li (nombre)' } : part),
+    breakdown: (analyze(entry.hanzi).unknown.length ? [{ hanzi: entry.hanzi, pinyin: entry.pinyin, meaning: entry.spanish }] : analyze(entry.hanzi).breakdown).map(part => part.hanzi === '杜' ? { hanzi: '杜', pinyin: 'Dù', meaning: 'Du (apellido)' } : part.hanzi === '丽' ? { hanzi: '丽', pinyin: 'Lì', meaning: 'Li (nombre)' } : part),
   }];
 });
 
@@ -603,7 +606,7 @@ export function filterLibrary(items: LibraryItem[], filter: LibraryFilter) {
     (!filter.book || item.book) &&
     matchesLessonRange(item, filter.lessons) &&
     (filter.category === ALL_CATEGORIES || item.category === filter.category) &&
-    (!query || `${item.hanzi} ${item.pinyin} ${item.spanish}`.toLocaleLowerCase().includes(query)));
+    (!query || `${item.hanzi} ${item.pinyin} ${item.spanish} ${englishFor(item.hanzi, item.spanish)}`.toLocaleLowerCase().includes(query)));
 }
 
 /** Categorías disponibles (con cantidad) para un tipo de tarjeta y origen. */

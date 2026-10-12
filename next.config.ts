@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 
-const nextConfig: NextConfig = {};
+// Keep the development overlay from covering the mobile study tabs.
+const nextConfig: NextConfig = { devIndicators: false };
 
 export default nextConfig;

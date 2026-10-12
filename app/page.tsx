@@ -1,10 +1,10 @@
 'use client';
 
+import { useLanguage } from '@/components/language-provider';
+
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { commonPhrases, commonWords, library, ALL_CATEGORIES, filterLibrary, type LibraryItem } from './content';
-import { type LessonRange } from './course-lessons';
-import { LessonFilter } from '@/components/lesson-filter';
-import { LibraryView, playClip, stopClip, type PracticeFilter } from '@/components/library-view';
+import { commonPhrases, commonWords, library } from './content';
+import { LibraryView, stopClip, type PracticeFilter } from '@/components/library-view';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { AccountMenu } from '@/components/account-menu';
 import { StudySession } from '@/components/study-session';
@@ -12,7 +12,11 @@ import { scheduleReview } from '@/lib/learning';
 import { authClient } from '@/lib/auth-client';
 import { useOnline } from '@/components/use-online';
 import { UiIcon } from '@/components/ui-icon';
-import { createSpeechAttempt, speechErrorMessage, type BrowserSpeechRecognition, type SpeechStatus } from '@/lib/speech-recognition';
+import { SpeakView } from '@/components/speak-view';
+import { ListeningView } from '@/components/listening-view';
+import { WritingView } from '@/components/writing-view';
+import { LanguageSwitch } from '@/components/language-provider';
+import { meaningFor } from '@/lib/translations';
 
 const navIcons: Record<string, React.ReactNode> = {
   learn: <path d="M3 9.6 10 4l7 5.6V16a1 1 0 0 1-1 1h-3.5v-4.2h-5V17H4a1 1 0 0 1-1-1z" />,
@@ -20,6 +24,8 @@ const navIcons: Record<string, React.ReactNode> = {
   book: <path d="M4.2 4.4c2.2-.9 4.1-.7 5.8.6v10.8c-1.7-1.3-3.6-1.5-5.8-.6zM15.8 4.4c-2.2-.9-4.1-.7-5.8.6v10.8c1.7-1.3 3.6-1.5 5.8-.6z" />,
   words: <path d="M4 4.6A1.6 1.6 0 0 1 5.6 3H16v14H5.6A1.6 1.6 0 0 1 4 15.4zM16 13.6H5.6M8 6.6h5M8 9.4h5" />,
   speak: <path d="M10 3.2a2.2 2.2 0 0 1 2.2 2.2v4.1a2.2 2.2 0 1 1-4.4 0V5.4A2.2 2.2 0 0 1 10 3.2ZM5.4 9.4a4.6 4.6 0 0 0 9.2 0M10 14v3" />,
+  listen: <path d="M3 11V9a7 7 0 0 1 14 0v2M3 10h3v6H3zM14 10h3v6h-3z" />,
+  write: <path d="m4 13 9-9 3 3-9 9-4 1zM11 6l3 3M3 18h14" />,
   progress: <path d="M3.6 16.4h12.8M6.2 13.6V8.4M10 13.6V4.6M13.8 13.6v-6" />,
 };
 
@@ -74,7 +80,7 @@ const DAY = 86_400_000;
 const GUEST_STORAGE_KEY = 'mi-diario-beginner:guest';
 const LEGACY_STORAGE_KEY = 'mi-diario-beginner';
 const LAST_USER_KEY = 'mi-diario-last-user';
-const SCREENS = ['learn', 'cards', 'words', 'book', 'speak', 'progress'] as const;
+const SCREENS = ['learn', 'cards', 'words', 'book', 'listen', 'speak', 'write', 'progress'] as const;
 type Screen = typeof SCREENS[number];
 type CachedUser = { id: string; name: string; email: string };
 
@@ -138,6 +144,7 @@ function calculateStreak(days: string[]) {
 }
 
 export default function Home() {
+  const { t } = useLanguage();
   const { data: session, isPending: sessionPending, refetch: refetchSession } = authClient.useSession();
   const online = useOnline();  const [cachedUser, setCachedUser] = useState<CachedUser | null>(null);
   const [syncNonce, setSyncNonce] = useState(0);
@@ -293,7 +300,7 @@ export default function Home() {
   };
 
   const resetProgress = async () => {
-    if (!window.confirm(userId ? '¿Borrar tu progreso de todos tus dispositivos?' : '¿Borrar todo el progreso guardado en este dispositivo?')) return;
+    if (!window.confirm(t(userId ? '¿Borrar tu progreso de todos tus dispositivos?' : '¿Borrar todo el progreso guardado en este dispositivo?'))) return;
     if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
     localStorage.removeItem(storageKey);
     setRecords({}); setStudyDays([]);
@@ -322,158 +329,55 @@ export default function Home() {
   }, [persist, records, studyDays]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    stopClip();
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [screen]);
 
   return (
     <main className="shell">
       <header className="topbar">
-        <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label="Chino, inicio"><span className="brand-mark">字</span><span>Chino<span className="brand-caption">desde cero</span></span></button>
-        <nav className="main-nav" aria-label="Navegación principal" data-screen={screen}><i className="nav-indicator" aria-hidden="true" />
-          {([['learn','Home'],['cards','Practicar'],['words','Palabras'],['book','Libro'],['speak','Hablar'],['progress','Progreso']] as const).map(([value, label]) =>
-            <button key={value} aria-current={screen === value ? 'page' : undefined} className={screen === value ? 'selected' : ''} onClick={() => { haptic(8); setScreen(value); }}><NavIcon name={value} /><span>{label}</span></button>)}
+        <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label={t("Chino, inicio")}><span className="brand-mark">{"字"}</span><span>{t("Chino")}<span className="brand-caption">{t("desde cero")}</span></span></button>
+        <nav className="main-nav" aria-label={t("Navegación principal")} data-screen={screen}><i className="nav-indicator" aria-hidden="true" />
+          {([['learn','Home'],['cards','Flashcards'],['words','Palabras'],['book','Libro'],['listen','Listening'],['speak','Speaking'],['write','Writing'],['progress','Progreso']] as const).map(([value, label]) =>
+            <button key={value} aria-current={screen === value ? 'page' : undefined} className={screen === value ? 'selected' : ''} onClick={() => { haptic(8); setScreen(value); }}><NavIcon name={value} /><span>{t(label)}</span></button>)}
         </nav>
-        <div className="header-actions">{!online && <span className="offline-pill" role="status">Sin conexión</span>}<label className="voice-pill"><i /><span>Xiaoxiao</span><span aria-hidden="true">·</span><select aria-label="Velocidad de pronunciación" value={speed} onChange={(event) => changeSpeed(Number(event.target.value))}>{[-40,-30,-20,-15,-10,0,10,20].map((value) => <option key={value} value={value}>{value > 0 ? '+' : value === 0 ? '±' : ''}{value}%</option>)}</select></label><ThemeToggle /><div className="streak"><span>●</span> {ready ? streak : 0} día{streak === 1 ? '' : 's'}</div><AccountMenu syncState={syncState} fallbackUser={offlineUser} onSignedOut={() => { try { localStorage.removeItem(LAST_USER_KEY); } catch { /* noop */ } setCachedUser(null); setScreen('learn'); setSyncState('local'); }} /></div>
+        <div className="header-actions"><LanguageSwitch />{!online && <span className="offline-pill" role="status">{t("Sin conexión")}</span>}<label className="voice-pill"><i /><span>{t("Xiaoxiao")}</span><span aria-hidden="true">{"·"}</span><select aria-label={t("Velocidad de pronunciación")} value={speed} onChange={(event) => changeSpeed(Number(event.target.value))}>{[-40,-30,-20,-15,-10,0,10,20].map((value) => <option key={value} value={value}>{value > 0 ? t('+') : value === 0 ? t('±') : ''}{value}{"%"}</option>)}</select></label><ThemeToggle /><div className="streak"><span>{"●"}</span> {ready ? streak : 0} {t(streak === 1 ? 'día' : 'días')}</div><AccountMenu syncState={syncState} fallbackUser={offlineUser} onSignedOut={() => { try { localStorage.removeItem(LAST_USER_KEY); } catch { /* noop */ } setCachedUser(null); setScreen('learn'); setSyncState('local'); }} /></div>
       </header>
 
       <div className="screen" key={screen}>
-      {screen === 'learn' ? <HomeGuide onNavigate={setScreen} /> : screen === 'cards' ? <StudySession key={`${storageKey}:${practiceFilter?.nonce ?? 0}`} speed={speed} records={records} ready={ready} onReview={recordReview} initialFilter={practiceFilter?.filter} /> : screen === 'words' ? <LibraryView scope="all" speed={speed} records={records} onPractice={practiceWith} /> : screen === 'book' ? <LibraryView scope="book" speed={speed} records={records} onPractice={practiceWith} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} signedIn={Boolean(userId)} syncState={syncState} onContinue={() => setScreen('cards')} onReset={resetProgress} />}
+      {screen === 'learn' ? <HomeGuide onNavigate={setScreen} /> : screen === 'cards' ? <StudySession key={`${storageKey}:${practiceFilter?.nonce ?? 0}`} speed={speed} records={records} ready={ready} onReview={recordReview} initialFilter={practiceFilter?.filter} /> : screen === 'words' ? <LibraryView scope="all" speed={speed} records={records} onPractice={practiceWith} /> : screen === 'book' ? <LibraryView scope="book" speed={speed} records={records} onPractice={practiceWith} /> : screen === 'listen' ? <ListeningView speed={speed} /> : screen === 'write' ? <WritingView speed={speed} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} signedIn={Boolean(userId)} syncState={syncState} onContinue={() => setScreen('cards')} onReset={resetProgress} />}
       </div>
-      <footer>{commonWords.length} palabras · {commonPhrases.length} frases · {library.filter((item) => item.book).length} del libro · Chino simplificado · {userId ? 'Progreso sincronizado con tu cuenta' : 'Crea una cuenta para sincronizar tu progreso'}</footer>
+      <footer>{commonWords.length} {t("palabras ·")} {commonPhrases.length} {t("frases ·")} {library.filter((item) => item.book).length} {t("del libro · Chino simplificado ·")} {userId ? t('Progreso sincronizado con tu cuenta') : t('Crea una cuenta para sincronizar tu progreso')}</footer>
     </main>
   );
 }
 
 function HomeGuide({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
+  const { t } = useLanguage();
   const sections = [
-    { screen: 'cards', title: 'Practicar', subtitle: 'Recuerda a tu ritmo', description: 'Convierte lo que estudias en tarjetas y repasa lo que más te cuesta.', steps: ['Elige palabras, frases o ambas; filtra por tema, libro o lecciones.', 'Escucha e intenta recordar el significado antes de mostrar la respuesta.', 'Marca si te la supiste y continúa. Lo difícil vuelve antes.'], action: 'Preparar mi sesión' },
+    { screen: 'cards', title: 'Flashcards', subtitle: 'Recuerda a tu ritmo', description: 'Convierte lo que estudias en tarjetas y repasa lo que más te cuesta.', steps: ['Elige palabras, frases o ambas; filtra por tema, libro o lecciones.', 'Escucha e intenta recordar el significado antes de mostrar la respuesta.', 'Marca si te la supiste y continúa. Lo difícil vuelve antes.'], action: 'Preparar mi sesión' },
     { screen: 'words', title: 'Palabras', subtitle: 'Explora y entiende', description: 'Tu biblioteca de palabras y frases, con pinyin, español y ejemplos.', steps: ['Busca en chino, pinyin o español y ajusta los filtros.', 'Abre una tarjeta para ver ejemplos y su desglose.', 'Toca el audio para escuchar cada palabra o practica tu selección.'], action: 'Explorar palabras' },
-    { screen: 'book', title: 'Libro', subtitle: 'Sigue tu curso', description: 'Encuentra el vocabulario y las frases de tu libro en un solo lugar.', steps: ['Elige palabras o frases y el tema que estás estudiando.', 'En Lecciones, selecciona desde dónde y hasta dónde repasar.', 'Escucha, consulta el desglose y lleva esas tarjetas a Practicar.'], action: 'Abrir mi libro' },
-    { screen: 'speak', title: 'Hablar', subtitle: 'Dale voz al chino', description: 'Escucha un modelo, repítelo y compara lo que el navegador reconoce.', steps: ['Elige todo el contenido o Libro; selecciona palabras, frases o ambas.', 'Escucha el modelo y pulsa el micrófono. Permite su acceso cuando se solicite.', 'Revisa el resultado y sigue. La puntuación compara palabras; no evalúa cada tono.'], action: 'Practicar pronunciación' },
+    { screen: 'book', title: 'Libro', subtitle: 'Sigue tu curso', description: 'Encuentra el vocabulario y las frases de tu libro en un solo lugar.', steps: ['Elige palabras o frases y el tema que estás estudiando.', 'En Lecciones, selecciona desde dónde y hasta dónde repasar.', 'Escucha, consulta el desglose y lleva esas tarjetas a Flashcards.'], action: 'Abrir mi libro' },
+    { screen: 'listen', title: 'Listening', subtitle: 'Entrena tu oído', description: 'Escucha mandarín y practica el significado y los tonos.', steps: ['Elige un ejercicio de significado o de tonos.', 'Escucha el audio y responde sin mirar el chino.', 'Comprueba tu respuesta y completa diez ejercicios.'], action: 'Practicar listening' },
+    { screen: 'write', title: 'Writing', subtitle: 'Escribe carácter por carácter', description: 'Dibuja con el dedo o el mouse y recibe corrección de cada trazo.', steps: ['Lee el pinyin y elige una palabra o lección.', 'Sigue el orden de los trazos con o sin guía.', 'Usa una pista o mira la animación cuando necesites ayuda.'], action: 'Practicar writing' },
+    { screen: 'speak', title: 'Speaking', subtitle: 'Dale voz al chino', description: 'Escucha un modelo, repítelo y compara lo que el navegador reconoce.', steps: ['Elige todo el contenido o Libro; selecciona palabras, frases o ambas.', 'Escucha el modelo y pulsa el micrófono. Permite su acceso cuando se solicite.', 'Revisa el resultado y sigue. La puntuación compara palabras; no evalúa cada tono.'], action: 'Practicar pronunciación' },
     { screen: 'progress', title: 'Progreso', subtitle: 'Mira lo que avanzas', description: 'Consulta tus repasos, tu racha y las tarjetas que ya estás consolidando.', steps: ['Revisa las tarjetas pendientes y tus días de estudio.', 'Consulta los últimos repasos y el avance de cada grupo.', 'Inicia sesión para sincronizar tu progreso entre dispositivos.'], action: 'Ver mi progreso' },
   ] as const;
   return <div className="home-guide">
-    <section className="home-welcome" aria-labelledby="home-title"><div><p className="eyebrow">HOME · CHINO DESDE CERO</p><h1 id="home-title">Tu punto de partida.<br /><span>Una palabra cada vez.</span></h1><p className="lede">Aquí encontrarás cómo usar cada sección. Explora, recuerda y habla: tú eliges por dónde empezar.</p><button className="practice-primary" onClick={() => onNavigate('cards')}>Empezar a practicar <UiIcon name="arrow" /></button></div><aside className="home-route"><span className="home-icon"><UiIcon name="bulb" /></span><h2>¿Primera vez por aquí?</h2><p>Prueba este recorrido corto.</p><ol><li><b>Explora en Libro o Palabras</b><span>Escucha y descubre el significado.</span></li><li><b>Repasa en Practicar</b><span>Intenta recordar sin mirar la respuesta.</span></li><li><b>Repite en Hablar</b><span>Practica en voz alta lo que aprendiste.</span></li></ol><small>Con unos minutos al día basta para empezar.</small></aside></section>
-    <section aria-labelledby="home-sections"><div className="home-section-heading"><div><p className="eyebrow">TU GUÍA DE LA PÁGINA</p><h2 id="home-sections">Un lugar para cada paso.</h2></div><p>Abre una sección y prueba a tu ritmo.</p></div><div className="home-section-grid">{sections.map(section => <article className="home-section-card" key={section.screen}><div className="home-card-heading"><span className="home-icon"><NavIcon name={section.screen} /></span><div><h3>{section.title}</h3><small>{section.subtitle}</small></div></div><p>{section.description}</p><ol>{section.steps.map(step => <li key={step}>{step}</li>)}</ol><button onClick={() => onNavigate(section.screen)}>{section.action}<UiIcon name="arrow" /></button></article>)}</div></section>
-    <section className="home-tools" aria-labelledby="home-tools-title"><div><p className="eyebrow">A TU RITMO</p><h2 id="home-tools-title">Pequeñas ayudas para estudiar.</h2></div><div className="home-tool-grid"><article><UiIcon name="audio" /><h3>Escucha más despacio</h3><p>Ajusta la velocidad junto a Xiaoxiao en la barra superior. Los botones de audio usan ese ritmo.</p></article><article><UiIcon name="book" /><h3>Desarma una frase</h3><p>Toca una palabra en los ejemplos para ver su significado. En el desglose puedes escucharla por separado.</p></article><article><UiIcon name="chart" /><h3>Conserva tu avance</h3><p>Sin cuenta, tu progreso queda en este dispositivo. Usa Entrar para sincronizarlo; el botón B/N cambia el contraste.</p></article></div></section>
+    <section className="home-welcome" aria-labelledby="home-title"><div><p className="eyebrow">{t("HOME · CHINO DESDE CERO")}</p><h1 id="home-title">{t("Tu punto de partida.")}<br /><span>{t("Una palabra cada vez.")}</span></h1><p className="lede">{t("Aquí encontrarás cómo usar cada sección. Explora, recuerda y habla: tú eliges por dónde empezar.")}</p><button className="practice-primary" onClick={() => onNavigate('cards')}>{t("Empezar a practicar")}<UiIcon name="arrow" /></button></div><aside className="home-route"><span className="home-icon"><UiIcon name="bulb" /></span><h2>{t("¿Primera vez por aquí?")}</h2><p>{t("Prueba este recorrido corto.")}</p><ol><li><b>{t("Explora en Libro o Palabras")}</b><span>{t("Escucha y descubre el significado.")}</span></li><li><b>{t("Repasa en Flashcards")}</b><span>{t("Intenta recordar sin mirar la respuesta.")}</span></li><li><b>{t("Repite en Speaking")}</b><span>{t("Practica en voz alta lo que aprendiste.")}</span></li></ol><small>{t("Con unos minutos al día basta para empezar.")}</small></aside></section>
+    <section aria-labelledby="home-sections"><div className="home-section-heading"><div><p className="eyebrow">{t("TU GUÍA DE LA PÁGINA")}</p><h2 id="home-sections">{t("Un lugar para cada paso.")}</h2></div><p>{t("Abre una sección y prueba a tu ritmo.")}</p></div><div className="home-section-grid">{sections.map(section => <article className="home-section-card" key={section.screen}><div className="home-card-heading"><span className="home-icon"><NavIcon name={section.screen} /></span><div><h3>{t(section.title)}</h3><small>{t(section.subtitle)}</small></div></div><p>{t(section.description)}</p><ol>{section.steps.map(step => <li key={step}>{t(step)}</li>)}</ol><button onClick={() => onNavigate(section.screen)}>{t(section.action)}<UiIcon name="arrow" /></button></article>)}</div></section>
+    <section className="home-tools" aria-labelledby="home-tools-title"><div><p className="eyebrow">{t("A TU RITMO")}</p><h2 id="home-tools-title">{t("Pequeñas ayudas para estudiar.")}</h2></div><div className="home-tool-grid"><article><UiIcon name="audio" /><h3>{t("Escucha más despacio")}</h3><p>{t("Ajusta la velocidad junto a Xiaoxiao en la barra superior. Los botones de audio usan ese ritmo.")}</p></article><article><UiIcon name="book" /><h3>{t("Desarma una frase")}</h3><p>{t("Toca una palabra en los ejemplos para ver su significado. En el desglose puedes escucharla por separado.")}</p></article><article><UiIcon name="chart" /><h3>{t("Conserva tu avance")}</h3><p>{t("Sin cuenta, tu progreso queda en este dispositivo. Usa Entrar para sincronizarlo; el botón B/N cambia el contraste.")}</p></article></div></section>
   </div>;
 }
 
 function ProgressView({ records, studyDays, learned, dueNow, streak, signedIn, syncState, onContinue, onReset }: { records: Record<string, Review>; studyDays: string[]; learned: number; dueNow: number; streak: number; signedIn: boolean; syncState: 'local' | 'saving' | 'synced' | 'error'; onContinue: () => void; onReset: () => void }) {
+  const { language, t } = useLanguage();
   const recent = Object.entries(records).sort(([, a], [, b]) => b.updatedAt - a.updatedAt).slice(0, 6);
   const byId = new Map([...units.flatMap((unit) => unit.cards), ...library.map(item => ({ ...item, meaning: item.spanish }))].map(card => [card.id, card]));
   return <section className="progress-view">
-    <div className="progress-title"><div><p className="eyebrow">{signedIn ? syncState === 'saving' ? 'SINCRONIZANDO…' : syncState === 'error' ? 'SIN CONEXIÓN · GUARDADO LOCAL' : 'PROGRESO SINCRONIZADO' : 'PROGRESO EN ESTE DISPOSITIVO'}</p><h1>{signedIn ? 'Tu avance viaja contigo.' : 'Tu progreso empieza aquí.'}</h1><p className="lede">{signedIn ? 'Se guarda en tu cuenta para continuar desde tu celular o computadora. Consolidada significa recordar una tarjeta en días distintos y alcanzar un intervalo de al menos 7 días.' : 'Puedes practicar sin cuenta. Crea una cuando quieras conservar y sincronizar tu avance.'}</p></div><button className="reveal continue" onClick={onContinue}>Continuar aprendiendo →</button></div>
-    <div className="metric-grid"><article><span>字</span><strong>{learned}</strong><small>tarjetas consolidadas</small></article><article><span>复</span><strong>{dueNow}</strong><small>listas para repasar</small></article><article><span>火</span><strong>{streak}</strong><small>días de racha</small></article><article><span>日</span><strong>{studyDays.length}</strong><small>días de estudio</small></article></div>
-    <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>Tarjetas practicadas por unidad</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}. {unit.name}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}/{unit.cards.length}</small></div>; })}{(() => { const book = library.filter(item => item.book); const count = book.filter(item => records[item.id]).length; return <div className="progress-row"><b>Mi libro</b><div><i style={{ width:`${count / book.length * 100}%` }} /></div><small>{count}/{book.length}</small></div>; })()}<div className="progress-row"><b>Biblioteca completa</b><div><i style={{ width: `${library.filter(item => records[item.id]).length / library.length * 100}%` }} /></div><small>{library.filter(item => records[item.id]).length}/{library.length}</small></div></article><article className="activity"><div className="section-heading"><span>Últimos repasos</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card?.meaning}</small></div><em className={record.rating}>{record.rating === 'fácil' ? 'Recordada' : 'Por reforzar'}</em></div>; }) : <p className="empty">Aún no hay repasos. Empieza con 你好.</p>}</article></div>
-    <button className="danger-reset" onClick={onReset}>Borrar mi progreso</button>
-  </section>;
-}
-
-function playLibraryAudio(item: LibraryItem, speed: number) { playClip(item.audio, speed); }
-
-type SpeechResult = { score: number; heard: string; feedback: string };
-type NativeSpeech = {
-  requestPermissions: () => Promise<{ speechRecognition: string }>;
-  start: (options: { language: string; maxResults: number; prompt: string; partialResults: boolean; popup: boolean }) => Promise<{ matches?: string[] }>;
-};
-type SpeechWindow = Window & {
-  SpeechRecognition?: new () => BrowserSpeechRecognition;
-  webkitSpeechRecognition?: new () => BrowserSpeechRecognition;
-};
-
-function normalizeChinese(value: string) { return value.replace(/[\s\p{P}\p{S}]/gu, ''); }
-
-function distance(a: string, b: string) {
-  const matrix = Array.from({ length: a.length + 1 }, (_, row) => Array.from({ length: b.length + 1 }, (_, column) => row === 0 ? column : column === 0 ? row : 0));
-  for (let row = 1; row <= a.length; row++) for (let column = 1; column <= b.length; column++) matrix[row][column] = a[row - 1] === b[column - 1] ? matrix[row - 1][column - 1] : 1 + Math.min(matrix[row - 1][column], matrix[row][column - 1], matrix[row - 1][column - 1]);
-  return matrix[a.length][b.length];
-}
-
-function SpeakView({ speed }: { speed: number }) {
-  const [index, setIndex] = useState(0);
-  const [bookMode, setBookMode] = useState(false);
-  const [lessons, setLessons] = useState<LessonRange>();
-  const [bookKind, setBookKind] = useState<'all' | 'word' | 'phrase'>('all');
-  const [speechStatus, setSpeechStatus] = useState<SpeechStatus>('idle');
-  const listening = speechStatus !== 'idle';
-  const [transcript, setTranscript] = useState('');
-  const [nativeListening, setNativeListening] = useState(false);
-  const [result, setResult] = useState<SpeechResult | null>(null);
-  const [error, setError] = useState('');
-  const attemptRef = useRef<ReturnType<typeof createSpeechAttempt> | null>(null);
-  useEffect(() => () => { attemptRef.current?.dispose(); }, []);
-  const speechItems = useMemo(() => filterLibrary(library, { kind: bookKind, book: bookMode, category: ALL_CATEGORIES, lessons }), [bookMode, bookKind, lessons]);
-  const phrase = speechItems[index];
-  const resetSpeech = () => { setIndex(0); setResult(null); setError(''); setTranscript(''); };
-  const selectBook = (value: boolean) => { setBookMode(value); resetSpeech(); };
-  const selectKind = (value: 'all' | 'word' | 'phrase') => { setBookKind(value); resetSpeech(); };
-
-  const showResult = (alternatives: string[]) => {
-    if (!phrase) return;
-    const target = normalizeChinese(phrase.hanzi);
-    const ranked = alternatives.map((transcript) => { const heard = normalizeChinese(transcript); const score = Math.max(0, Math.round((1 - distance(target, heard) / Math.max(target.length, heard.length, 1)) * 100)); return { score, heard: transcript }; }).sort((a, b) => b.score - a.score);
-    const best = ranked[0] || { score: 0, heard: '' };
-    const feedback = best.score >= 90 ? '¡Muy bien! El navegador entendió la frase completa.' : best.score >= 65 ? 'Casi. Escucha otra vez y repite con un ritmo más claro.' : 'Inténtalo de nuevo por partes, siguiendo el pinyin.';
-    setResult({ ...best, feedback });
-  };
-
-  // En la app Android el WebView no trae reconocimiento de voz: se usa el plugin nativo.
-  const listenNative = async (native: NativeSpeech) => {
-    setNativeListening(true);
-    try {
-      if (!phrase) return;
-      const permission = await native.requestPermissions();
-      if (permission.speechRecognition !== 'granted') { setSpeechStatus('idle'); setError('Activa el permiso del micrófono para practicar la pronunciación.'); return; }
-      setSpeechStatus('listening');
-      const { matches } = await native.start({ language: 'zh-CN', maxResults: 5, prompt: phrase.hanzi, partialResults: false, popup: false });
-      setSpeechStatus('idle');
-      showResult(matches || []);
-    } catch {
-      setSpeechStatus('idle');
-      setError('No pude escuchar con claridad. Revisa el permiso del micrófono e inténtalo otra vez.');
-    } finally { setNativeListening(false); }
-  };
-
-  const listen = () => {
-    if (!phrase || listening) return;
-    setResult(null); setError(''); setTranscript('');
-    stopClip();
-    attemptRef.current?.dispose();
-    const native = (window as Window & { Capacitor?: { isNativePlatform?: () => boolean; Plugins?: { SpeechRecognition?: NativeSpeech } } }).Capacitor;
-    if (native?.isNativePlatform?.() && native.Plugins?.SpeechRecognition) { setSpeechStatus('starting'); listenNative(native.Plugins.SpeechRecognition); return; }
-    if (!window.isSecureContext) { setError('El micrófono necesita una conexión segura. Abre la página con https o usa localhost.'); return; }
-    const speechWindow = window as SpeechWindow;
-    const Recognition = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
-    if (!Recognition) { setError('Este navegador no ofrece reconocimiento de voz. Abre la página directamente en Chrome o Safari. Los audios del modelo siguen disponibles.'); return; }
-    if (!navigator.onLine) { setError(speechErrorMessage('network')); return; }
-    try {
-      const recognition = new Recognition();
-      recognition.lang = 'zh-CN'; recognition.continuous = false; recognition.interimResults = true; recognition.maxAlternatives = 5;
-      const attempt = createSpeechAttempt({ recognition, onStatus: setSpeechStatus, onTranscript: setTranscript, onResult: showResult, onError: setError });
-      attemptRef.current = attempt;
-      attempt.start();
-    } catch { setSpeechStatus('idle'); setError('No se pudo iniciar el micrófono en este navegador. Abre la página directamente en Chrome o Safari.'); }
-  };
-
-  const next = () => { setIndex((current) => speechItems.length ? (current + 1) % speechItems.length : 0); setResult(null); setError(''); setTranscript(''); };
-  return <section className="speak-view">
-    <div className="speak-copy"><p className="eyebrow">ENTRENADOR DE PRONUNCIACIÓN · BETA</p><h1><span>Escucha.</span><span>Habla.</span><span>Comprueba.</span></h1><p className="lede">El navegador escucha en mandarín y compara los caracteres reconocidos con la frase objetivo.</p><div className="privacy-note"><UiIcon name="lock" /><div><b>Privacidad</b><span>La app no guarda tus grabaciones.</span></div></div><div className="speech-features"><div><UiIcon name="mic" /><b>Reconocimiento<br />en mandarín</b></div><div><UiIcon name="book" /><b>Comparación<br />de caracteres</b></div><div><UiIcon name="chart" /><b>Retroalimentación<br />instantánea</b></div></div></div>
-    <article className="speak-card">
-      <div className="speech-selection"><div className="seg" role="group" aria-label="Contenido de pronunciación"><button type="button" aria-pressed={!bookMode} className={!bookMode ? 'active' : ''} disabled={listening} onClick={() => selectBook(false)}>Todo el contenido</button><button type="button" aria-pressed={bookMode} className={bookMode ? 'active' : ''} disabled={listening} onClick={() => selectBook(true)}><UiIcon name="book" />Libro</button></div>{<div className="seg speech-kind" role="group" aria-label="Tipo de contenido de pronunciación">{([['all', 'Todo'], ['word', 'Palabras'], ['phrase', 'Frases']] as const).map(([value, label]) => <button type="button" key={value} aria-pressed={bookKind === value} className={bookKind === value ? 'active' : ''} disabled={listening} onClick={() => selectKind(value)}>{label}</button>)}</div>}</div>
-      <LessonFilter value={lessons} disabled={listening} onChange={value => { setLessons(value); resetSpeech(); }} />
-      {phrase ? <>
-      <div className="speak-step">{phrase.type === 'word' ? 'PALABRA' : 'FRASE'} {index + 1} DE {speechItems.length}{bookMode ? ' · LIBRO' : ''}{phrase.lessons?.length ? ` · Lección ${phrase.lessons.join(', ')}` : ''}</div><progress className="speech-progress" value={index + 1} max={speechItems.length} aria-label="Avance de frases de pronunciación" />
-      <div className="speak-target"><div className="speak-hanzi">{phrase.hanzi}</div><button className="speak-audio-icon" disabled={listening} onClick={() => playLibraryAudio(phrase, speed)} aria-label={`Escuchar ${phrase.hanzi}`}><UiIcon name="audio" /></button></div><div className="speak-pinyin">{phrase.pinyin}</div><p>{phrase.spanish}</p>
-      <div className="speech-instruction"><UiIcon name="mic" /><div><b>Presiona el botón y repite {phrase.type === 'word' ? 'la palabra' : 'la frase'} en mandarín</b><span>Habla con naturalidad, no tiene que ser perfecto.</span></div></div>
-      <button className={`mic-button ${speechStatus === 'listening' ? 'listening' : ''}`} onClick={() => listening ? attemptRef.current?.stop() : listen()} disabled={speechStatus === 'processing' || nativeListening} aria-label={speechStatus === 'starting' ? 'Cancelar activación' : speechStatus === 'listening' ? 'Terminar de hablar' : speechStatus === 'processing' ? 'Comprobando…' : 'Hablar ahora'}><UiIcon name={listening ? 'close' : 'mic'} /></button><p className="mic-status" aria-live="polite">{speechStatus === 'starting' ? 'Activando micrófono… acepta el permiso si aparece.' : speechStatus === 'listening' ? 'Escuchando… habla ahora. Pulsa para terminar.' : speechStatus === 'processing' ? 'Comprobando lo que dijiste…' : 'Toca para hablar'}</p>
-      {transcript && <p className="speech-transcript" aria-live="polite"><small>{listening ? 'Voy escuchando' : 'Voz detectada'}</small><span lang="zh-CN">{transcript}</span></p>}
-      <button className="listen-model" disabled={listening} onClick={() => playLibraryAudio(phrase, speed)}><UiIcon name="audio" />Escuchar modelo</button>
-      {error && <div className="speech-error" role="alert">{error}</div>}
-      {result && <div className={`speech-result ${result.score >= 90 ? 'great' : result.score >= 65 ? 'close' : 'retry'}`}><div className="score"><strong>{result.score}</strong><span>/100</span></div><div><b>{result.feedback}</b><p>Escuché: <span>{result.heard || '—'}</span></p></div></div>}
-      <button className="next-phrase" disabled={listening} onClick={next}>Siguiente {phrase.type === 'word' ? 'palabra' : 'frase'} →</button>
-      <small className="tone-disclaimer">La puntuación se basa en las palabras que reconoce el navegador; no evalúa cada tono.</small>
-      </> : <p role="status" className="empty">No hay palabras o frases con estos filtros. Prueba otro tipo o rango de lecciones.</p>}
-    </article>
+    <div className="progress-title"><div><p className="eyebrow">{signedIn ? syncState === 'saving' ? t('SINCRONIZANDO…') : syncState === 'error' ? t('SIN CONEXIÓN · GUARDADO LOCAL') : t('PROGRESO SINCRONIZADO') : t('PROGRESO EN ESTE DISPOSITIVO')}</p><h1>{signedIn ? t('Tu avance viaja contigo.') : t('Tu progreso empieza aquí.')}</h1><p className="lede">{signedIn ? t('Se guarda en tu cuenta para continuar desde tu celular o computadora. Consolidada significa recordar una tarjeta en días distintos y alcanzar un intervalo de al menos 7 días.') : t('Puedes practicar sin cuenta. Crea una cuando quieras conservar y sincronizar tu avance.')}</p></div><button className="reveal continue" onClick={onContinue}>{t("Continuar aprendiendo →")}</button></div>
+    <div className="metric-grid"><article><span>{"字"}</span><strong>{learned}</strong><small>{t("tarjetas consolidadas")}</small></article><article><span>{"复"}</span><strong>{dueNow}</strong><small>{t("listas para repasar")}</small></article><article><span>{"火"}</span><strong>{streak}</strong><small>{t("días de racha")}</small></article><article><span>{"日"}</span><strong>{studyDays.length}</strong><small>{t("días de estudio")}</small></article></div>
+    <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>{t("Tarjetas practicadas por unidad")}</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}{". "}{t(unit.name)}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}{"/"}{unit.cards.length}</small></div>; })}{(() => { const book = library.filter(item => item.book); const count = book.filter(item => records[item.id]).length; return <div className="progress-row"><b>{t("Mi libro")}</b><div><i style={{ width:`${count / book.length * 100}%` }} /></div><small>{count}{"/"}{book.length}</small></div>; })()}<div className="progress-row"><b>{t("Biblioteca completa")}</b><div><i style={{ width: `${library.filter(item => records[item.id]).length / library.length * 100}%` }} /></div><small>{library.filter(item => records[item.id]).length}{"/"}{library.length}</small></div></article><article className="activity"><div className="section-heading"><span>{t("Últimos repasos")}</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card ? meaningFor(card, language) : '—'}</small></div><em className={record.rating}>{record.rating === 'fácil' ? t('Recordada') : t('Por reforzar')}</em></div>; }) : <p className="empty">{t("Aún no hay repasos. Empieza con 你好.")}</p>}</article></div>
+    <button className="danger-reset" onClick={onReset}>{t("Borrar mi progreso")}</button>
   </section>;
 }

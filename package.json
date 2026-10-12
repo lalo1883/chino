@@ -14,10 +14,14 @@
     "start:sites": "vinext start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:auth": "npx auth@latest migrate",
-    "db:progress": "node scripts/migrate-progress.mjs"
+    "db:progress": "node scripts/migrate-progress.mjs",
+    "test": "node --test scripts/*.test.mjs",
+    "writing:data": "node scripts/sync-writing-data.mjs"
   },
   "dependencies": {
     "better-auth": "^1.7.7",
+    "hanzi-writer": "^3.7.3",
+    "hanzi-writer-data": "^2.0.1",
     "next": "^16.4.0",
     "pg": "^8.23.1",
     "react": "19.2.6",

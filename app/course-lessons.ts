@@ -1,5 +1,7 @@
-// Vocabulario aportado por el usuario, organizado por las lecciones 1 a 5.
-export const LESSONS = [1, 2, 3, 4, 5] as const;
+import { newCourseEntries } from './new-course-lessons.ts';
+
+// Vocabulario del curso, incluidas las lecciones 6 a 10 del CSV.
+export const LESSONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 export type LessonRange = { from: number; to: number };
 export const courseEntries: Array<{ lesson: number; type: 'word' | 'phrase'; hanzi: string; pinyin: string; spanish: string }> = [
   {
@@ -575,7 +577,8 @@ export const courseEntries: Array<{ lesson: number; type: 'word' | 'phrase'; han
     "hanzi": "爸爸、妈妈、哥哥、姐姐和我。",
     "pinyin": "Bàba, māma, gēge, jiějie hé wǒ.",
     "spanish": "Papá, mamá, hermano mayor, hermana mayor y yo."
-  }
+  },
+  ...newCourseEntries,
 ];
 
 export function normalizeLessonHanzi(value: string) {
