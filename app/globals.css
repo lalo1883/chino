@@ -1075,3 +1075,212 @@ html[data-theme='bw'] .practice-primary, html[data-theme='bw'] .picker .origin-o
   .topbar { gap:4px; padding-inline:10px; }
   .main-nav button { font-size:10px; gap:4px; }
 }
+
+/* Compact study layout: shared desktop shell and touch-first PWA navigation. */
+.shell .topbar { min-height:108px; padding:10px 0; gap:8px 20px; }
+.shell .main-nav { background:transparent; border:0; padding:0; border-radius:0; }
+.shell .main-nav button { min-height:44px; }
+.shell .main-nav button.selected::after { display:none; }
+.mobile-nav, .mobile-subnav { display:none; }
+.panel-trigger { display:flex; align-items:center; justify-content:center; min-height:44px; padding:10px 16px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--jade); font-size:13px; font-weight:600; cursor:pointer; }
+.study-dialog { width:min(94vw,480px); max-height:85dvh; padding:0; border:1px solid var(--line); border-radius:20px; background:var(--card); color:var(--ink); box-shadow:0 24px 80px #0a2c2533; }
+.study-dialog::backdrop { background:#09282080; backdrop-filter:blur(3px); }
+.study-dialog-content { padding:22px; }
+.study-dialog-content > header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; }
+.study-dialog h2 { margin:0; font-size:22px; }
+.study-dialog header button { width:44px; height:44px; border:0; border-radius:50%; background:var(--jade-soft); font-size:24px; cursor:pointer; }
+.study-dialog-fields { display:grid; gap:18px; margin-bottom:22px; }
+.study-dialog-fields select { min-height:44px; width:100%; border:1px solid var(--line); border-radius:9px; padding:10px; background:var(--card); color:var(--ink); font-size:16px; }
+.study-dialog .lesson-filter { margin:0; padding:12px; }
+.study-dialog .lesson-filter select { width:100%; }
+.study-dialog .practice-primary { width:100%; min-height:44px; }
+.setting-row { display:flex; align-items:center; justify-content:space-between; gap:20px; font-size:14px; }
+.setting-row > select, .setting-row .language-switch { width:110px; }
+.setting-row .theme-pill { min-height:44px; }
+.filter-label { display:grid; gap:8px; font-size:14px; }
+html:has(dialog[open]) { overflow:hidden; }
+.shell .home-guide { padding-top:24px; }
+.shell .home-welcome { grid-template-columns:minmax(0,1fr) minmax(240px,.55fr); align-items:start; gap:24px; margin-bottom:24px; }
+.shell .home-welcome h1 { font-size:32px; }
+.shell .home-welcome .lede { font-size:14px; margin:12px 0 20px; line-height:1.5; }
+.shell .home-route { display:block; padding:16px; }
+.shell .home-route summary, .shell .home-tools > summary { cursor:pointer; font-weight:650; font-size:15px; }
+.shell .home-route > .home-icon { display:none; }
+.shell .home-route p { margin-top:16px; }
+.shell .home-section-heading h2 { font-size:23px; }
+.shell .home-section-card { gap:0; }
+.section-instructions { font-size:12px; margin-bottom:12px; }
+.section-instructions summary { min-height:44px; display:flex; align-items:center; cursor:pointer; color:var(--jade); }
+.shell .section-instructions ol { display:grid; }
+.shell .home-tools { display:block; }
+.shell .home-tools > section { margin-top:20px; }
+.shell .library-hero { align-items:center; padding:20px 0 16px; gap:16px; }
+.shell .library-hero h1 { font-size:28px; }
+.shell .library-hero .eyebrow { display:none; }
+.shell .library-hero .lede { margin:6px 0 0; font-size:13px; line-height:1.4; }
+.shell .library-count { display:flex; flex-direction:row; align-items:baseline; gap:6px; padding:0; width:auto; min-width:0; min-height:0; border:0; background:transparent; }
+.shell .library-count strong { font:650 18px var(--font-geist-sans),sans-serif; }
+.shell .library-count span { font-size:12px; }
+.shell .search-row { display:flex; gap:10px; margin:0 0 12px; }
+.shell .search-field { flex:1; min-width:0; }
+.shell .search-field input { min-height:44px; padding:12px 40px 12px 14px; font-size:16px; }
+.shell .search-clear { min-width:44px; min-height:44px; }
+.shell .filter-stack { align-items:center; flex-wrap:wrap; gap:12px; }
+.shell .filter-stack .seg button { min-height:44px; }
+.active-filter-summary { color:var(--muted); font-size:12px; }
+.shell .grid-title { margin:18px 0 12px; }
+.shell .practice-config-head h1 { font-size:28px; }
+.shell .practice-config-head p { font-size:14px; margin:8px 0 0; }
+.shell .selection-tip { display:none; }
+.shell .practice-config-grid { grid-template-columns:minmax(0,720px); justify-content:center; gap:12px; }
+.shell .practice-launch { padding:20px; }
+.shell .picker { padding:0; margin-bottom:18px; gap:12px; }
+.shell .picker-row { grid-template-columns:140px minmax(0,1fr); }
+.shell .picker-row .panel-trigger { width:100%; }
+.shell .picker .kind-options button { min-height:44px; }
+.shell .picker .kind-options small { display:none; }
+.shell .picker select { min-height:44px; font-size:16px; }
+.shell .practice-preview { display:block; padding:14px 20px; }
+.shell .practice-preview > summary { cursor:pointer; font-size:14px; font-weight:650; }
+.shell .practice-preview p { margin-top:16px; }
+.shell .practice-preview ul { gap:10px; margin-bottom:16px; }
+.shell .session-layout { display:flex; flex-direction:column; max-width:800px; margin:auto; gap:12px; }
+.shell .session-sidebar { display:grid; grid-template-columns:1fr auto auto; min-height:0; gap:8px 16px; padding:12px 16px; }
+.shell .session-sidebar h2, .shell .session-count { margin:0; align-self:center; }
+.shell .session-sidebar .session-progress { grid-column:1 / -1; grid-row:2; width:100%; }
+.shell .session-help { grid-column:1 / -1; grid-row:3; font-size:12px; }
+.shell .session-help summary { cursor:pointer; padding:8px 0; }
+.shell .session-stages { display:flex; flex-wrap:wrap; padding:0; margin:8px 0; border:0; }
+.shell .session-exit { grid-column:3; grid-row:1; width:auto; margin:0; }
+.shell .practice-card { min-height:0; padding:22px; }
+.shell .practice-prompt { margin:14px 0 18px; }
+.shell .practice-hanzi { font-size:80px; }
+.shell .practice-hanzi.phrase { font-size:36px; overflow-wrap:anywhere; }
+.shell .practice-tip { margin:12px 0 18px; }
+.shell .practice-primary { min-height:48px; }
+.shell .practice-answer > h2 { margin:8px 0 16px; }
+.shell .binary-rating { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.shell .session-right { display:block; }
+.shell .session-stats { padding:14px 16px; }
+.shell .session-stats h2 { margin:0 0 12px; }
+.shell .session-stats ul { grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.shell .stat-icon { display:none; }
+.shell .session-guide { margin-top:12px; padding:14px 16px; }
+.shell .session-guide summary { font-size:13px; font-weight:650; cursor:pointer; }
+.shell .session-guide .guide-symbol, .shell .session-guide h2 { display:none; }
+.shell .speak-copy h1, .shell .listening-heading h1, .shell .writing-heading h1, .shell .progress-title h1 { font-size:28px; }
+.shell .writing-heading, .shell .listening-heading { margin-bottom:16px; }
+.shell .writing-heading p, .shell .listening-heading p:not(.eyebrow) { margin-top:8px; font-size:14px; line-height:1.5; }
+.shell .writing-filters { margin:0 0 16px; }
+.shell .progress-title { padding-top:24px; gap:20px; }
+.shell .progress-title .lede { margin-top:10px; font-size:13px; line-height:1.6; max-width:650px; }
+.shell .metric-grid article { padding:18px; }
+.shell .metric-grid strong { font-size:32px; }
+.progress-manage { margin-top:24px; color:var(--muted); font-size:13px; }
+.progress-manage summary { cursor:pointer; min-height:44px; }
+@media(max-width:760px) {
+  .shell { padding-bottom:calc(90px + env(safe-area-inset-bottom)); }
+  .shell .topbar { display:flex; min-height:64px; height:64px; padding:8px 12px; position:relative; }
+  .shell .main-nav { display:none; }
+  .shell .header-actions { gap:8px; }
+  .shell .account-button, .shell .account-signed-in, .shell .account-signed-in button { min-height:44px; }
+  .shell .account-signed-in button { font-size:11px; }
+  .shell .mobile-nav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); position:fixed; z-index:40; inset:auto 0 0; padding:6px 8px calc(6px + env(safe-area-inset-bottom)); background:var(--card); border-top:1px solid var(--line); box-shadow:0 -3px 16px #0a2c250a; }
+  .mobile-nav button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:54px; padding:4px; border:0; border-radius:10px; background:transparent; color:var(--muted); font-size:11px; cursor:pointer; }
+  .mobile-nav .nav-ico { display:block; width:21px; height:21px; }
+  .mobile-nav button[aria-current] { color:var(--jade); background:var(--jade-soft); font-weight:700; }
+  .shell .mobile-subnav { display:flex; gap:4px; margin:12px 0 0; padding:4px; border-radius:10px; background:var(--jade-soft); }
+  .mobile-subnav button { flex:1; min-width:0; min-height:44px; border:0; border-radius:7px; padding:8px 4px; background:transparent; color:var(--muted); font-size:12px; cursor:pointer; }
+  .mobile-subnav button[aria-current] { color:var(--jade); background:var(--card); font-weight:650; }
+  .study-dialog { width:100%; max-width:none; max-height:88dvh; margin:auto 0 0; border-radius:22px 22px 0 0; border-bottom:0; }
+  .study-dialog-content { padding:20px 20px calc(20px + env(safe-area-inset-bottom)); }
+  .shell .home-welcome { grid-template-columns:1fr; gap:14px; }
+  .shell .home-welcome h1 { font-size:28px; }
+  .shell .home-section-heading { gap:8px; }
+  .shell .home-section-heading .eyebrow { display:none; }
+  .shell .home-section-heading h2 { font-size:21px; }
+  .shell .home-section-card { padding:14px; }
+  .shell .home-section-card h3 { font-size:16px; }
+  .shell .home-section-card > button { min-height:44px; }
+  .shell .home-section-card > p { margin:10px 0; }
+  .shell .home-card-heading small { font-size:11px; }
+  .shell .library-hero { padding-top:18px; }
+  .shell .library-hero h1 { font-size:25px; }
+  .shell .library-count { flex-direction:column; align-items:end; gap:0; }
+  .shell .word-grid { gap:10px; }
+  .shell .item-open { padding:14px 12px; }
+  .shell .item-audio { min-width:44px; min-height:44px; }
+  .shell .practice { padding-top:18px; }
+  .shell .practice-config-head { margin-bottom:14px; }
+  .shell .practice-config-head h1 { font-size:24px; }
+  .shell .practice-config-head p { font-size:13px; }
+  .shell .practice-launch { padding:16px; }
+  .shell .picker-row { grid-template-columns:1fr; gap:6px; }
+  .shell .picker .seg { gap:6px; }
+  .shell .picker .seg button { min-height:44px; padding:8px 6px; font-size:12px; gap:6px; }
+  .shell .kind-options b { font-size:12px; }
+  .shell .kind-options .ui-icon { width:16px; height:16px; }
+  .shell .picker .size-options { max-width:none; }
+  .shell .session-sidebar { gap:8px; padding:12px; }
+  .shell .session-sidebar h2 { font-size:12px; }
+  .shell .session-count { font-size:12px; }
+  .shell .session-exit { font-size:10px; padding:8px; }
+  .shell .practice-card { padding:18px 14px; }
+  .shell .practice-hanzi { font-size:72px; }
+  .shell .practice-hanzi.phrase { font-size:30px; }
+  .shell .practice-listen { margin:16px 0 8px; }
+  .shell .binary-rating button { gap:7px; padding:12px 6px; font-size:12px; }
+  .shell .binary-rating button > .ui-icon { padding:4px; width:15px; height:15px; }
+  .shell .session-notice { font-size:11px; line-height:1.5; }
+  .shell .session-stats small { font-size:10px; }
+  .shell .speak-view.speak-compact, .shell .listening-view, .shell .writing-view { padding-top:18px; }
+  .shell .speak-copy .eyebrow, .shell .listening-heading .eyebrow, .shell .writing-eyebrow { display:none; }
+  .shell .speak-copy h1, .shell .listening-heading h1, .shell .writing-heading h1 { font-size:24px; }
+  .shell .speak-copy .lede, .shell .writing-heading p, .shell .listening-heading p:not(.eyebrow) { font-size:13px; line-height:1.5; }
+  .shell .speak-compact .speak-copy { margin-bottom:14px; }
+  .shell .speak-compact .speech-toolbar { margin-bottom:12px; padding-bottom:12px; }
+  .shell .speak-compact .speech-toolbar button, .shell .speak-compact .speech-toolbar select, .shell .speak-compact .speech-lessons summary, .shell .speech-actions button { min-height:44px; }
+  .shell .speak-compact .speech-progress { margin-bottom:14px; }
+  .shell .listening-controls { gap:10px; margin-bottom:14px; }
+  .shell .listening-card { padding:18px 14px; }
+  .shell .writing-workspace { gap:14px; }
+  .shell .writing-prompt { padding-top:0; }
+  .shell .writing-prompt h2 { font-size:32px; margin:4px 0; }
+  .shell .writing-paper { padding:12px; }
+  .shell .metric-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .shell .metric-grid article { padding:16px; }
+  .shell .progress-row { gap:8px; }
+  .shell .activity-row { min-width:0; }
+}
+.shell .library-hero { display:flex; justify-content:space-between; }
+.shell .listening-controls > .study-panel { margin-left:auto; }
+.shell .study-dialog .practice-primary { color:white; background:var(--jade); }
+@media(max-width:760px) {
+  .shell .listening-controls > .study-panel { margin-left:0; }
+  .shell .listening-controls > .study-panel .panel-trigger { width:100%; }
+}
+.shell .writing-help summary { cursor:pointer; padding:10px 0; }
+@media(max-width:760px) {
+  .shell .writing-prompt { display:grid; grid-template-columns:1fr auto; align-items:center; padding:0; gap:6px 12px; }
+  .shell .writing-prompt h2 { grid-column:1; margin:0; }
+  .shell .writing-prompt > p { grid-column:1; margin:0; font-size:13px; }
+  .shell .writing-prompt .writing-audio { grid-column:2; grid-row:1 / 3; margin:0; min-height:44px; }
+  .shell .writing-character-tabs { grid-column:1; margin:4px 0 0; gap:6px; }
+  .shell .writing-character-tabs button { min-width:44px; min-height:44px; font-size:22px; padding:4px 8px; }
+  .shell .writing-guide { grid-column:2; grid-row:3; min-height:44px; font-size:12px; }
+  .shell .writing-prompt .writing-help { grid-column:1 / -1; margin:0; max-width:none; font-size:12px; }
+  .shell .writing-board-wrap { max-width:260px; }
+  .shell .writing-paper-top { margin-bottom:10px; }
+  .shell .writing-tools button { min-height:44px; font-size:12px; padding:8px 10px; }
+  .shell .writing-footer { margin-top:12px; padding:12px 0; }
+}
+@media(max-width:760px) {
+  .shell .account-signed-in button { min-width:44px; }
+  .shell .writing-heading { margin-bottom:12px; }
+  .shell .writing-heading p { max-width:42ch; }
+  .shell .writing-filters { margin-bottom:10px; }
+  .shell .writing-board-wrap { max-width:248px; }
+  .shell .writing-feedback { min-height:0; margin-top:10px; padding:8px 10px; }
+}
+.shell .library-view { padding-top:0; }
+.shell .library-hero { margin-bottom:0; }

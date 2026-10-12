@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { library, ALL_CATEGORIES, filterLibrary, type LibraryItem } from '@/app/content';
 import { type LessonRange } from '@/app/course-lessons';
+import { StudyPanel } from './study-panel';
 import { LessonFilter } from '@/components/lesson-filter';
 import { playClip, stopClip } from '@/components/library-view';
 import { UiIcon } from '@/components/ui-icon';
@@ -153,7 +154,7 @@ export function SpeakView({ speed }: { speed: number }) {
           <button type="button" aria-pressed={bookMode} className={bookMode ? 'active' : ''} disabled={listening} onClick={() => selectBook(true)}>{l('Libro', 'Book')}</button>
         </div>
         <label className="speech-kind-select"><span>{l('Tipo', 'Type')}</span><select value={bookKind} disabled={listening} onChange={event => selectKind(event.target.value as 'all' | 'word' | 'phrase')}><option value="all">{l('Todo', 'All')}</option><option value="word">{l('Palabras', 'Words')}</option><option value="phrase">{l('Frases', 'Phrases')}</option></select></label>
-        <details className="speech-lessons"><summary>{l('Lecciones', 'Lessons')}{lessons ? ` ${lessons.from}–${lessons.to}` : ''}</summary><LessonFilter value={lessons} disabled={listening} onChange={value => { setLessons(value); resetSpeech(); }} /></details>
+        <div className="speech-lessons"><StudyPanel title={l("Lecciones", "Lessons")} label={`${l("Lecciones", "Lessons")}${lessons ? ` · ${lessons.from}–${lessons.to}` : ""}`}><LessonFilter value={lessons} disabled={listening} onChange={value => { setLessons(value); resetSpeech(); }} /></StudyPanel></div>
       </div>
       {phrase ? <>
         <div className="speak-step">{index + 1} / {speechItems.length}{phrase.lessons?.length ? ` · ${l('Lección', 'Lesson')} ${phrase.lessons.join(', ')}` : ''}</div>

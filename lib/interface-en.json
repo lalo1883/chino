@@ -310,5 +310,14 @@
   "Lecciones y contenido": "Lessons and content",
   "frases.": "phrases.",
   "días": "days",
-  "tu@correo.com": "you@example.com"
+  "tu@correo.com": "you@example.com",
+  "Inicio": "Home",
+  "Biblioteca": "Library",
+  "Práctica": "Practice",
+  "Ajustes": "Settings",
+  "Contraste": "Contrast",
+  "Listo": "Done",
+  "Cómo practicar": "How to practice",
+  "Gestionar progreso": "Manage progress",
+  "Ajusta la velocidad en Ajustes. Los botones de audio usan ese ritmo.": "Change the speed in Settings. Audio buttons use that pace."
 }

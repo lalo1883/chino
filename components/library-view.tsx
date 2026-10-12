@@ -6,6 +6,7 @@ import { meaningFor } from '@/lib/translations';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ALL_CATEGORIES, categoriesFor, characterParts, filterLibrary, findWordAudio, getExamples, library, type Example, type LibraryFilter, type LibraryItem, type Segment } from '@/app/content';
 import { type LessonRange } from '@/app/course-lessons';
+import { StudyPanel } from './study-panel';
 import { LessonFilter } from './lesson-filter';
 import type { Review } from '@/lib/learning';
 import { TappableSentence } from './tappable-sentence';
@@ -117,6 +118,7 @@ export function LibraryView({ scope, speed, records, onPractice }: { scope: 'all
   const selected = selectedId ? library.find((item) => item.id === selectedId) || null : null;
   const totals = useMemo(() => ({ words: pool.filter((item) => item.type === 'word').length, phrases: pool.filter((item) => item.type === 'phrase').length }), [pool]);
   const clear = () => { setSearch(''); setCategory(ALL_CATEGORIES); setKind('all'); setBookOnly(false); setLessons(undefined); };
+  const filterCount = Number(bookOnly && !inBook) + Number(activeCategory !== ALL_CATEGORIES) + Number(Boolean(lessons));
   const practiceNow = () => onPractice({ kind, book, category: activeCategory, lessons });
 
   const card = (item: LibraryItem, n: number) => <article key={item.id} className={`item-card ${item.type} ${records[item.id] ? 'seen' : ''}`} style={{ '--n': n } as React.CSSProperties}>
@@ -130,19 +132,20 @@ export function LibraryView({ scope, speed, records, onPractice }: { scope: 'all
   return <section className="library-view words-view">
     <div className="library-hero"><div>
       <p className="eyebrow">{inBook ? t('TU LIBRO') : t('DICCIONARIO VISUAL')}</p>
-      <h1>{inBook ? <><span>{t("Todo lo de")}</span> <span>{t("tu libro.")}</span></> : <><span>{totals.words} {t("palabras")}</span> <span> {t("y")} {totals.phrases} {t("frases.")}</span></>}</h1>
-      <p className="lede">{inBook ? t(`${language === 'en' ? 'Vocabulary and phrases from your lessons:' : 'Solo el vocabulario y las frases de tus lecciones:'} ${totals.words} ${t('palabras')} ${t('y')} ${totals.phrases} ${t('frases')}. ${t('Toca una tarjeta para ver su desglose y ejemplos.')}`) : t('Busca en chino, pinyin o español. Toca una tarjeta para ver su desglose y frases de ejemplo.')}</p>
-    </div><div className="library-count"><strong>{filtered.length}</strong><span>{t("resultados")}</span></div></div>
-
-    <div className="filter-stack">
-      <div className="seg" role="group" aria-label={t("Tipo de tarjeta")}>{KINDS.map(([value, label]) => <button key={value} aria-pressed={kind === value} className={kind === value ? 'active' : ''} onClick={() => setKind(value)}>{t(label)}</button>)}</div>
-      {!inBook && <div className="seg" role="group" aria-label={t("Origen")}><button aria-pressed={!bookOnly} className={!bookOnly ? 'active' : ''} onClick={() => setBookOnly(false)}>{t("Todo")}</button><button aria-pressed={bookOnly} className={bookOnly ? 'active' : ''} onClick={() => setBookOnly(true)}>{t("Solo libro")}</button></div>}
-    </div>
-    <LessonFilter value={lessons} onChange={setLessons} />
+      <h1>{inBook ? t('Libro') : t('Palabras')}</h1>
+      <p className="lede">{totals.words} {t('palabras')} · {totals.phrases} {t('frases')}</p>
+    </div><div className="library-count" role="status"><strong>{filtered.length}</strong><span>{t("resultados")}</span></div></div>
     <div className="search-row">
-      <div className="search-field"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("Buscar: agua, shuǐ, 水…")} aria-label={t("Buscar")} type="search" enterKeyHint="search" autoComplete="off" />{search && <button type="button" className="search-clear" onClick={() => setSearch('')} aria-label={t("Borrar búsqueda")}>{"×"}</button>}</div>
-      <select value={activeCategory} onChange={(event) => setCategory(event.target.value)} aria-label={t("Filtrar por categoría")}><option value={ALL_CATEGORIES}>{inBook ? t('Todos los temas') : t('Todas las categorías')}</option>{categories.map(([name, count]) => <option key={name} value={name}>{t(name)} {t("(")}{count}{t(")")}</option>)}</select>
+      <div className="search-field"><input value={search} onChange={event => setSearch(event.target.value)} placeholder={t("Buscar: agua, shuǐ, 水…")} aria-label={t("Buscar")} type="search" enterKeyHint="search" autoComplete="off" />{search && <button type="button" className="search-clear" onClick={() => setSearch('')} aria-label={t("Borrar búsqueda")}>×</button>}</div>
+      <StudyPanel title={t('Filtros')} label={`${t('Filtros')}${filterCount ? ` · ${filterCount}` : ''}`}>
+        {!inBook && <div className="seg" role="group" aria-label={t("Origen")}><button aria-pressed={!bookOnly} className={!bookOnly ? 'active' : ''} onClick={() => setBookOnly(false)}>{t("Todo")}</button><button aria-pressed={bookOnly} className={bookOnly ? 'active' : ''} onClick={() => setBookOnly(true)}>{t("Solo libro")}</button></div>}
+        <label className="filter-label">{t('Filtrar por categoría')}<select value={activeCategory} onChange={event => setCategory(event.target.value)}><option value={ALL_CATEGORIES}>{t('Todos los temas')}</option>{categories.map(([name, count]) => <option key={name} value={name}>{t(name)} ({count})</option>)}</select></label>
+        <LessonFilter value={lessons} onChange={setLessons} />
+        <button className="practice-secondary" onClick={() => { setCategory(ALL_CATEGORIES); setBookOnly(false); setLessons(undefined); }}>{t('Limpiar filtros')}</button>
+      </StudyPanel>
     </div>
+    <div className="filter-stack"><div className="seg" role="group" aria-label={t("Tipo de tarjeta")}>{KINDS.map(([value, label]) => <button key={value} aria-pressed={kind === value} className={kind === value ? 'active' : ''} onClick={() => setKind(value)}>{t(label)}</button>)}</div>
+    {(bookOnly || lessons || activeCategory !== ALL_CATEGORIES) && <small className="active-filter-summary">{book ? t('Solo libro') : t('Todo')} · {t(activeCategory)}{lessons ? ` · ${lessons.from}–${lessons.to}` : ''}</small>}</div>
 
     {filtered.length ? <>
       {words.length > 0 && <>{kind === 'all' && <h2 className="grid-title">{t("Palabras")}<small>{words.length}</small></h2>}<div className="word-grid">{words.map(card)}</div></>}
