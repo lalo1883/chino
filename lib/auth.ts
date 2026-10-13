@@ -22,6 +22,12 @@ export const auth = betterAuth({
     storage: 'database',
     window: 60,
     max: 20,
+    // Classmates often sign up together from one school Wi-Fi IP; the default
+    // allows only 3 sign-ins per 10 s per IP.
+    customRules: {
+      '/sign-in/*': { window: 60, max: 30 },
+      '/sign-up/*': { window: 60, max: 30 },
+    },
   },
   plugins: [nextCookies()],
 });

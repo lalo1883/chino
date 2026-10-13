@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { commonPhrases, commonWords, library } from './content';
 import { LibraryView, stopClip, type PracticeFilter } from '@/components/library-view';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { BrandMark } from '@/components/brand-mark';
 import { AccountMenu } from '@/components/account-menu';
 import { StudySession } from '@/components/study-session';
 import { scheduleReview } from '@/lib/learning';
@@ -340,7 +341,7 @@ export default function Home() {
   return (
     <main className="shell">
       <header className="topbar">
-        <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label={t("Chino, inicio")}><span className="brand-mark">{"字"}</span><span>{t("Chino")}<span className="brand-caption">{t("desde cero")}</span></span></button>
+        <button className="brand brand-button" onClick={() => setScreen('learn')} aria-label={t("Chino, inicio")}><BrandMark className="brand-mark" /><span className="brand-wordmark">Chino<span className="brand-caption">{t("desde cero")}</span></span></button>
         <nav className="main-nav" aria-label={t("Navegación principal")} data-screen={screen}><i className="nav-indicator" aria-hidden="true" />
           {([['learn','Home'],['cards','Flashcards'],['words','Palabras'],['book','Libro'],['listen','Listening'],['speak','Speaking'],['write','Writing'],['progress','Progreso']] as const).map(([value, label]) =>
             <button key={value} aria-current={screen === value ? 'page' : undefined} className={screen === value ? 'selected' : ''} onClick={() => { haptic(8); setScreen(value); }}><NavIcon name={value} /><span>{t(label)}</span></button>)}

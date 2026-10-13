@@ -15,18 +15,21 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chino-xi.vercel.app'),
-  title: 'Chino desde cero',
+  title: 'Chino · Desde cero',
+  applicationName: 'Chino',
+  manifest: '/manifest.webmanifest',
+  icons: { icon: '/favicon.svg', apple: '/brand/apple-touch-icon.png' },
   description: 'Aprende chino simplificado con caracteres, pinyin, español, audio y repaso inteligente.',
   openGraph: {
-    title: 'Chino desde cero',
+    title: 'Chino · Desde cero',
     description: 'Caracteres, pinyin, español y audio para aprender chino simplificado.',
-    images: ['/og.png'],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Chino · Desde cero. Un carácter a la vez.' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Chino desde cero',
+    title: 'Chino · Desde cero',
     description: 'Caracteres, pinyin, español y audio para aprender chino simplificado.',
-    images: ['/og.png'],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Chino · Desde cero. Un carácter a la vez.' }],
   },
 };
 
@@ -34,7 +37,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#f3f6f4',
+  themeColor: '#f7f4ee',
   interactiveWidget: 'resizes-content',
 };
 

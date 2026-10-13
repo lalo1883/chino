@@ -8,7 +8,7 @@ export const THEME_KEY = 'chino-theme';
 
 function applyTheme(bw: boolean) {
   document.documentElement.dataset.theme = bw ? 'bw' : 'color';
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', bw ? '#ffffff' : '#f3f6f4');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', bw ? '#ffffff' : '#f7f4ee');
 }
 
 /** Alterna entre la versión a color y la versión blanco y negro. */

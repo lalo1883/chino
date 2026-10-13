@@ -50,7 +50,9 @@ export function AccountMenu({ syncState, onSignedOut, fallbackUser }: Props) {
 
     setSubmitting(false);
     if (result.error) {
-      setError(mode === 'register'
+      setError(result.error.status === 429
+        ? 'Demasiados intentos. Espera un minuto y vuelve a intentarlo.'
+        : mode === 'register'
         ? 'No se pudo crear la cuenta. Revisa el correo y usa al menos 8 caracteres.'
         : 'Correo o contraseña incorrectos.');
       return;
@@ -78,7 +80,6 @@ export function AccountMenu({ syncState, onSignedOut, fallbackUser }: Props) {
 
     <dialog ref={dialogRef} className="auth-dialog" onClose={close} onCancel={close}>
       <button className="dialog-close" onClick={close} aria-label={t("Cerrar")}>{"×"}</button>
-      <div className="auth-mark">{"字"}</div>
       <p className="eyebrow">{t("TU PROGRESO EN CUALQUIER DISPOSITIVO")}</p>
       <h2>{mode === 'register' ? t('Crea tu cuenta.') : t('Bienvenido de vuelta.')}</h2>
       <p className="auth-intro">{mode === 'register' ? t('Tu avance se guardará de forma privada y podrás continuarlo desde tu celular o computadora.') : t('Continúa exactamente donde te quedaste.')}</p>

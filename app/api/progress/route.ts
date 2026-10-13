@@ -22,7 +22,7 @@ function sanitizeRecords(input: unknown) {
 
   return Object.fromEntries(
     Object.entries(input)
-      .slice(0, 500)
+      .slice(0, 5000)
       .filter(([id, value]) => {
         if (!id || id.length > 100 || !value || typeof value !== 'object' || Array.isArray(value)) return false;
         const review = value as Partial<Review>;

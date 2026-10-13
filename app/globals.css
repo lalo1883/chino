@@ -1284,3 +1284,73 @@ html:has(dialog[open]) { overflow:hidden; }
 }
 .shell .library-view { padding-top:0; }
 .shell .library-hero { margin-bottom:0; }
+
+/* Chino identity: a vermilion seal on warm paper, with jade for learning. */
+:root {
+  --ink:#183b32;
+  --muted:#65746b;
+  --paper:#f7f4ee;
+  --card:#fffefa;
+  --jade:#17634d;
+  --jade-soft:#e7eee5;
+  --line:#dedfd5;
+  --red:#b54432;
+}
+html:not([data-theme='bw']) { background:#153c31; }
+html:not([data-theme='bw']) body { background:radial-gradient(ellipse at top,#254d3e,#102e25); }
+html:not([data-theme='bw']) .shell { background:linear-gradient(120deg,#fcfaf5,var(--paper)); border-color:var(--line); }
+.brand .brand-mark, .auth-mark {
+  display:block;
+  flex-shrink:0;
+  padding:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.brand-seal { color:#fff9ed; }
+.brand-seal-field { fill:var(--red); }
+.brand-wordmark { font-size:23px; font-weight:750; letter-spacing:-.06em; line-height:1.1; }
+.brand .brand-caption { margin-top:5px; font-size:10px; font-weight:500; letter-spacing:.12em; }
+.brand-button:focus-visible { outline:2px solid var(--jade); outline-offset:6px; border-radius:4px; }
+html:not([data-theme='bw']) .practice-primary,
+html:not([data-theme='bw']) .picker .origin-options button.active { background:var(--jade); }
+html:not([data-theme='bw']) .home-route,
+html:not([data-theme='bw']) .home-tools { background:var(--jade-soft); }
+html[data-theme='bw'] .brand-seal-field { fill:#000; }
+html[data-theme='bw'] .brand .brand-mark, html[data-theme='bw'] .auth-mark { background:transparent; }
+@media(max-width:760px) {
+  .brand-wordmark { font-size:21px; }
+  .brand .brand-mark { width:38px; height:38px; }
+  .brand .brand-caption { font-size:9px; letter-spacing:.06em; }
+}
+@media(max-width:380px) {
+  .brand-wordmark { font-size:18px; }
+  .brand .brand-mark { width:34px; height:34px; }
+}
+
+/* Responsive navigation branding. */
+.shell .brand-button { min-height:44px; gap:9px; }
+.shell .brand-wordmark { min-width:0; }
+.shell .header-actions { flex-wrap:wrap; }
+@media (min-width:761px) and (max-width:1000px) {
+  .shell .main-nav { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .shell .home-section-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:760px) {
+  .shell .topbar { height:auto; min-height:72px; gap:8px; }
+  .shell .header-actions { flex-wrap:nowrap; gap:6px; }
+  .shell .brand .brand-caption { display:block; font-size:9px; letter-spacing:.04em; }
+  .shell .brand-wordmark { font-size:20px; }
+  .shell .home-section-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .shell .home-section-card { min-width:0; }
+  .shell .home-card-heading { flex-wrap:wrap; }
+  .shell .home-section-card h3 { overflow-wrap:anywhere; }
+}
+@media(max-width:420px) {
+  .shell .home-guide { padding-inline:0; }
+  .shell .home-section-grid { grid-template-columns:minmax(0,1fr); }
+  .shell .home-card-heading { flex-wrap:nowrap; }
+  .shell .brand .brand-mark { width:34px; height:34px; }
+  .shell .brand-wordmark { font-size:18px; }
+  .shell .header-actions { gap:4px; }
+}

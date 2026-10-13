@@ -1,5 +1,7 @@
 {
   "Idioma": "Language",
+  "Un carácter a la vez.": "One character at a time.",
+  "Escucha. Practica. Habla.": "Listen. Practice. Speak.",
   "Chino": "Chinese",
   "Chino, inicio": "Chinese, home",
   "desde cero": "from scratch",
@@ -237,6 +239,7 @@
   "Incluye también el contenido adicional de la biblioteca.": "Also includes extra content from the library.",
   "No se pudo crear la cuenta. Revisa el correo y usa al menos 8 caracteres.": "Could not create your account. Check your email and use at least 8 characters.",
   "Correo o contraseña incorrectos.": "Incorrect email or password.",
+  "Demasiados intentos. Espera un minuto y vuelve a intentarlo.": "Too many attempts. Wait a minute and try again.",
   "Estudiante": "Student",
   "Sin conexión · guardado local": "Offline · saved locally",
   "Sincronizando…": "Syncing…",
