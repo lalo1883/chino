@@ -1,7 +1,7 @@
 'use client';
+import { useCommunityContent, Translation } from '@/components/community-provider';
 
 import { useLanguage } from '@/components/language-provider';
-import { meaningFor } from '@/lib/translations';
 
 import { useEffect, useRef, useState } from 'react';
 import { ALL_CATEGORIES, categoriesFor, filterLibrary, getExamples, library, type LibraryFilter, type LibraryItem } from '@/app/content';
@@ -18,6 +18,7 @@ const KIND_ICONS = { all: 'grid', word: 'cards', phrase: 'book' } as const;
 const KIND_DESCRIPTIONS = { all: 'mezclado', word: 'individuales', phrase: 'completas' } as const;
 
 export function StudySession({ speed, records, onReview, ready, initialFilter }: { speed: number; records: Record<string, Review>; onReview: (id: string, rating: Review['rating']) => void; ready: boolean; initialFilter?: PracticeFilter }) {
+  useCommunityContent();
   const { language, t } = useLanguage();
   const [kind, setKind] = useState<LibraryFilter['kind']>(initialFilter?.kind ?? 'all');
   const [bookOnly, setBookOnly] = useState(initialFilter?.book ?? false);
@@ -124,9 +125,9 @@ export function StudySession({ speed, records, onReview, ready, initialFilter }:
         {feedback !== null ? <div className={`recall-feedback ${feedback ? 'remembered' : 'reinforce'}`} role="status"><span><UiIcon name={feedback ? 'check' : 'clock'} /></span><h2>{feedback ? t('¡La recordaste!') : t('Vamos a reforzarla')}</h2><p>{t("Significa:")}</p></div> : <><div className="practice-card-meta"><span>{card.type === 'word' ? t('PALABRA') : t('FRASE')} {"·"}{t(card.category)}{card.lessons?.length ? t(` · Lección ${card.lessons.join(', ')}`) : ''}</span><span>{records[card.id] ? t('Repaso') : t('Nueva')}</span></div><p className="practice-prompt">{t("¿Qué significa?")}</p></>}
         <div className={`practice-hanzi ${card.type === 'phrase' ? 'phrase' : ''}`}>{card.hanzi}</div>
         <button className="practice-listen" onClick={listen} aria-label={t(`Escuchar ${card.hanzi}`)}><UiIcon name="audio" />{t("Escuchar pronunciación")}</button>
-        {revealed ? <div className="practice-answer"><div className="deck-pinyin">{card.pinyin}</div><h2>{meaningFor(card, language)}</h2>
+        {revealed ? <div className="practice-answer"><div className="deck-pinyin">{card.pinyin}</div><h2><Translation item={card}/></h2>
           {feedback === null && <><p className="recall-question">{t("¿La recordaste antes de ver la respuesta?")}</p><div className="binary-rating"><button onClick={() => answer(false)}><UiIcon name="close" /><span>{t("No me la supe")}<small>{t("La practicamos otra vez")}</small></span></button><button onClick={() => answer(true)}><UiIcon name="check" /><span>{t("Me la supe")}<small>{t("Seguimos avanzando")}</small></span></button></div></>}
-          {example && <div className="session-example"><div className="session-example-head">{t("Ejemplo")}</div><div className="practice-example"><button onClick={() => playClip(example.audio, speed)} aria-label={t(`Escuchar ${example.hanzi}`)}><UiIcon name="audio" /></button><div><b><TappableSentence hanzi={example.hanzi} breakdown={example.breakdown} speed={speed} highlight={card.hanzi} /></b><em>{example.pinyin}</em><span>{meaningFor(example, language)}</span></div></div></div>}
+          {example && <div className="session-example"><div className="session-example-head">{t("Ejemplo")}</div><div className="practice-example"><button onClick={() => playClip(example.audio, speed)} aria-label={t(`Escuchar ${example.hanzi}`)}><UiIcon name="audio" /></button><div><b><TappableSentence hanzi={example.hanzi} breakdown={example.breakdown} speed={speed} highlight={card.hanzi} /></b><em>{example.pinyin}</em><span><Translation item={example}/></span></div></div></div>}
           <details className="session-breakdown"><summary>{t("Ver desglose")}</summary><SegmentTable parts={card.breakdown || [{hanzi:card.hanzi,pinyin:card.pinyin,meaning:card.spanish}]} caption={t(`Desglose de ${card.hanzi}`)} speed={speed} /></details>
           {feedback !== null && <button className="practice-primary next-card" onClick={nextCard}>{position + 1 === queue.length ? t('Terminar sesión') : t('Siguiente tarjeta')}<UiIcon name="arrow" /></button>}
         </div> : <><p className="practice-tip">{t("Piensa tu respuesta antes de descubrirla.")}</p><button className="practice-primary" onClick={() => setRevealed(true)}>{t("Mostrar respuesta")}<UiIcon name="arrow" /></button></>}

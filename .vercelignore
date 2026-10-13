@@ -1,0 +1,14 @@
+.git
+.next
+.vinext
+dist
+node_modules
+.env*
+!.env.example
+work
+outputs
+.agents
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+*.tsbuildinfo

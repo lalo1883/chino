@@ -3,6 +3,10 @@ import englishExamples from './english-examples.json' with { type: 'json' };
 import interfaceEnglish from './interface-en.json' with { type: 'json' };
 
 export type Language = 'es' | 'en';
+let publishedMeanings = new Map<string,string>();
+export function setPublishedMeanings(entries: Array<{hanzi:string;language:Language;meaning:string}>) {
+  publishedMeanings = new Map(entries.map(entry => [`${entry.language}:${entry.hanzi}`,entry.meaning]));
+}
 const english: Record<string, string> = { ...englishContent, ...englishExamples };
 const ui: Record<string, string> = interfaceEnglish;
 const punctuation = /[\s。？！!?,，、；;：:]/gu;
@@ -24,6 +28,8 @@ function objectNoun(hanzi: string) {
 const numerals: Record<string, string> = { 一: 'one', 两: 'two', 二: 'two', 三: 'three', 四: 'four', 五: 'five', 六: 'six', 七: 'seven', 八: 'eight', 九: 'nine', 十: 'ten' };
 
 export function englishFor(hanzi: string, fallback = ''): string {
+  const published = publishedMeanings.get(`en:${hanzi}`);
+  if(published) return published;
   if (english[hanzi]) return english[hanzi];
   const plain = hanzi.replace(punctuation, '');
   const known = normalizedEnglish.get(plain);
@@ -54,6 +60,8 @@ export function englishFor(hanzi: string, fallback = ''): string {
 }
 
 export function meaningFor(item: { hanzi: string; spanish?: string; meaning?: string }, language: Language): string {
+  const published = publishedMeanings.get(`${language}:${item.hanzi}`);
+  if (published) return published;
   const spanish = item.spanish ?? item.meaning ?? '';
   return language === 'en' ? englishFor(item.hanzi, spanish) : spanish;
 }

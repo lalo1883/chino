@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function admin() { return request.auth != null && request.auth.token.admin == true; }
+    match /communityProfiles/{uid} {
+      allow read: if admin() || (request.auth != null && request.auth.uid == uid);
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name','createdAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() <= 80
+        && request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+    }
+    match /communityInbox/{id} {
+      function validProposal() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['kind','status','hanzi','pinyin','original','proposed','language','vocabularyType','message','author','createdAt'])
+          && d.kind in ['correction','vocabulary','suggestion'] && d.status == 'pending'
+          && d.language in ['es','en'] && d.vocabularyType in ['word','phrase']
+          && d.hanzi is string && d.hanzi.size() <= 150
+          && d.pinyin is string && d.pinyin.size() <= 250
+          && d.original is string && d.original.size() <= 1000
+          && d.proposed is string && d.proposed.size() <= 1000
+          && d.message is string && d.message.size() <= 2000
+          && d.author is string && d.author.size() <= 80
+          && (d.kind == 'suggestion' ? d.message.size() > 0 : d.hanzi.size() > 0 && d.proposed.size() > 0)
+          && (d.kind != 'vocabulary' || d.pinyin.size() > 0)
+          && d.createdAt == request.time;
+      }
+      allow create: if validProposal();
+      allow read: if admin();
+      allow update: if admin() && resource.data.status == 'pending'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','reviewedAt','reviewNote','approvedText'])
+        && request.resource.data.status in ['approved','rejected']
+        && request.resource.data.reviewedAt == request.time
+        && request.resource.data.reviewNote is string && request.resource.data.reviewNote.size() <= 1000
+        && request.resource.data.approvedText is string && request.resource.data.approvedText.size() <= 1000;
+      allow delete: if false;
+    }
+    match /publishedContent/{id} {
+      allow read: if true;
+      allow create, update: if admin()
+        && request.resource.data.keys().hasOnly(['hanzi','pinyin','meaning','language','vocabularyType','kind','proposalId','publishedAt'])
+        && request.resource.data.kind in ['correction','vocabulary']
+        && request.resource.data.hanzi is string && request.resource.data.hanzi.size() > 0 && request.resource.data.hanzi.size() <= 150
+        && request.resource.data.meaning is string && request.resource.data.meaning.size() > 0 && request.resource.data.meaning.size() <= 1000
+        && request.resource.data.pinyin is string && request.resource.data.pinyin.size() <= 250
+        && request.resource.data.language in ['es','en'] && request.resource.data.vocabularyType in ['word','phrase']
+        && request.resource.data.publishedAt == request.time
+        && getAfter(/databases/$(database)/documents/communityInbox/$(request.resource.data.proposalId)).data.status == 'approved'
+        && getAfter(/databases/$(database)/documents/communityInbox/$(request.resource.data.proposalId)).data.hanzi == request.resource.data.hanzi
+        && getAfter(/databases/$(database)/documents/communityInbox/$(request.resource.data.proposalId)).data.language == request.resource.data.language;
+      allow delete: if false;
+    }
+    match /learningEvents/{id} {
+      allow read: if admin();
+      allow create: if request.resource.data.keys().hasOnly(['kind','source','hanzi','correct','visitor','createdAt'])
+        && request.resource.data.kind in ['visit','practice']
+        && request.resource.data.source in ['site','flashcards','listening-meaning','listening-tones','writing','speaking']
+        && request.resource.data.hanzi is string && request.resource.data.hanzi.size() <= 150
+        && (request.resource.data.kind == 'visit' ? request.resource.data.source == 'site' && request.resource.data.hanzi == '' : request.resource.data.source != 'site' && request.resource.data.hanzi.size() > 0)
+        && request.resource.data.correct is bool
+        && request.resource.data.visitor is string && request.resource.data.visitor.size() == 36
+        && request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+    }
+    match /userProgress/{uid} {
+      function owner() { return request.auth != null && request.auth.uid == uid; }
+      function validProgress() {
+        let data = request.resource.data;
+        return data.keys().hasOnly(['records', 'studyDays', 'speed', 'resetAt', 'updatedAt'])
+          && data.keys().hasAll(['records', 'studyDays', 'speed', 'resetAt', 'updatedAt'])
+          && data.records is map && data.records.size() <= 5000
+          && data.studyDays is list && data.studyDays.size() <= 1000
+          && data.speed is int && data.speed >= -40 && data.speed <= 20
+          && data.resetAt is number && data.resetAt >= 0
+          && data.updatedAt == request.time;
+      }
+      allow get: if owner() || admin();
+      allow create: if owner() && validProgress();
+      allow update: if owner() && validProgress() && request.resource.data.resetAt >= resource.data.resetAt;
+      // Resets write an empty document with a tombstone instead of deleting it.
+      allow list: if admin();
+      allow delete: if false;
+    }
+  }
+}

@@ -42,3 +42,8 @@ next-env.d.ts
 # Local agent integrations installed by provider CLIs
 /.agents/
 /skills-lock.json
+
+# Firebase emulator and CLI logs
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

@@ -1,4 +1,5 @@
 'use client';
+import { useCommunityContent, Translation, CorrectTranslation, CommunityLinks } from '@/components/community-provider';
 
 import { useLanguage } from '@/components/language-provider';
 import { meaningFor } from '@/lib/translations';
@@ -43,24 +44,24 @@ const KINDS = [['all', 'Todo'], ['word', 'Palabras'], ['phrase', 'Frases']] as c
 const KIND_LABEL = { all: 'tarjetas', word: 'palabras', phrase: 'frases' } as const;
 
 export function SegmentTable({ parts, caption, speed }: { parts: Segment[]; caption: string; speed: number }) {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   return <div className="word-map audible-map" role="table" aria-label={caption}>
     <div className="map-head" role="row"><span role="columnheader">{t("CHINO")}</span><span role="columnheader">{t("PINYIN")}</span><span role="columnheader">{t("ESPAÑOL")}</span></div>
     {parts.map((part, index) => {
       const audio = findWordAudio(part.hanzi);
-      return <div className="map-row" role="row" key={`${part.hanzi}-${index}`}><span className="segment-word" role="cell"><b>{part.hanzi}</b>{audio && <button className="segment-audio" type="button" onClick={() => playClip(audio, speed)} aria-label={t(`Escuchar ${part.hanzi}`)} title={t(`Escuchar ${part.hanzi}`)}><UiIcon name="audio" /></button>}</span><em role="cell">{part.pinyin}</em><span role="cell">{meaningFor(part, language)}</span></div>;
+      return <div className="map-row" role="row" key={`${part.hanzi}-${index}`}><span className="segment-word" role="cell"><b>{part.hanzi}</b>{audio && <button className="segment-audio" type="button" onClick={() => playClip(audio, speed)} aria-label={t(`Escuchar ${part.hanzi}`)} title={t(`Escuchar ${part.hanzi}`)}><UiIcon name="audio" /></button>}</span><em role="cell">{part.pinyin}</em><span role="cell"><Translation item={part}/></span></div>;
     })}
   </div>;
 }
 
 function ExampleRow({ example, word, speed, onOpen }: { example: Example; word: string; speed: number; onOpen?: (id: string) => void }) {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   return <li className="example-row">
     <button className="example-audio" onClick={() => playClip(example.audio, speed)} aria-label={t(`Escuchar ${example.hanzi}`)}>{t("♪")}</button>
     <div>
       <b className="example-hanzi"><TappableSentence hanzi={example.hanzi} breakdown={example.breakdown} speed={speed} highlight={word} /></b>
       <em>{example.pinyin}</em>
-      <span>{meaningFor(example, language)}</span>
+      <span><Translation item={example}/></span>
       <div className="example-actions">
         <details><summary>{t("Ver desglose")}</summary><SegmentTable speed={speed} parts={example.breakdown} caption={t(`Desglose de ${example.hanzi}`)} /></details>
         {example.itemId && onOpen && <button className="link-button" onClick={() => onOpen(example.itemId!)}>{t("Abrir tarjeta →")}</button>}
@@ -70,7 +71,7 @@ function ExampleRow({ example, word, speed, onOpen }: { example: Example; word: 
 }
 
 function ItemDetail({ item, speed, onClose, onOpen, onPractice, lessons }: { lessons?: LessonRange; item: LibraryItem; speed: number; onClose: () => void; onOpen: (id: string) => void; onPractice: (filter: PracticeFilter) => void }) {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const dialog = useRef<HTMLDialogElement>(null);
   const examples = useMemo(() => getExamples(item), [item]);
   const characters = useMemo(() => item.type === 'word' ? characterParts(item.hanzi) : [], [item]);
@@ -86,7 +87,7 @@ function ItemDetail({ item, speed, onClose, onOpen, onPractice, lessons }: { les
     <div className="detail-tags"><span>{item.type === 'word' ? t('PALABRA') : t('FRASE')}</span><span>{t(item.category)}</span>{item.book && <span className="book-tag">{t("LIBRO")}</span>}{item.lessons?.map(lesson => <span key={lesson}>{t("Lección")} {lesson}</span>)}</div>
     <div className={`detail-hanzi ${item.hanzi.length > 4 ? 'long' : ''}`}>{item.type === 'phrase' ? <TappableSentence hanzi={item.hanzi} breakdown={item.breakdown || []} speed={speed} /> : item.hanzi}</div>
     <div className="detail-pinyin">{item.pinyin}</div>
-    <h2 className="detail-meaning">{meaningFor(item, language)}</h2>
+    <h2 className="detail-meaning"><Translation item={item}/></h2>
     <div className="detail-audio"><button onClick={() => playClip(item.audio, speed)}>{t("♪ Escuchar")}</button><button onClick={() => playClip(item.audio, speed, true)}>{t("♪ Más lento")}</button></div>
     {parts.length > 0 && <section><h3>{t("Desglose palabra por palabra")}</h3><SegmentTable speed={speed} parts={parts} caption={t(`Desglose de ${item.hanzi}`)} /></section>}
     {characters.length > 0 && <section><h3>{t("Caracteres que contiene")}</h3><SegmentTable speed={speed} parts={characters} caption={t(`Caracteres de ${item.hanzi}`)} /></section>}
@@ -99,6 +100,7 @@ function ItemDetail({ item, speed, onClose, onOpen, onPractice, lessons }: { les
 }
 
 export function LibraryView({ scope, speed, records, onPractice }: { scope: 'all' | 'book'; speed: number; records: Record<string, Review>; onPractice: (filter: PracticeFilter) => void }) {
+  const communityContent=useCommunityContent();
   const { language, t } = useLanguage();
   const inBook = scope === 'book';
   const [kind, setKind] = useState<LibraryFilter['kind']>('all');
@@ -108,7 +110,7 @@ export function LibraryView({ scope, speed, records, onPractice }: { scope: 'all
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const book = inBook || bookOnly;
-  const pool = useMemo(() => inBook ? library.filter((item) => item.book) : library, [inBook]);
+  const pool = useMemo(() => inBook ? communityContent.filter((item) => item.book) : communityContent, [inBook,communityContent]);
   const categories = useMemo(() => categoriesFor(pool, kind, book, lessons), [pool, kind, book, lessons]);
   const activeCategory = categories.some(([name]) => name === category) ? category : ALL_CATEGORIES;
   const filter: LibraryFilter = { kind, book, category: activeCategory, query: search, lessons };
@@ -126,6 +128,7 @@ export function LibraryView({ scope, speed, records, onPractice }: { scope: 'all
       <span className="item-hanzi">{item.hanzi}</span><em>{item.pinyin}</em><strong>{meaningFor(item, language)}</strong>
       <small>{t(item.category)}{item.lessons?.length ? t(` · Lección ${item.lessons.join(', ')}`) : item.book && !inBook ? t(' · Libro') : ''}</small>
     </button>
+    <CorrectTranslation item={item}/>
     <button className="item-audio" onClick={() => playClip(item.audio, speed)} aria-label={t(`Escuchar ${item.hanzi}`)}>{t("♪")}</button>
   </article>;
 
@@ -133,6 +136,7 @@ export function LibraryView({ scope, speed, records, onPractice }: { scope: 'all
     <div className="library-hero"><div>
       <p className="eyebrow">{inBook ? t('TU LIBRO') : t('DICCIONARIO VISUAL')}</p>
       <h1>{inBook ? t('Libro') : t('Palabras')}</h1>
+      <CommunityLinks/>
       <p className="lede">{totals.words} {t('palabras')} · {totals.phrases} {t('frases')}</p>
     </div><div className="library-count" role="status"><strong>{filtered.length}</strong><span>{t("resultados")}</span></div></div>
     <div className="search-row">

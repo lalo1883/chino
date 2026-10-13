@@ -1,4 +1,6 @@
 'use client';
+import { useCommunityContent, Translation, CommunityLinks } from '@/components/community-provider';
+import { trackPractice } from '@/lib/community-client';
 
 import { useLanguage } from '@/components/language-provider';
 
@@ -11,6 +13,8 @@ import { AccountMenu } from '@/components/account-menu';
 import { StudySession } from '@/components/study-session';
 import { scheduleReview } from '@/lib/learning';
 import { authClient } from '@/lib/auth-client';
+import { loadProgress, saveProgress, clearProgress } from '@/lib/firebase-progress';
+import { mergeProgress, sanitizeProgress, type StoredProgress } from '@/lib/progress';
 import { useOnline } from '@/components/use-online';
 import { UiIcon } from '@/components/ui-icon';
 import { SpeakView } from '@/components/speak-view';
@@ -18,7 +22,6 @@ import { ListeningView } from '@/components/listening-view';
 import { WritingView } from '@/components/writing-view';
 import { LanguageSwitch } from '@/components/language-provider';
 import { StudyPanel } from '@/components/study-panel';
-import { meaningFor } from '@/lib/translations';
 
 const navIcons: Record<string, React.ReactNode> = {
   learn: <path d="M3 9.6 10 4l7 5.6V16a1 1 0 0 1-1 1h-3.5v-4.2h-5V17H4a1 1 0 0 1-1-1z" />,
@@ -82,13 +85,14 @@ const DAY = 86_400_000;
 const GUEST_STORAGE_KEY = 'mi-diario-beginner:guest';
 const LEGACY_STORAGE_KEY = 'mi-diario-beginner';
 const LAST_USER_KEY = 'mi-diario-last-user';
+const LEGACY_USER_KEY = 'mi-diario-legacy-user';
 const SCREENS = ['learn', 'cards', 'words', 'book', 'listen', 'speak', 'write', 'progress'] as const;
 type Screen = typeof SCREENS[number];
 type CachedUser = { id: string; name: string; email: string };
 
-function readCachedUser(): CachedUser | null {
+function readCachedUser(key = LAST_USER_KEY): CachedUser | null {
   try {
-    const parsed = JSON.parse(localStorage.getItem(LAST_USER_KEY) || 'null');
+    const parsed = JSON.parse(localStorage.getItem(key) || 'null');
     return parsed && typeof parsed.id === 'string' ? parsed : null;
   } catch { return null; }
 }
@@ -97,36 +101,16 @@ function haptic(pattern: number | number[] = 12) {
   try { navigator.vibrate?.(pattern); } catch { /* sin soporte */ }
 }
 
-type StoredProgress = {
-  records: Record<string, Review>;
-  studyDays: string[];
-  speed: number;
-};
-
-type RemoteProgress = StoredProgress & { hasProgress: boolean };
-
 function readProgress(key: string): StoredProgress | null {
   try {
     const saved = localStorage.getItem(key);
     if (!saved) return null;
     const parsed = JSON.parse(saved);
-    return {
-      records: parsed.records || {},
-      studyDays: Array.isArray(parsed.studyDays) ? parsed.studyDays : [],
-      speed: typeof parsed.speed === 'number' ? parsed.speed : -15,
-    };
+    return sanitizeProgress(parsed);
   } catch {
     localStorage.removeItem(key);
     return null;
   }
-}
-
-function mergeRecords(local: Record<string, Review>, remote: Record<string, Review>) {
-  const merged = { ...remote };
-  for (const [id, review] of Object.entries(local)) {
-    if (!merged[id] || review.updatedAt > merged[id].updatedAt) merged[id] = review;
-  }
-  return merged;
 }
 
 function calculateStreak(days: string[]) {
@@ -146,6 +130,7 @@ function calculateStreak(days: string[]) {
 }
 
 export default function Home() {
+  const communityContent=useCommunityContent();
   const { t } = useLanguage();
   const { data: session, isPending: sessionPending, refetch: refetchSession } = authClient.useSession();
   const online = useOnline();  const [cachedUser, setCachedUser] = useState<CachedUser | null>(null);
@@ -156,6 +141,7 @@ export default function Home() {
   const [records, setRecords] = useState<Record<string, Review>>({});
   const [studyDays, setStudyDays] = useState<string[]>([]);
   const [speed, setSpeed] = useState(-15);
+  const [resetAt, setResetAt] = useState(0);
   const [ready, setReady] = useState(false);
   const [syncState, setSyncState] = useState<'local' | 'saving' | 'synced' | 'error'>('local');
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -163,7 +149,7 @@ export default function Home() {
   const offlineUser = !session?.user && !online ? cachedUser : null;
   const userId = session?.user.id ?? offlineUser?.id;
   const storageKey = userId ? `mi-diario-beginner:${userId}` : GUEST_STORAGE_KEY;
-  const allCards = useMemo(() => [...units.flatMap((item) => item.cards), ...library], []);
+  const allCards = useMemo(() => [...units.flatMap((item) => item.cards), ...communityContent], [communityContent]);
   const learned = allCards.filter((item) => records[item.id]?.rating === 'fácil' && records[item.id].interval >= 7).length;
   // The due count is a time-sensitive snapshot for this render.
   // eslint-disable-next-line react-hooks/purity
@@ -172,7 +158,6 @@ export default function Home() {
 
   useEffect(() => {
     if (sessionPending) return;
-    const controller = new AbortController();
     let active = true;
 
     const hydrate = async () => {
@@ -193,28 +178,24 @@ export default function Home() {
         importedGuest = Boolean(cached);
       }
 
+      // Recover this device's old UID only after Firebase proves the same email.
+      const previousUser = readCachedUser(LEGACY_USER_KEY) || readCachedUser();
+      if (userId && session?.user.emailVerified && previousUser?.id !== userId &&
+        previousUser?.email.toLowerCase() === session.user.email.toLowerCase()) {
+        const oldProgress = readProgress(`mi-diario-beginner:${previousUser.id}`);
+        if (oldProgress) cached = cached ? mergeProgress(cached, oldProgress) : oldProgress;
+      }
       const local = cached || { records: {}, studyDays: [], speed: -15 };
       let next = local;
 
       if (userId) {
         setSyncState('saving');
         try {
-          const response = await fetch('/api/progress', { signal: controller.signal });
-          if (!response.ok) throw new Error('Unable to load progress');
-          const remote = await response.json() as RemoteProgress;
-          next = {
-            records: mergeRecords(local.records, remote.records || {}),
-            studyDays: [...new Set([...(remote.studyDays || []), ...local.studyDays])].sort(),
-            speed: remote.hasProgress ? remote.speed : local.speed,
-          };
-
-          const saved = await fetch('/api/progress', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(next),
-            signal: controller.signal,
-          });
-          if (!saved.ok) throw new Error('Unable to save progress');
+          const remote = await loadProgress(userId);
+          if (!active) return;
+          next = mergeProgress({ ...local, speed: remote.hasProgress ? remote.speed : local.speed }, remote);
+          next = await saveProgress(userId, next);
+          if (!active) return;
           localStorage.setItem(storageKey, JSON.stringify(next));
           localStorage.setItem(`mi-diario-imported:${userId}`, '1');
           if (importedGuest) {
@@ -223,7 +204,7 @@ export default function Home() {
           }
           setSyncState('synced');
         } catch (error) {
-          if ((error as Error).name !== 'AbortError') setSyncState('error');
+          if (active && (error as Error).name !== 'AbortError') setSyncState('error');
         }
       } else {
         setSyncState('local');
@@ -233,15 +214,15 @@ export default function Home() {
       setRecords(next.records);
       setStudyDays(next.studyDays);
       setSpeed(next.speed);
+      setResetAt(next.resetAt || 0);
       setReady(true);
     };
 
     hydrate();
     return () => {
       active = false;
-      controller.abort();
     };
-  }, [sessionPending, storageKey, userId, syncNonce]);
+  }, [sessionPending, session?.user.email, session?.user.emailVerified, storageKey, userId, syncNonce]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -253,7 +234,11 @@ export default function Home() {
   useEffect(() => {
     if (!session?.user) return;
     const user = { id: session.user.id, name: session.user.name || '', email: session.user.email };
-    try { localStorage.setItem(LAST_USER_KEY, JSON.stringify(user)); } catch { /* almacenamiento no disponible */ }
+    try {
+      const previous = readCachedUser();
+      if (previous && previous.id !== user.id) localStorage.setItem(LEGACY_USER_KEY, JSON.stringify(previous));
+      localStorage.setItem(LAST_USER_KEY, JSON.stringify(user));
+    } catch { /* almacenamiento no disponible */ }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setCachedUser(user);
   }, [session?.user]);
@@ -269,18 +254,19 @@ export default function Home() {
     setSyncNonce((value) => value + 1);
   }, [online, refetchSession]);
 
+  useEffect(() => {
+    return () => { if (syncTimerRef.current) clearTimeout(syncTimerRef.current); };
+  }, [userId]);
+
   const queueRemoteSave = useCallback((progress: StoredProgress) => {
     if (!userId) return;
     if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
     setSyncState('saving');
     syncTimerRef.current = setTimeout(async () => {
       try {
-        const response = await fetch('/api/progress', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(progress),
-        });
-        setSyncState(response.ok ? 'synced' : 'error');
+        const saved = await saveProgress(userId, progress);
+        if ((saved.resetAt || 0) > (progress.resetAt || 0)) setSyncNonce(value => value + 1);
+        setSyncState('synced');
       } catch {
         setSyncState('error');
       }
@@ -289,14 +275,14 @@ export default function Home() {
 
   const persist = useCallback((nextRecords: Record<string, Review>, nextDays = studyDays) => {
     setRecords(nextRecords); setStudyDays(nextDays);
-    const progress = { records: nextRecords, studyDays: nextDays, speed };
+    const progress = { records: nextRecords, studyDays: nextDays, speed, resetAt };
     localStorage.setItem(storageKey, JSON.stringify(progress));
     queueRemoteSave(progress);
-  }, [queueRemoteSave, speed, storageKey, studyDays]);
+  }, [queueRemoteSave, speed, storageKey, studyDays, resetAt]);
 
   const changeSpeed = (nextSpeed: number) => {
     setSpeed(nextSpeed);
-    const progress = { records, studyDays, speed: nextSpeed };
+    const progress = { records, studyDays, speed: nextSpeed, resetAt };
     localStorage.setItem(storageKey, JSON.stringify(progress));
     queueRemoteSave(progress);
   };
@@ -304,13 +290,17 @@ export default function Home() {
   const resetProgress = async () => {
     if (!window.confirm(t(userId ? '¿Borrar tu progreso de todos tus dispositivos?' : '¿Borrar todo el progreso guardado en este dispositivo?'))) return;
     if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
-    localStorage.removeItem(storageKey);
+    const nextResetAt = Date.now();
+    setResetAt(nextResetAt);
+    localStorage.setItem(storageKey, JSON.stringify({ records: {}, studyDays: [], speed, resetAt: nextResetAt }));
     setRecords({}); setStudyDays([]);
     if (userId) {
       setSyncState('saving');
       try {
-        const response = await fetch('/api/progress', { method: 'DELETE' });
-        setSyncState(response.ok ? 'synced' : 'error');
+        const cloudResetAt = await clearProgress(userId, speed, nextResetAt);
+        setResetAt(cloudResetAt);
+        localStorage.setItem(storageKey, JSON.stringify({ records: {}, studyDays: [], speed, resetAt: cloudResetAt }));
+        setSyncState('synced');
       } catch {
         setSyncState('error');
       }
@@ -320,6 +310,8 @@ export default function Home() {
   const practiceWith = (filter: PracticeFilter) => { haptic(8); setPracticeFilter({ filter, nonce: Date.now() }); setScreen('cards'); };
 
   const recordReview = useCallback((cardId: string, rating: Review['rating']) => {
+    const tracked = [...units.flatMap(unit=>unit.cards),...library].find(item=>item.id===cardId);
+    if (tracked) trackPractice('flashcards',tracked.hanzi,rating==='fácil');
     const old = records[cardId];
     const now = Date.now();
     const nextRecords = { ...records, [cardId]: scheduleReview(old, rating === 'fácil', now) };
@@ -361,6 +353,7 @@ export default function Home() {
       <div className="screen" key={screen}>
       {screen === 'learn' ? <HomeGuide onNavigate={setScreen} dueNow={dueNow} ready={ready} /> : screen === 'cards' ? <StudySession key={`${storageKey}:${practiceFilter?.nonce ?? 0}`} speed={speed} records={records} ready={ready} onReview={recordReview} initialFilter={practiceFilter?.filter} /> : screen === 'words' ? <LibraryView scope="all" speed={speed} records={records} onPractice={practiceWith} /> : screen === 'book' ? <LibraryView scope="book" speed={speed} records={records} onPractice={practiceWith} /> : screen === 'listen' ? <ListeningView speed={speed} /> : screen === 'write' ? <WritingView speed={speed} /> : screen === 'speak' ? <SpeakView speed={speed} /> : <ProgressView records={records} studyDays={studyDays} learned={learned} dueNow={dueNow} streak={streak} signedIn={Boolean(userId)} syncState={syncState} onContinue={() => setScreen('cards')} onReset={resetProgress} />}
       </div>
+      <CommunityLinks/>
       <footer>{commonWords.length} {t("palabras ·")} {commonPhrases.length} {t("frases ·")} {library.filter((item) => item.book).length} {t("del libro · Chino simplificado ·")} {userId ? t('Progreso sincronizado con tu cuenta') : t('Crea una cuenta para sincronizar tu progreso')}</footer>
     </main>
   );
@@ -385,13 +378,13 @@ function HomeGuide({ onNavigate, dueNow, ready }: { onNavigate: (screen: Screen)
 }
 
 function ProgressView({ records, studyDays, learned, dueNow, streak, signedIn, syncState, onContinue, onReset }: { records: Record<string, Review>; studyDays: string[]; learned: number; dueNow: number; streak: number; signedIn: boolean; syncState: 'local' | 'saving' | 'synced' | 'error'; onContinue: () => void; onReset: () => void }) {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const recent = Object.entries(records).sort(([, a], [, b]) => b.updatedAt - a.updatedAt).slice(0, 6);
   const byId = new Map([...units.flatMap((unit) => unit.cards), ...library.map(item => ({ ...item, meaning: item.spanish }))].map(card => [card.id, card]));
   return <section className="progress-view">
     <div className="progress-title"><div><p className="eyebrow">{signedIn ? syncState === 'saving' ? t('SINCRONIZANDO…') : syncState === 'error' ? t('SIN CONEXIÓN · GUARDADO LOCAL') : t('PROGRESO SINCRONIZADO') : t('PROGRESO EN ESTE DISPOSITIVO')}</p><h1>{t("Progreso")}</h1><p className="lede">{signedIn ? t('Se guarda en tu cuenta para continuar desde tu celular o computadora. Consolidada significa recordar una tarjeta en días distintos y alcanzar un intervalo de al menos 7 días.') : t('Puedes practicar sin cuenta. Crea una cuando quieras conservar y sincronizar tu avance.')}</p></div><button className="reveal continue" onClick={onContinue}>{t("Continuar aprendiendo →")}</button></div>
     <div className="metric-grid"><article><span>{"字"}</span><strong>{learned}</strong><small>{t("tarjetas consolidadas")}</small></article><article><span>{"复"}</span><strong>{dueNow}</strong><small>{t("listas para repasar")}</small></article><article><span>{"火"}</span><strong>{streak}</strong><small>{t("días de racha")}</small></article><article><span>{"日"}</span><strong>{studyDays.length}</strong><small>{t("días de estudio")}</small></article></div>
-    <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>{t("Tarjetas practicadas por unidad")}</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}{". "}{t(unit.name)}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}{"/"}{unit.cards.length}</small></div>; })}{(() => { const book = library.filter(item => item.book); const count = book.filter(item => records[item.id]).length; return <div className="progress-row"><b>{t("Mi libro")}</b><div><i style={{ width:`${count / book.length * 100}%` }} /></div><small>{count}{"/"}{book.length}</small></div>; })()}<div className="progress-row"><b>{t("Biblioteca completa")}</b><div><i style={{ width: `${library.filter(item => records[item.id]).length / library.length * 100}%` }} /></div><small>{library.filter(item => records[item.id]).length}{"/"}{library.length}</small></div></article><article className="activity"><div className="section-heading"><span>{t("Últimos repasos")}</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card ? meaningFor(card, language) : '—'}</small></div><em className={record.rating}>{record.rating === 'fácil' ? t('Recordada') : t('Por reforzar')}</em></div>; }) : <p className="empty">{t("Aún no hay repasos. Empieza con 你好.")}</p>}</article></div>
+    <div className="progress-columns"><article className="unit-progress"><div className="section-heading"><span>{t("Tarjetas practicadas por unidad")}</span></div>{units.map((unit, index) => { const count = unit.cards.filter((card) => records[card.id]).length; return <div className="progress-row" key={unit.name}><b>{index + 1}{". "}{t(unit.name)}</b><div><i style={{ width:`${count / unit.cards.length * 100}%` }} /></div><small>{count}{"/"}{unit.cards.length}</small></div>; })}{(() => { const book = library.filter(item => item.book); const count = book.filter(item => records[item.id]).length; return <div className="progress-row"><b>{t("Mi libro")}</b><div><i style={{ width:`${count / book.length * 100}%` }} /></div><small>{count}{"/"}{book.length}</small></div>; })()}<div className="progress-row"><b>{t("Biblioteca completa")}</b><div><i style={{ width: `${library.filter(item => records[item.id]).length / library.length * 100}%` }} /></div><small>{library.filter(item => records[item.id]).length}{"/"}{library.length}</small></div></article><article className="activity"><div className="section-heading"><span>{t("Últimos repasos")}</span></div>{recent.length ? recent.map(([id, record]) => { const card = byId.get(id); return <div className="activity-row" key={id}><span className="activity-hanzi">{card?.hanzi}</span><div><b>{card?.pinyin}</b><small>{card ? <Translation item={card}/> : '—'}</small></div><em className={record.rating}>{record.rating === 'fácil' ? t('Recordada') : t('Por reforzar')}</em></div>; }) : <p className="empty">{t("Aún no hay repasos. Empieza con 你好.")}</p>}</article></div>
     <details className="progress-manage"><summary>{t("Gestionar progreso")}</summary><button className="danger-reset" onClick={onReset}>{t("Borrar mi progreso")}</button></details>
   </section>;
 }

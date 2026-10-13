@@ -1,4 +1,6 @@
 'use client';
+import { useCommunityContent, Translation, CorrectTranslation } from '@/components/community-provider';
+import { trackPractice } from '@/lib/community-client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { ALL_CATEGORIES, filterLibrary, library, type LibraryItem } from '@/app/content';
@@ -17,13 +19,14 @@ type Kind = 'all' | 'word' | 'phrase';
 const symbols = ['ā', 'á', 'ǎ', 'à', 'a'];
 
 export function ListeningView({ speed }: { speed: number }) {
+  const communityContent=useCommunityContent();
   const { language } = useLanguage();
   const tr = (es: string, en: string) => language === 'en' ? en : es;
   const [mode, setMode] = useState<Mode>('meaning');
   const [kind, setKind] = useState<Kind>('all');
   const [book, setBook] = useState(false);
   const [lessons, setLessons] = useState<LessonRange>();
-  const items = useMemo(() => filterLibrary(library, { kind: mode === 'tones' ? 'word' : kind, book, category: ALL_CATEGORIES, lessons }).filter(item => mode !== 'tones' || splitToneSyllables(item.pinyin, item.hanzi).length > 0), [mode, kind, book, lessons]);
+  const items = useMemo(() => filterLibrary(communityContent, { kind: mode === 'tones' ? 'word' : kind, book, category: ALL_CATEGORIES, lessons }).filter(item => mode !== 'tones' || splitToneSyllables(item.pinyin, item.hanzi).length > 0), [mode, kind, book, lessons,communityContent]);
   return <section className="listening-view">
     <header className="listening-heading"><div><p className="eyebrow">LISTENING</p><h1>{tr('Entrena tu oído.', 'Train your ear.')}</h1><p>{tr('Escucha, reconoce y aprende los tonos del mandarín.', 'Listen, recognize and learn Mandarin tones.')}</p></div><span className="listening-count">{items.length} {tr('ejercicios', 'exercises')}</span></header>
     <div className="listening-controls">
@@ -67,7 +70,8 @@ function ListeningQuestion({ item, mode, speed, pool, onNext }: { item: LibraryI
     <div className="listening-audio"><button className="listening-play" onClick={() => listen()}><UiIcon name="audio" />{heard ? tr('Volver a escuchar', 'Listen again') : tr('Escuchar audio', 'Listen to audio')}</button><button className="listening-slow" onClick={() => listen(true)}>{tr('Más lento', 'Slower')}</button></div>
     {mode === 'meaning' ? <div className="listening-choices" role="group" aria-label={tr('Significados', 'Meanings')}>{choices.map((choice, i) => <button key={choice.id} disabled={checked || !heard} aria-pressed={selected === choice.id} className={`${selected === choice.id ? 'selected' : ''} ${checked && choice.id === item.id ? 'correct' : checked && selected === choice.id ? 'incorrect' : ''}`} onClick={() => setSelected(choice.id)}><span>{String.fromCharCode(65 + i)}</span>{meaningFor(choice, language)}{checked && choice.id === item.id && <UiIcon name="check" />}</button>)}</div> : <div className="listening-tones">{syllables.map((syllable, i) => <fieldset key={i} disabled={checked || !heard} className={checked ? tones[i] === syllable.tone ? 'correct' : 'incorrect' : ''}><legend>{tones[i] ? withTone(syllable.base, tones[i]) : syllable.base}</legend><div>{symbols.map((symbol, tone) => <button key={tone} aria-pressed={tones[i] === tone + 1} aria-label={`${syllable.base}: ${tone === 4 ? tr('tono neutro', 'neutral tone') : `${tr('tono', 'tone')} ${tone + 1}`}`} title={tone === 4 ? tr('Neutro', 'Neutral') : `${tr('Tono', 'Tone')} ${tone + 1}`} onClick={() => setTones(value => { const next = [...value]; next[i] = tone + 1; return next; })}><b>{symbol}</b><small>{tone === 4 ? '·' : tone + 1}</small></button>)}</div>{checked && <small>{tr('Correcto:', 'Correct:')} {withTone(syllable.base, syllable.tone)}</small>}</fieldset>)}</div>}
     {!heard && <p className="listening-hint">{tr('Primero escucha el audio para responder.', 'Listen to the audio before answering.')}</p>}
-    {checked && <div className={`listening-feedback ${correct ? 'correct' : 'incorrect'}`} role="status"><strong>{correct ? tr('¡Correcto!', 'Correct!') : tr('Sigue practicando.', 'Keep practicing.')}</strong><p><b lang="zh-Hans">{item.hanzi}</b> <em>{item.pinyin}</em> · {meaningFor(item, language)}</p>{mode === 'tones' && <small>{tr('Usamos los tonos escritos del pinyin; al hablar pueden cambiar por los tonos vecinos.', 'We use the written pinyin tones; neighboring tones can change their spoken sound.')}</small>}</div>}
-    <div className="listening-bottom">{checked ? <button autoFocus className="listening-primary" onClick={() => onNext(correct)}>{tr('Siguiente', 'Next')} <UiIcon name="arrow" /></button> : <button className="listening-primary" disabled={!ready} onClick={() => setChecked(true)}>{tr('Comprobar', 'Check answer')} <UiIcon name="check" /></button>}</div>
+    {checked && <div className={`listening-feedback ${correct ? 'correct' : 'incorrect'}`} role="status"><strong>{correct ? tr('¡Correcto!', 'Correct!') : tr('Sigue practicando.', 'Keep practicing.')}</strong><p><b lang="zh-Hans">{item.hanzi}</b> <em>{item.pinyin}</em> · <Translation item={item}/></p>{mode === 'tones' && <small>{tr('Usamos los tonos escritos del pinyin; al hablar pueden cambiar por los tonos vecinos.', 'We use the written pinyin tones; neighboring tones can change their spoken sound.')}</small>}</div>}
+    {checked && mode === 'meaning' && <div className="listening-corrections">{choices.map(choice => <div key={choice.id}><span>{choice.hanzi} · {meaningFor(choice,language)}</span><CorrectTranslation item={choice}/></div>)}</div>}
+    <div className="listening-bottom">{checked ? <button autoFocus className="listening-primary" onClick={() => onNext(correct)}>{tr('Siguiente', 'Next')} <UiIcon name="arrow" /></button> : <button className="listening-primary" disabled={!ready} onClick={() => { setChecked(true); trackPractice(mode==='meaning'?'listening-meaning':'listening-tones',item.hanzi,correct); }}>{tr('Comprobar', 'Check answer')} <UiIcon name="check" /></button>}</div>
   </div>;
 }

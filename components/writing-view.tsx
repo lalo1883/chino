@@ -1,12 +1,13 @@
 'use client';
+import { useCommunityContent, Translation } from '@/components/community-provider';
+import { trackPractice } from '@/lib/community-client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type HanziWriter from 'hanzi-writer';
 import type { CharacterJson, HanziWriterOptions } from 'hanzi-writer';
-import { library, type LibraryItem } from '@/app/content';
+import { type LibraryItem } from '@/app/content';
 import { matchesLessonRange, type LessonRange } from '@/app/course-lessons';
 import { useLanguage } from './language-provider';
-import { meaningFor } from '@/lib/translations';
 import { StudyPanel } from './study-panel';
 import { LessonFilter } from './lesson-filter';
 import { playClip } from './library-view';
@@ -143,6 +144,7 @@ function WritingBoard({ character, label, guided, restart, onComplete, onFeedbac
 }
 
 export function WritingView({ speed, onPractice }: { speed: number; onPractice?: () => void }) {
+  const communityContent=useCommunityContent();
   const { language } = useLanguage();
   const text = (es: string, en: string) => language === 'en' ? en : es;
   const [lessons, setLessons] = useState<LessonRange>();
@@ -157,7 +159,7 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
   const writer = useRef<HanziWriter | null>(null);
   const animationRun = useRef(0);
   useEffect(() => () => { animationRun.current++; }, []);
-  const items = useMemo(() => library.filter(item => item.type === 'word' && matchesLessonRange(item, lessons) && /\p{Script=Han}/u.test(item.hanzi)), [lessons]);
+  const items = useMemo(() => communityContent.filter(item => item.type === 'word' && matchesLessonRange(item, lessons) && /\p{Script=Han}/u.test(item.hanzi)), [lessons,communityContent]);
   const item: LibraryItem | undefined = items[index % Math.max(1, items.length)];
   const characters = Array.from(item?.hanzi || '').filter(char => /\p{Script=Han}/u.test(char));
   const character = characters[characterIndex] || characters[0];
@@ -189,13 +191,13 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
     <header className="writing-heading"><div><span className="writing-eyebrow">WRITING · 汉字</span><h1>{text('De pinyin a papel.', 'From pinyin to paper.')}</h1><p>{text('Escribe con el dedo, el mouse o el trackpad. Cada trazo recibe una corrección al instante.', 'Write with your finger, mouse or trackpad. Get instant feedback on every stroke.')}</p></div></header>
     <div className="writing-filters"><StudyPanel title={text("Lecciones", "Lessons")} label={lessons ? `${text("Lecciones", "Lessons")} · ${lessons.from}–${lessons.to}` : text("Lecciones", "Lessons")}><LessonFilter value={lessons} onChange={value => { setLessons(value); setIndex(0); setCharacterIndex(0); setFinished(new Set()); animationRun.current++; setAnimating(false); setRestart(value => value + 1); }} /></StudyPanel></div>
     {!item || !character ? <p>{text('No hay palabras en estas lecciones.', 'No words in these lessons.')}</p> : <div className="writing-workspace">
-      <aside className="writing-prompt"><span className="writing-eyebrow">{text('ESCRIBE ESTA PALABRA', 'WRITE THIS WORD')}</span><h2>{item.pinyin}</h2><p>{meaningFor(item, language)}</p><button type="button" className="writing-audio" onClick={() => playClip(item.audio, speed)}>{text('♪ Escuchar', '♪ Listen')}</button>
+      <aside className="writing-prompt"><span className="writing-eyebrow">{text('ESCRIBE ESTA PALABRA', 'WRITE THIS WORD')}</span><h2>{item.pinyin}</h2><p><Translation item={item}/></p><button type="button" className="writing-audio" onClick={() => playClip(item.audio, speed)}>{text('♪ Escuchar', '♪ Listen')}</button>
         <div className="writing-character-tabs" aria-label={text('Caracteres de la palabra', 'Characters in this word')}>{characters.map((char, i) => <button type="button" key={`${i}-${char}`} aria-pressed={i === characterIndex} onClick={() => { animationRun.current++; setCharacterIndex(i); setAnimating(false); setRestart(value => value + 1); }}><span>{guided || finished.has(i) ? char : i + 1}</span>{finished.has(i) && <small>✓</small>}</button>)}</div>
         <label className="writing-guide"><input type="checkbox" checked={guided} onChange={event => { animationRun.current++; setAnimating(false); setGuided(event.target.checked); }} />{text('Mostrar guía', 'Show outline')}</label>
         <details className="writing-help"><summary>{text("Cómo practicar", "How to practice")}</summary><p>{text('De arriba hacia abajo, de izquierda a derecha. Se comprueban forma, dirección y orden de los trazos del carácter esperado.', 'Top to bottom, left to right. Shape, direction and stroke order are checked against the expected character.')}</p></details>
       </aside>
       <div className="writing-paper"><div className="writing-paper-top"><span>{text('Carácter', 'Character')} {characterIndex + 1}/{characters.length}</span><span>{feedback.stroke}/{feedback.total} {text('trazos', 'strokes')}</span></div>
-        <div className="writing-board-wrap"><WritingBoard label={text(`Área para escribir el carácter ${character}`, `Handwriting area for character ${character}`)} character={character} guided={guided} restart={restart} writerRef={writer} onFeedback={setFeedback} onStatus={setStatus} onComplete={() => { setFinished(previous => new Set(previous).add(characterIndex)); onPractice?.(); }} />{status !== 'ready' && <div className="writing-board-overlay" role="status">{status === 'loading' ? text('Cargando trazos…', 'Loading strokes…') : <><p>{text('No se pudieron cargar los trazos.', 'Could not load stroke data.')}</p><button type="button" onClick={() => setRestart(value => value + 1)}>{text('Reintentar', 'Retry')}</button></>}</div>}</div>
+        <div className="writing-board-wrap"><WritingBoard label={text(`Área para escribir el carácter ${character}`, `Handwriting area for character ${character}`)} character={character} guided={guided} restart={restart} writerRef={writer} onFeedback={next=>{setFeedback(next);if(next.kind==='complete')trackPractice('writing',item.hanzi,next.mistakes===0);}} onStatus={setStatus} onComplete={() => { setFinished(previous => new Set(previous).add(characterIndex)); onPractice?.(); }} />{status !== 'ready' && <div className="writing-board-overlay" role="status">{status === 'loading' ? text('Cargando trazos…', 'Loading strokes…') : <><p>{text('No se pudieron cargar los trazos.', 'Could not load stroke data.')}</p><button type="button" onClick={() => setRestart(value => value + 1)}>{text('Reintentar', 'Retry')}</button></>}</div>}</div>
         <div className={`writing-feedback ${feedback.kind}`} role="status" aria-live="polite">{status === 'ready' ? message : text('Prepara tu mano; la práctica está por empezar.', 'Get ready to write.')}</div>
         <div className="writing-tools"><button type="button" disabled={status !== 'ready' || animating} onClick={() => void animate()}>{animating ? text('Mostrando…', 'Showing…') : text('Ver trazos', 'Show strokes')}</button><button type="button" disabled={status !== 'ready' || animating} onClick={() => { setFinished(previous => { const next = new Set(previous); next.delete(characterIndex); return next; }); setRestart(value => value + 1); }}>{text('Borrar y repetir', 'Clear & retry')}</button><button type="button" disabled={status !== 'ready' || animating || feedback.kind === 'complete'} onClick={() => void writer.current?.highlightStroke(feedback.stroke)}>{text('Pista', 'Hint')}</button></div>
       </div>
