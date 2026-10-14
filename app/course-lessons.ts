@@ -1,4 +1,5 @@
 import { newCourseEntries } from './new-course-lessons.ts';
+import { lessonSixSupplement } from './lesson-six-supplement.ts';
 
 // Vocabulario del curso, incluidas las lecciones 6 a 10 del CSV.
 export const LESSONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
@@ -579,6 +580,7 @@ export const courseEntries: Array<{ lesson: number; type: 'word' | 'phrase'; han
     "spanish": "Papá, mamá, hermano mayor, hermana mayor y yo."
   },
   ...newCourseEntries,
+  ...lessonSixSupplement,
 ];
 
 export function normalizeLessonHanzi(value: string) {
