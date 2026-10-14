@@ -1,16 +1,21 @@
 import englishContent from './english-content.json' with { type: 'json' };
 import englishExamples from './english-examples.json' with { type: 'json' };
 import interfaceEnglish from './interface-en.json' with { type: 'json' };
+import bookReference from '../app/book-reference.json' with { type: 'json' };
 
 export type Language = 'es' | 'en';
 let publishedMeanings = new Map<string,string>();
 export function setPublishedMeanings(entries: Array<{hanzi:string;language:Language;meaning:string}>) {
   publishedMeanings = new Map(entries.map(entry => [`${entry.language}:${entry.hanzi}`,entry.meaning]));
 }
-const english: Record<string, string> = { ...englishContent, ...englishExamples };
+const english: Record<string, string> = { ...Object.fromEntries(bookReference.entries.map(entry => [entry.hanzi, entry.english])), ...englishContent, ...englishExamples };
 const ui: Record<string, string> = interfaceEnglish;
 const punctuation = /[\s。？！!?,，、；;：:]/gu;
-const normalizedEnglish = new Map(Object.entries(english).map(([hanzi, meaning]) => [hanzi.replace(punctuation, ''), meaning]));
+const normalizedEnglish = new Map(Object.entries({ ...englishContent, ...englishExamples }).map(([hanzi, meaning]) => [hanzi.replace(punctuation, ''), meaning]));
+for (const entry of bookReference.entries) {
+  const key = entry.hanzi.replace(punctuation, '');
+  if (!normalizedEnglish.has(key)) normalizedEnglish.set(key, entry.english);
+}
 
 // Chinese nouns do not mark articles or number. Choose natural English forms for
 // the generated object exercises instead of inserting a dictionary headword.

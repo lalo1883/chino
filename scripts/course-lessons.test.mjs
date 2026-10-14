@@ -1,22 +1,53 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { library, filterLibrary, categoriesFor, ALL_CATEGORIES } from '../app/content.ts';
-import { courseEntries, normalizeLessonHanzi, LESSONS } from '../app/course-lessons.ts';
+import { library, filterLibrary, categoriesFor, ALL_CATEGORIES, analyze } from '../app/content.ts';
+import { courseEntries, normalizeLessonHanzi, LESSONS, bookSupplementEntries } from '../app/course-lessons.ts';
 import { newCourseEntries } from '../app/new-course-lessons.ts';
 import { lessonSixSupplement } from '../app/lesson-six-supplement.ts';
 import { makeSession } from '../lib/learning.ts';
+import bookReference from '../app/book-reference.json' with { type: 'json' };
 
 const entryKey = entry => `${entry.type}:${normalizeLessonHanzi(entry.hanzi)}`;
 const uniqueEntries = entries => [...new Map(entries.map(entry => [entryKey(entry), entry])).values()];
 
 const base = { kind: 'all', book: false, category: ALL_CATEGORIES };
 
+test('digital book entries retain page provenance and complete lesson 1–11 coverage', () => {
+  assert.equal(bookReference.source.isbn, '9787561930762');
+  const bounds = [[1, 8], [9, 17], [18, 26], [27, 38], [39, 49], [50, 61], [62, 74], [75, 87], [88, 100], [101, 112], [113, 123]];
+  const counts = [[14, 5], [32, 9], [30, 14], [28, 21], [31, 21], [47, 2], [48, 22], [48, 20], [43, 26], [43, 21], [42, 30]];
+  for (const lesson of LESSONS) {
+    const entries = bookReference.entries.filter(entry => entry.lesson === lesson);
+    assert.deepEqual(['word', 'phrase'].map(type => entries.filter(entry => entry.type === type).length), counts[lesson - 1]);
+    for (const entry of entries) {
+      assert.ok(entry.page >= bounds[lesson - 1][0] && entry.page <= bounds[lesson - 1][1], entry.hanzi);
+      assert.ok(entry.pinyin && entry.spanish && entry.english, entry.hanzi);
+      const card = library.find(item => entryKey(item) === entryKey(entry));
+      assert.ok(card?.lessons.includes(lesson), `${lesson}: ${entry.hanzi}`);
+      if (entry.type === 'phrase') assert.deepEqual(analyze(entry.hanzi).unknown, [], entry.hanzi);
+    }
+  }
+});
+
+test('lesson 11 supports vocabulary, phrase, search and study filters', () => {
+  const lessons = { from: 11, to: 11 };
+  const words = filterLibrary(library, { ...base, kind: 'word', book: true, lessons });
+  const phrases = filterLibrary(library, { ...base, kind: 'phrase', book: true, lessons });
+  assert.equal(words.length, 42);
+  assert.equal(phrases.length, 30);
+  assert.ok(words.some(item => item.hanzi === '同屋'));
+  assert.ok(words.some(item => item.hanzi === '从……到……'));
+  assert.ok(phrases.some(item => item.hanzi === '我在学校食堂吃饭。'));
+  assert.ok(filterLibrary(library, { ...base, query: 'roommate', lessons }).some(item => item.hanzi === '同屋'));
+  assert.ok(makeSession([...words, ...phrases], {}, Date.now(), false, 24).every(item => item.lessons.includes(11)));
+});
+
 test('lesson 6 includes the photographed vocabulary and dialogues without duplicate cards', () => {
   assert.equal(lessonSixSupplement.filter(entry => entry.type === 'word').length, 31);
   assert.equal(lessonSixSupplement.filter(entry => entry.type === 'phrase').length, 42);
   const lesson = filterLibrary(library, { ...base, lessons: { from: 6, to: 6 } });
-  assert.equal(lesson.length, 101);
+  assert.equal(lesson.length, 108);
   for (const entry of lessonSixSupplement) {
     const matches = lesson.filter(item => entryKey(item) === entryKey(entry));
     assert.equal(matches.length, 1, entry.hanzi);
@@ -28,9 +59,9 @@ test('lesson 6 includes the photographed vocabulary and dialogues without duplic
 });
 
 test('all course entries have a unique library card in the correct lesson', () => {
-  assert.equal(courseEntries.length, 222 + lessonSixSupplement.length);
+  assert.equal(courseEntries.length, 222 + lessonSixSupplement.length + bookSupplementEntries.length);
   assert.equal(new Set(courseEntries.map(entry => `${entry.lesson}:${entryKey(entry)}`)).size, courseEntries.length);
-  assert.deepEqual(LESSONS, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  assert.deepEqual(LESSONS, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
   for (const entry of courseEntries) {
     const matches = library.filter(item => item.type === entry.type && normalizeLessonHanzi(item.hanzi) === normalizeLessonHanzi(entry.hanzi));
     assert.equal(matches.length, 1, `Unique card for ${entry.hanzi}`);
@@ -42,16 +73,16 @@ test('all course entries have a unique library card in the correct lesson', () =
 });
 
 test('single lessons and all inclusive ranges contain exactly the supplied entries', () => {
-  for (let from = 1; from <= 10; from++) for (let to = from; to <= 10; to++) {
+  for (let from = 1; from <= 11; from++) for (let to = from; to <= 11; to++) {
     const actual = filterLibrary(library, { ...base, lessons: { from, to } });
     const expected = uniqueEntries(courseEntries.filter(entry => entry.lesson >= from && entry.lesson <= to));
     assert.equal(actual.length, expected.length, `${from}–${to}`);
     assert.deepEqual(actual.map(item => `${item.type}:${normalizeLessonHanzi(item.hanzi)}`).sort(), expected.map(entry => `${entry.type}:${normalizeLessonHanzi(entry.hanzi)}`).sort(), `${from}–${to}: exact vocabulary`);
     assert.ok(actual.every(item => item.lessons.some(lesson => lesson >= from && lesson <= to)));
   }
-  assert.equal(filterLibrary(library, { ...base, lessons: { from: 1, to: 5 } }).length, 82);
-  assert.equal(filterLibrary(library, { ...base, lessons: { from: 6, to: 10 } }).length, uniqueEntries(courseEntries.filter(entry => entry.lesson >= 6)).length);
-  assert.equal(filterLibrary(library, { ...base, lessons: { from: 1, to: 10 } }).length, uniqueEntries(courseEntries).length);
+  assert.equal(filterLibrary(library, { ...base, lessons: { from: 1, to: 5 } }).length, uniqueEntries(courseEntries.filter(entry => entry.lesson <= 5)).length);
+  assert.equal(filterLibrary(library, { ...base, lessons: { from: 6, to: 10 } }).length, uniqueEntries(courseEntries.filter(entry => entry.lesson >= 6 && entry.lesson <= 10)).length);
+  assert.equal(filterLibrary(library, { ...base, lessons: { from: 1, to: 11 } }).length, uniqueEntries(courseEntries).length);
   assert.ok(filterLibrary(library, base).length > 222);
 });
 
@@ -105,7 +136,7 @@ test('adding lessons preserves original card and audio identities across every e
 test('lesson ranges combine with type, book, topic, search, category counts and session creation', () => {
   const lessons = { from: 4, to: 5 };
   const words = filterLibrary(library, { ...base, kind: 'word', book: true, lessons });
-  assert.equal(words.length, 25);
+  assert.equal(words.length, 59);
   const categories = categoriesFor(library, 'word', true, lessons);
   assert.equal(categories.reduce((sum, [, count]) => sum + count, 0), words.length);
   const result = filterLibrary(library, { ...base, kind: 'word', category: 'Familia', query: 'mamá', lessons });

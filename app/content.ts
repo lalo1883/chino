@@ -349,7 +349,7 @@ const lessonRows: LessonRow[] = [
 ];
 
 
-const courseTopics = ['Saludos', 'Nacionalidad', 'Presentaciones', 'Estudios', 'Mi familia', 'Compras', 'Lugares', 'Fechas y cumpleaños', 'Rutina diaria', 'Naturaleza'];
+const courseTopics = ['Saludos', 'Nacionalidad', 'Presentaciones', 'Estudios', 'Mi familia', 'Compras', 'Lugares', 'Fechas y cumpleaños', 'Rutina diaria', 'Naturaleza', 'Rutina diaria'];
 
 const rawWords = wordSource.trim().split('\n').map((row) => row.split('|'));
 const knownWords = new Set(rawWords.map(([hanzi]) => normalizeLessonHanzi(hanzi)));

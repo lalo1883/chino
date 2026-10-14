@@ -1,10 +1,12 @@
 import { newCourseEntries } from './new-course-lessons.ts';
 import { lessonSixSupplement } from './lesson-six-supplement.ts';
+import bookReference from './book-reference.json' with { type: 'json' };
 
-// Vocabulario del curso, incluidas las lecciones 6 a 10 del CSV.
-export const LESSONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
+// Vocabulario del CSV y complemento verificado en el libro digital, lecciones 1–11.
+export const LESSONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
 export type LessonRange = { from: number; to: number };
-export const courseEntries: Array<{ lesson: number; type: 'word' | 'phrase'; hanzi: string; pinyin: string; spanish: string }> = [
+type CourseEntry = { lesson: number; type: 'word' | 'phrase'; hanzi: string; pinyin: string; spanish: string };
+const originalCourseEntries: CourseEntry[] = [
   {
     "lesson": 1,
     "type": "word",
@@ -586,6 +588,19 @@ export const courseEntries: Array<{ lesson: number; type: 'word' | 'phrase'; han
 export function normalizeLessonHanzi(value: string) {
   return value.replace(/[\s\p{P}\p{S}]/gu, '');
 }
+
+// Agregar al final conserva los ids y audios derivados de los índices originales.
+// Una misma tarjeta puede pertenecer a varias lecciones, sin duplicarse en la biblioteca.
+const courseKey = (entry: CourseEntry) => `${entry.lesson}:${entry.type}:${normalizeLessonHanzi(entry.hanzi)}`;
+const knownCourseEntries = new Set(originalCourseEntries.map(courseKey));
+export const bookSupplementEntries: CourseEntry[] = bookReference.entries.flatMap(entry => {
+  const item: CourseEntry = { lesson: entry.lesson, type: entry.type === 'phrase' ? 'phrase' : 'word', hanzi: entry.hanzi, pinyin: entry.pinyin, spanish: entry.spanish };
+  if (knownCourseEntries.has(courseKey(item))) return [];
+  knownCourseEntries.add(courseKey(item));
+  return [item];
+});
+export const courseEntries: CourseEntry[] = [...originalCourseEntries, ...bookSupplementEntries];
+
 const lessonsByEntry = new Map<string, number[]>();
 for (const entry of courseEntries) {
   const key = `${entry.type}:${normalizeLessonHanzi(entry.hanzi)}`;

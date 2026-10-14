@@ -1,0 +1,5397 @@
+{
+  "source": {
+    "title": "Developing Chinese — Elementary Comprehensive Course I, 2nd Edition",
+    "chineseTitle": "发展汉语（第二版）初级综合（Ⅰ）",
+    "isbn": "9787561930762",
+    "url": "https://online.fliphtml5.com/tyedr/aqdb/",
+    "viewerPageOffset": 19,
+    "reviewedLessons": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  "entries": [
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "你",
+      "pinyin": "nǐ",
+      "spanish": "tú",
+      "english": "you",
+      "page": 4
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "好",
+      "pinyin": "hǎo",
+      "spanish": "bueno / bien",
+      "english": "good / well",
+      "page": 4
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "您",
+      "pinyin": "nín",
+      "spanish": "usted (cortés)",
+      "english": "you (polite)",
+      "page": 4
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "马丁",
+      "pinyin": "Mǎdīng",
+      "spanish": "Martin (nombre propio)",
+      "english": "Martin (given name)",
+      "page": 4
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "林娜",
+      "pinyin": "Línnà",
+      "spanish": "Linna (nombre propio)",
+      "english": "Linna (given name)",
+      "page": 4
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "李一民",
+      "pinyin": "Lǐ Yīmín",
+      "spanish": "Li Yimin (nombre chino)",
+      "english": "Li Yimin (Chinese name)",
+      "page": 4
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "阿明",
+      "pinyin": "Āmíng",
+      "spanish": "Aming (nombre propio)",
+      "english": "Aming (given name)",
+      "page": 4
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "零",
+      "pinyin": "líng",
+      "spanish": "cero",
+      "english": "zero",
+      "page": 5
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "一",
+      "pinyin": "yī",
+      "spanish": "uno",
+      "english": "one",
+      "page": 5
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "二",
+      "pinyin": "èr",
+      "spanish": "dos",
+      "english": "two",
+      "page": 5
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "五",
+      "pinyin": "wǔ",
+      "spanish": "cinco",
+      "english": "five",
+      "page": 5
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "八",
+      "pinyin": "bā",
+      "spanish": "ocho",
+      "english": "eight",
+      "page": 5
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "你们",
+      "pinyin": "nǐmen",
+      "spanish": "ustedes",
+      "english": "you (plural)",
+      "page": 6
+    },
+    {
+      "lesson": 1,
+      "type": "word",
+      "hanzi": "老师",
+      "pinyin": "lǎoshī",
+      "spanish": "profesor/a",
+      "english": "teacher",
+      "page": 6
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "早上",
+      "pinyin": "zǎoshang",
+      "spanish": "mañana temprano",
+      "english": "early morning",
+      "page": 11
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "崔浩",
+      "pinyin": "Cuī Hào",
+      "spanish": "Cui Hao (nombre propio)",
+      "english": "Cui Hao (personal name)",
+      "page": 11
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "是",
+      "pinyin": "shì",
+      "spanish": "ser / sí",
+      "english": "be / yes",
+      "page": 11
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "哪",
+      "pinyin": "nǎ",
+      "spanish": "cuál",
+      "english": "which",
+      "page": 11
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "国",
+      "pinyin": "guó",
+      "spanish": "país / nación",
+      "english": "country",
+      "page": 11
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "人",
+      "pinyin": "rén",
+      "spanish": "persona",
+      "english": "person",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "spanish": "yo / me",
+      "english": "I / me",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "呢",
+      "pinyin": "ne",
+      "spanish": "partícula de continuación",
+      "english": "question / topic particle",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "他",
+      "pinyin": "tā",
+      "spanish": "él",
+      "english": "he",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "美国",
+      "pinyin": "Měiguó",
+      "spanish": "Estados Unidos",
+      "english": "United States",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "韩国",
+      "pinyin": "Hánguó",
+      "spanish": "Corea del Sur",
+      "english": "South Korea",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "日本",
+      "pinyin": "Rìběn",
+      "spanish": "Japón",
+      "english": "Japan",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "三",
+      "pinyin": "sān",
+      "spanish": "tres",
+      "english": "three",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "四",
+      "pinyin": "sì",
+      "spanish": "cuatro",
+      "english": "four",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "十",
+      "pinyin": "shí",
+      "spanish": "diez",
+      "english": "ten",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "中国",
+      "pinyin": "Zhōngguó",
+      "spanish": "China",
+      "english": "China",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "德国",
+      "pinyin": "Déguó",
+      "spanish": "Alemania",
+      "english": "Germany",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "英国",
+      "pinyin": "Yīngguó",
+      "spanish": "Reino Unido",
+      "english": "United Kingdom",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "印度",
+      "pinyin": "Yìndù",
+      "spanish": "India",
+      "english": "India",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "意大利",
+      "pinyin": "Yìdàlì",
+      "spanish": "Italia",
+      "english": "Italy",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "法国",
+      "pinyin": "Fǎguó",
+      "spanish": "Francia",
+      "english": "France",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "泰国",
+      "pinyin": "Tàiguó",
+      "spanish": "Tailandia",
+      "english": "Thailand",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "中国人",
+      "pinyin": "Zhōngguó rén",
+      "spanish": "Persona china",
+      "english": "Chinese person",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "德国人",
+      "pinyin": "Déguó rén",
+      "spanish": "Persona alemana",
+      "english": "German person",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "英国人",
+      "pinyin": "Yīngguó rén",
+      "spanish": "Persona británica",
+      "english": "British person",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "印度人",
+      "pinyin": "Yìndù rén",
+      "spanish": "Persona india",
+      "english": "Indian person",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "意大利人",
+      "pinyin": "Yìdàlì rén",
+      "spanish": "Persona italiana",
+      "english": "Italian person",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "法国人",
+      "pinyin": "Fǎguó rén",
+      "spanish": "Persona francesa",
+      "english": "French person",
+      "page": 13
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "泰国人",
+      "pinyin": "Tàiguó rén",
+      "spanish": "Persona tailandesa",
+      "english": "Thai person",
+      "page": 13
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "请问",
+      "pinyin": "qǐngwèn",
+      "spanish": "Disculpe, ¿podría...?",
+      "english": "excuse me, may I ask…",
+      "page": 19
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "请",
+      "pinyin": "qǐng",
+      "spanish": "por favor",
+      "english": "please",
+      "page": 19
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "问",
+      "pinyin": "wèn",
+      "spanish": "preguntar",
+      "english": "ask",
+      "page": 19
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "叫",
+      "pinyin": "jiào",
+      "spanish": "llamarse",
+      "english": "be called",
+      "page": 19
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "什么",
+      "pinyin": "shénme",
+      "spanish": "qué",
+      "english": "what",
+      "page": 19
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "名字",
+      "pinyin": "míngzi",
+      "spanish": "nombre",
+      "english": "name",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "姓",
+      "pinyin": "xìng",
+      "spanish": "apellidarse / apellido",
+      "english": "surname / be surnamed",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "认识",
+      "pinyin": "rènshi",
+      "spanish": "conocer",
+      "english": "know / meet",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "很",
+      "pinyin": "hěn",
+      "spanish": "muy",
+      "english": "very",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "高兴",
+      "pinyin": "gāoxìng",
+      "spanish": "contento",
+      "english": "happy",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "也",
+      "pinyin": "yě",
+      "spanish": "también",
+      "english": "also",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "山田佑",
+      "pinyin": "Shāntián Yòu",
+      "spanish": "Yamada Yu (nombre japonés)",
+      "english": "Yamada Yu (Japanese name)",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "老师",
+      "pinyin": "lǎoshī",
+      "spanish": "profesor/a",
+      "english": "teacher",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "贵姓",
+      "pinyin": "guìxìng",
+      "spanish": "Su apellido (formal)",
+      "english": "your surname (polite)",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "李",
+      "pinyin": "Lǐ",
+      "spanish": "Li (apellido)",
+      "english": "Li (surname)",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "六",
+      "pinyin": "liù",
+      "spanish": "seis",
+      "english": "six",
+      "page": 21
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "七",
+      "pinyin": "qī",
+      "spanish": "siete",
+      "english": "seven",
+      "page": 21
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "九",
+      "pinyin": "jiǔ",
+      "spanish": "nueve",
+      "english": "nine",
+      "page": 21
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "马",
+      "pinyin": "Mǎ",
+      "spanish": "Ma (apellido)",
+      "english": "Ma (surname)",
+      "page": 22
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "王",
+      "pinyin": "Wáng",
+      "spanish": "Wang (apellido)",
+      "english": "Wang (surname)",
+      "page": 22
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "张",
+      "pinyin": "Zhāng",
+      "spanish": "Zhang (apellido)",
+      "english": "Zhang (surname)",
+      "page": 22
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "陈",
+      "pinyin": "Chén",
+      "spanish": "Chen (apellido)",
+      "english": "Chen (surname)",
+      "page": 22
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "孙",
+      "pinyin": "Sūn",
+      "spanish": "Sun (apellido)",
+      "english": "Sun (surname)",
+      "page": 22
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "刘",
+      "pinyin": "Liú",
+      "spanish": "Liu (apellido)",
+      "english": "Liu (surname)",
+      "page": 22
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "黄",
+      "pinyin": "Huáng",
+      "spanish": "Huang (apellido)",
+      "english": "Huang (surname)",
+      "page": 22
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "赵",
+      "pinyin": "Zhào",
+      "spanish": "Zhao (apellido)",
+      "english": "Zhao (surname)",
+      "page": 22
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "高",
+      "pinyin": "Gāo",
+      "spanish": "Gao (apellido)",
+      "english": "Gao (surname)",
+      "page": 22
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "留学生",
+      "pinyin": "liúxuéshēng",
+      "spanish": "estudiante extranjero",
+      "english": "international student",
+      "page": 28
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "她",
+      "pinyin": "tā",
+      "spanish": "ella",
+      "english": "she",
+      "page": 28
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "学习",
+      "pinyin": "xuéxí",
+      "spanish": "estudiar / aprender",
+      "english": "study / learn",
+      "page": 28
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "他们",
+      "pinyin": "tāmen",
+      "spanish": "ellos / ellas",
+      "english": "they",
+      "page": 28
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "们",
+      "pinyin": "men",
+      "spanish": "sufijo de plural para personas",
+      "english": "plural suffix for people",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "一起",
+      "pinyin": "yìqǐ",
+      "spanish": "juntos",
+      "english": "together",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "上课",
+      "pinyin": "shàngkè",
+      "spanish": "tener clase",
+      "english": "attend class",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "说",
+      "pinyin": "shuō",
+      "spanish": "hablar / decir",
+      "english": "speak / say",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "法国",
+      "pinyin": "Fǎguó",
+      "spanish": "Francia",
+      "english": "France",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "汉语",
+      "pinyin": "Hànyǔ",
+      "spanish": "idioma chino",
+      "english": "Chinese language",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "泰国",
+      "pinyin": "Tàiguó",
+      "spanish": "Tailandia",
+      "english": "Thailand",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "吗",
+      "pinyin": "ma",
+      "spanish": "partícula de pregunta",
+      "english": "question particle",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "不",
+      "pinyin": "bù",
+      "spanish": "no",
+      "english": "not / no",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "中国",
+      "pinyin": "Zhōngguó",
+      "spanish": "China",
+      "english": "China",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "朱云",
+      "pinyin": "Zhū Yún",
+      "spanish": "Zhu Yun (nombre chino)",
+      "english": "Zhu Yun (Chinese name)",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "法语",
+      "pinyin": "Fǎyǔ",
+      "spanish": "Francés",
+      "english": "French language",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "英语",
+      "pinyin": "Yīngyǔ",
+      "spanish": "Inglés",
+      "english": "English language",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "谁",
+      "pinyin": "shéi",
+      "spanish": "quién",
+      "english": "who",
+      "page": 31
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "同学",
+      "pinyin": "tóngxué",
+      "spanish": "compañero de clase",
+      "english": "classmate",
+      "page": 31
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "日语",
+      "pinyin": "Rìyǔ",
+      "spanish": "Idioma japonés",
+      "english": "Japanese language",
+      "page": 32
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "韩语",
+      "pinyin": "Hányǔ",
+      "spanish": "Idioma coreano",
+      "english": "Korean language",
+      "page": 32
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "德语",
+      "pinyin": "Déyǔ",
+      "spanish": "Idioma alemán",
+      "english": "German language",
+      "page": 32
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "意大利语",
+      "pinyin": "Yìdàlìyǔ",
+      "spanish": "Idioma italiano",
+      "english": "Italian language",
+      "page": 32
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "西班牙语",
+      "pinyin": "Xībānyáyǔ",
+      "spanish": "Idioma español",
+      "english": "Spanish language",
+      "page": 32
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "家",
+      "pinyin": "jiā",
+      "spanish": "casa / familia",
+      "english": "home / family",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "有",
+      "pinyin": "yǒu",
+      "spanish": "tener / haber",
+      "english": "have / there is",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "口",
+      "pinyin": "kǒu",
+      "spanish": "clasificador de personas de la familia",
+      "english": "measure word for family members",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "爸爸",
+      "pinyin": "bàba",
+      "spanish": "papá",
+      "english": "dad",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "妈妈",
+      "pinyin": "māma",
+      "spanish": "mamá",
+      "english": "mom",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "哥哥",
+      "pinyin": "gēge",
+      "spanish": "hermano mayor",
+      "english": "older brother",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "和",
+      "pinyin": "hé",
+      "spanish": "y / con",
+      "english": "and / with",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "职员",
+      "pinyin": "zhíyuán",
+      "spanish": "empleado/a de oficina",
+      "english": "office worker",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "都",
+      "pinyin": "dōu",
+      "spanish": "todos",
+      "english": "all",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "大学生",
+      "pinyin": "dàxuéshēng",
+      "spanish": "estudiante universitario",
+      "english": "university student",
+      "page": 40
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "几",
+      "pinyin": "jǐ",
+      "spanish": "cuántos (pocos)",
+      "english": "how many (small amount)",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "做",
+      "pinyin": "zuò",
+      "spanish": "hacer",
+      "english": "do / make",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "工作",
+      "pinyin": "gōngzuò",
+      "spanish": "trabajar / trabajo",
+      "english": "work / job",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "律师",
+      "pinyin": "lǜshī",
+      "spanish": "abogado/a",
+      "english": "lawyer",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "医生",
+      "pinyin": "yīshēng",
+      "spanish": "médico/a",
+      "english": "doctor",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "你们",
+      "pinyin": "nǐmen",
+      "spanish": "ustedes",
+      "english": "you (plural)",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "班",
+      "pinyin": "bān",
+      "spanish": "clase / grupo",
+      "english": "class / group",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "多少",
+      "pinyin": "duōshao",
+      "spanish": "cuánto / cuántos",
+      "english": "how much / how many",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "个",
+      "pinyin": "gè",
+      "spanish": "clasificador general",
+      "english": "general measure word",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "学生",
+      "pinyin": "xuésheng",
+      "spanish": "estudiante",
+      "english": "student",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "我们",
+      "pinyin": "wǒmen",
+      "spanish": "nosotros",
+      "english": "we / us",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "两",
+      "pinyin": "liǎng",
+      "spanish": "dos (para contar)",
+      "english": "two (counting)",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "姐姐",
+      "pinyin": "jiějie",
+      "spanish": "hermana mayor",
+      "english": "older sister",
+      "page": 45
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "妹妹",
+      "pinyin": "mèimei",
+      "spanish": "hermana menor",
+      "english": "younger sister",
+      "page": 45
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "弟弟",
+      "pinyin": "dìdi",
+      "spanish": "hermano menor",
+      "english": "younger brother",
+      "page": 45
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "工人",
+      "pinyin": "gōngrén",
+      "spanish": "Obrero, trabajador",
+      "english": "Worker / labourer",
+      "page": 45
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "农民",
+      "pinyin": "nóngmín",
+      "spanish": "Agricultor",
+      "english": "Farmer",
+      "page": 45
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "护士",
+      "pinyin": "hùshi",
+      "spanish": "Enfermero, enfermera",
+      "english": "Nurse",
+      "page": 45
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "警察",
+      "pinyin": "jǐngchá",
+      "spanish": "Policía",
+      "english": "Police officer",
+      "page": 45
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "想",
+      "pinyin": "xiǎng",
+      "spanish": "querer / pensar",
+      "english": "want / think",
+      "page": 51
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "买",
+      "pinyin": "mǎi",
+      "spanish": "comprar",
+      "english": "buy",
+      "page": 51
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "电子词典",
+      "pinyin": "diànzǐ cídiǎn",
+      "spanish": "Diccionario electrónico",
+      "english": "electronic dictionary",
+      "page": 51
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "电子",
+      "pinyin": "diànzǐ",
+      "spanish": "Electrón; electrónico",
+      "english": "Electron / electronic",
+      "page": 51
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "词典",
+      "pinyin": "cídiǎn",
+      "spanish": "Diccionario",
+      "english": "Dictionary",
+      "page": 51
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "电脑",
+      "pinyin": "diànnǎo",
+      "spanish": "computadora",
+      "english": "computer",
+      "page": 51
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "部",
+      "pinyin": "bù",
+      "spanish": "Medida para películas, diccionarios",
+      "english": "measure word for films / dictionaries",
+      "page": 51
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "百",
+      "pinyin": "bǎi",
+      "spanish": "cien",
+      "english": "one hundred",
+      "page": 51
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "块",
+      "pinyin": "kuài",
+      "spanish": "yuan (dinero) / pieza",
+      "english": "yuan / piece",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "钱",
+      "pinyin": "qián",
+      "spanish": "dinero",
+      "english": "money",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "台",
+      "pinyin": "tái",
+      "spanish": "Medida para máquinas (computadora)",
+      "english": "measure word for machines",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "千",
+      "pinyin": "qiān",
+      "spanish": "mil",
+      "english": "one thousand",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "一共",
+      "pinyin": "yígòng",
+      "spanish": "En total",
+      "english": "in total",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "需要",
+      "pinyin": "xūyào",
+      "spanish": "necesitar",
+      "english": "need",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "营业员",
+      "pinyin": "yíngyèyuán",
+      "spanish": "Dependiente/a",
+      "english": "sales assistant",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "要",
+      "pinyin": "yào",
+      "spanish": "querer / necesitar",
+      "english": "want / need",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "面包",
+      "pinyin": "miànbāo",
+      "spanish": "pan",
+      "english": "bread",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "种",
+      "pinyin": "zhǒng",
+      "spanish": "Tipo, clase",
+      "english": "kind / type",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "这",
+      "pinyin": "zhè",
+      "spanish": "esto / este",
+      "english": "this",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "谢谢",
+      "pinyin": "xièxie",
+      "spanish": "gracias",
+      "english": "thank you",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "不客气",
+      "pinyin": "bú kèqi",
+      "spanish": "de nada",
+      "english": "you're welcome",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "客气",
+      "pinyin": "kèqi",
+      "spanish": "Cortés, amable",
+      "english": "polite / courteous",
+      "page": 52
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "香蕉",
+      "pinyin": "xiāngjiāo",
+      "spanish": "plátano",
+      "english": "banana",
+      "page": 53
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "斤",
+      "pinyin": "jīn",
+      "spanish": "Medida de peso (500g)",
+      "english": "jin (500 grams)",
+      "page": 53
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "苹果",
+      "pinyin": "píngguǒ",
+      "spanish": "manzana",
+      "english": "apple",
+      "page": 53
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "再",
+      "pinyin": "zài",
+      "spanish": "otra vez / después",
+      "english": "again / later",
+      "page": 54
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "毛",
+      "pinyin": "máo",
+      "spanish": "Unidad monetaria (0.1 yuan)",
+      "english": "mao (0.1 yuan)",
+      "page": 54
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "书",
+      "pinyin": "shū",
+      "spanish": "libro",
+      "english": "book",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "手机",
+      "pinyin": "shǒujī",
+      "spanish": "teléfono móvil",
+      "english": "mobile phone",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "咖啡",
+      "pinyin": "kāfēi",
+      "spanish": "café",
+      "english": "coffee",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "牛奶",
+      "pinyin": "niúnǎi",
+      "spanish": "leche",
+      "english": "milk",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "啤酒",
+      "pinyin": "píjiǔ",
+      "spanish": "cerveza",
+      "english": "beer",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "矿泉水",
+      "pinyin": "kuàngquánshuǐ",
+      "spanish": "Agua mineral",
+      "english": "mineral water",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "可乐",
+      "pinyin": "kělè",
+      "spanish": "Refresco de cola",
+      "english": "cola",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "草莓",
+      "pinyin": "cǎoméi",
+      "spanish": "Fresa",
+      "english": "strawberry",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "西瓜",
+      "pinyin": "xīguā",
+      "spanish": "Sandía",
+      "english": "watermelon",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "橘子",
+      "pinyin": "júzi",
+      "spanish": "Mandarina",
+      "english": "mandarin orange",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "本",
+      "pinyin": "běn",
+      "spanish": "clasificador de libros",
+      "english": "measure word for books",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "个",
+      "pinyin": "gè",
+      "spanish": "clasificador general",
+      "english": "general measure word",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "杯",
+      "pinyin": "bēi",
+      "spanish": "vaso / taza (clasificador)",
+      "english": "measure word for cups",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "袋",
+      "pinyin": "dài",
+      "spanish": "Bolsa; clasificador para productos en bolsa",
+      "english": "bag / measure word for bagged products",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "盒",
+      "pinyin": "hé",
+      "spanish": "Caja; clasificador para productos en caja",
+      "english": "box / measure word for boxed products",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "瓶",
+      "pinyin": "píng",
+      "spanish": "Botella; clasificador para bebidas embotelladas",
+      "english": "bottle / measure word for bottled drinks",
+      "page": 57
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "公斤",
+      "pinyin": "gōngjīn",
+      "spanish": "Kilogramo (dos jin)",
+      "english": "kilogram (two jin)",
+      "page": 57
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "教学楼",
+      "pinyin": "jiàoxuélóu",
+      "spanish": "Edificio de enseñanza",
+      "english": "teaching building",
+      "page": 63
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "教学",
+      "pinyin": "jiàoxué",
+      "spanish": "Enseñanza",
+      "english": "teaching",
+      "page": 63
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "楼",
+      "pinyin": "lóu",
+      "spanish": "Edificio, piso",
+      "english": "building / floor",
+      "page": 63
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "在",
+      "pinyin": "zài",
+      "spanish": "estar en",
+      "english": "be at / in",
+      "page": 63
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "这儿",
+      "pinyin": "zhèr",
+      "spanish": "Aquí",
+      "english": "here",
+      "page": 63
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "图书馆",
+      "pinyin": "túshūguǎn",
+      "spanish": "Biblioteca",
+      "english": "library",
+      "page": 63
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "……边",
+      "pinyin": "...biān",
+      "spanish": "Lado (de)",
+      "english": "side (of)",
+      "page": 63
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "北边",
+      "pinyin": "běibian",
+      "spanish": "Norte",
+      "english": "north side",
+      "page": 63
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "西边",
+      "pinyin": "xībian",
+      "spanish": "Oeste",
+      "english": "west side",
+      "page": 63
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "南边",
+      "pinyin": "nánbian",
+      "spanish": "Sur",
+      "english": "south side",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "运动场",
+      "pinyin": "yùndòngchǎng",
+      "spanish": "Campo deportivo",
+      "english": "sports field",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "体育馆",
+      "pinyin": "tǐyùguǎn",
+      "spanish": "Gimnasio",
+      "english": "gym",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "饭馆",
+      "pinyin": "fànguǎn",
+      "spanish": "Restaurante",
+      "english": "restaurant",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "还",
+      "pinyin": "hái",
+      "spanish": "todavía / además",
+      "english": "still / also",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "超市",
+      "pinyin": "chāoshì",
+      "spanish": "Supermercado",
+      "english": "supermarket",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "去",
+      "pinyin": "qù",
+      "spanish": "ir",
+      "english": "go",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "哪儿",
+      "pinyin": "nǎr",
+      "spanish": "Dónde",
+      "english": "where",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "银行",
+      "pinyin": "yínháng",
+      "spanish": "Banco",
+      "english": "bank",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "知道",
+      "pinyin": "zhīdào",
+      "spanish": "saber",
+      "english": "know",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "东边",
+      "pinyin": "dōngbian",
+      "spanish": "Este",
+      "english": "east side",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "跟",
+      "pinyin": "gēn",
+      "spanish": "Con",
+      "english": "with",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "吧",
+      "pinyin": "ba",
+      "spanish": "Partícula de sugerencia",
+      "english": "suggestion particle",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "太",
+      "pinyin": "tài",
+      "spanish": "demasiado / muy",
+      "english": "too / very",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "了",
+      "pinyin": "le",
+      "spanish": "acción completada / cambio",
+      "english": "completed action / change",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "中国银行",
+      "pinyin": "Zhōngguó Yínháng",
+      "spanish": "Banco de China",
+      "english": "Bank of China",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "卫生间",
+      "pinyin": "wèishēngjiān",
+      "spanish": "Baño",
+      "english": "bathroom",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "对不起",
+      "pinyin": "duìbuqǐ",
+      "spanish": "lo siento",
+      "english": "sorry",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "没关系",
+      "pinyin": "méi guānxi",
+      "spanish": "no pasa nada",
+      "english": "it's okay",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "商店",
+      "pinyin": "shāngdiàn",
+      "spanish": "tienda",
+      "english": "shop",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "里边",
+      "pinyin": "lǐbian",
+      "spanish": "Dentro, interior",
+      "english": "inside",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "地方",
+      "pinyin": "dìfang",
+      "spanish": "Lugar",
+      "english": "place",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "前边",
+      "pinyin": "qiánbian",
+      "spanish": "Delante",
+      "english": "In front / ahead",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "看",
+      "pinyin": "kàn",
+      "spanish": "mirar / leer",
+      "english": "look / read",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "那儿",
+      "pinyin": "nàr",
+      "spanish": "Allí",
+      "english": "There",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "就",
+      "pinyin": "jiù",
+      "spanish": "Justo, precisamente",
+      "english": "Exactly / precisely",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "上边",
+      "pinyin": "shàngbian",
+      "spanish": "Encima, arriba",
+      "english": "Above / on top",
+      "page": 69
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "后边",
+      "pinyin": "hòubian",
+      "spanish": "Detrás",
+      "english": "Behind",
+      "page": 69
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "旁边",
+      "pinyin": "pángbian",
+      "spanish": "Al lado",
+      "english": "Beside",
+      "page": 69
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "书店",
+      "pinyin": "shūdiàn",
+      "spanish": "Librería",
+      "english": "Bookstore",
+      "page": 69
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "邮局",
+      "pinyin": "yóujú",
+      "spanish": "Oficina de correos",
+      "english": "Post office",
+      "page": 69
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "桌子",
+      "pinyin": "zhuōzi",
+      "spanish": "mesa",
+      "english": "table",
+      "page": 69
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "书包",
+      "pinyin": "shūbāo",
+      "spanish": "Mochila escolar",
+      "english": "Schoolbag",
+      "page": 69
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "宿舍",
+      "pinyin": "sùshè",
+      "spanish": "Dormitorio, residencia estudiantil",
+      "english": "Dormitory",
+      "page": 69
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "今天",
+      "pinyin": "jīntiān",
+      "spanish": "hoy",
+      "english": "today",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "月",
+      "pinyin": "yuè",
+      "spanish": "mes / luna",
+      "english": "month / moon",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "日",
+      "pinyin": "rì",
+      "spanish": "día (formal)",
+      "english": "day (formal)",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "星期",
+      "pinyin": "xīngqī",
+      "spanish": "semana",
+      "english": "week",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "星期一",
+      "pinyin": "xīngqīyī",
+      "spanish": "Lunes",
+      "english": "Monday",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "星期二",
+      "pinyin": "xīngqī'èr",
+      "spanish": "Martes",
+      "english": "Tuesday",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "星期三",
+      "pinyin": "xīngqīsān",
+      "spanish": "Miércoles",
+      "english": "Wednesday",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "星期四",
+      "pinyin": "xīngqīsì",
+      "spanish": "Jueves",
+      "english": "Thursday",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "星期五",
+      "pinyin": "xīngqīwǔ",
+      "spanish": "Viernes",
+      "english": "Friday",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "星期六",
+      "pinyin": "xīngqīliù",
+      "spanish": "Sábado",
+      "english": "Saturday",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "星期日",
+      "pinyin": "xīngqīrì",
+      "spanish": "Domingo",
+      "english": "Sunday",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "星期天",
+      "pinyin": "xīngqītiān",
+      "spanish": "Domingo",
+      "english": "Sunday",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "的",
+      "pinyin": "de",
+      "spanish": "partícula posesiva",
+      "english": "possessive particle",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "生日",
+      "pinyin": "shēngrì",
+      "spanish": "Cumpleaños",
+      "english": "birthday",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "下课",
+      "pinyin": "xiàkè",
+      "spanish": "Terminar la clase",
+      "english": "finish class",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "以后",
+      "pinyin": "yǐhòu",
+      "spanish": "Después",
+      "english": "afterward",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "准备",
+      "pinyin": "zhǔnbèi",
+      "spanish": "Preparar",
+      "english": "prepare",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "请",
+      "pinyin": "qǐng",
+      "spanish": "por favor",
+      "english": "please",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "吃",
+      "pinyin": "chī",
+      "spanish": "comer",
+      "english": "eat",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "饭",
+      "pinyin": "fàn",
+      "spanish": "Comida",
+      "english": "meal",
+      "page": 76
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "对",
+      "pinyin": "duì",
+      "spanish": "Correcto, cierto",
+      "english": "Right / correct",
+      "page": 77
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "号",
+      "pinyin": "hào",
+      "spanish": "Número; día del mes",
+      "english": "Number / day of the month",
+      "page": 77
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "怎么样",
+      "pinyin": "zěnmeyàng",
+      "spanish": "¿qué tal? / ¿cómo está?",
+      "english": "how is it?",
+      "page": 77
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "祝",
+      "pinyin": "zhù",
+      "spanish": "Desear",
+      "english": "wish",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "快乐",
+      "pinyin": "kuàilè",
+      "spanish": "Feliz",
+      "english": "happy",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "礼物",
+      "pinyin": "lǐwù",
+      "spanish": "Regalo",
+      "english": "gift",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "本",
+      "pinyin": "běn",
+      "spanish": "clasificador de libros",
+      "english": "measure word for books",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "书",
+      "pinyin": "shū",
+      "spanish": "libro",
+      "english": "book",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "支",
+      "pinyin": "zhī",
+      "spanish": "Medida para objetos alargados",
+      "english": "measure word for long objects",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "笔",
+      "pinyin": "bǐ",
+      "spanish": "bolígrafo",
+      "english": "pen",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "啊",
+      "pinyin": "a",
+      "spanish": "Partícula modal",
+      "english": "modal particle",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "时间",
+      "pinyin": "shíjiān",
+      "spanish": "tiempo",
+      "english": "time",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "没问题",
+      "pinyin": "méi wèntí",
+      "spanish": "Sin problema",
+      "english": "no problem",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "没有",
+      "pinyin": "méiyǒu",
+      "spanish": "No tener, no haber",
+      "english": "Not have / there is no",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "没",
+      "pinyin": "méi",
+      "spanish": "no haber / no tener",
+      "english": "not have / not exist",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "问题",
+      "pinyin": "wèntí",
+      "spanish": "Pregunta, problema",
+      "english": "Question / problem",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "中文",
+      "pinyin": "Zhōngwén",
+      "spanish": "Idioma chino escrito",
+      "english": "Chinese written language",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "明天",
+      "pinyin": "míngtiān",
+      "spanish": "mañana",
+      "english": "tomorrow",
+      "page": 82
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "后天",
+      "pinyin": "hòutiān",
+      "spanish": "Pasado mañana",
+      "english": "The day after tomorrow",
+      "page": 82
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "昨天",
+      "pinyin": "zuótiān",
+      "spanish": "ayer",
+      "english": "yesterday",
+      "page": 82
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "前天",
+      "pinyin": "qiántiān",
+      "spanish": "Anteayer",
+      "english": "The day before yesterday",
+      "page": 82
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "报纸",
+      "pinyin": "bàozhǐ",
+      "spanish": "Periódico",
+      "english": "Newspaper",
+      "page": 82
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "杂志",
+      "pinyin": "zázhì",
+      "spanish": "Revista",
+      "english": "Magazine",
+      "page": 82
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "衣服",
+      "pinyin": "yīfu",
+      "spanish": "ropa",
+      "english": "clothes",
+      "page": 82
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "每天",
+      "pinyin": "měitiān",
+      "spanish": "cada día",
+      "english": "every day",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "点",
+      "pinyin": "diǎn",
+      "spanish": "hora en punto",
+      "english": "o'clock",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "半",
+      "pinyin": "bàn",
+      "spanish": "medio / y media",
+      "english": "half",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "起床",
+      "pinyin": "qǐchuáng",
+      "spanish": "levantarse",
+      "english": "get up",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "起",
+      "pinyin": "qǐ",
+      "spanish": "Levantarse, ponerse de pie",
+      "english": "Rise / get up",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "床",
+      "pinyin": "chuáng",
+      "spanish": "Cama",
+      "english": "Bed",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "先",
+      "pinyin": "xiān",
+      "spanish": "Primero",
+      "english": "first",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "洗澡",
+      "pinyin": "xǐzǎo",
+      "spanish": "Bañarse",
+      "english": "take a shower",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "洗",
+      "pinyin": "xǐ",
+      "spanish": "Lavar",
+      "english": "Wash",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "然后",
+      "pinyin": "ránhòu",
+      "spanish": "Luego, después",
+      "english": "then",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "早饭",
+      "pinyin": "zǎofàn",
+      "spanish": "Desayuno",
+      "english": "breakfast",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "差",
+      "pinyin": "chà",
+      "spanish": "Faltar (para la hora)",
+      "english": "to / short of (time)",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "刻",
+      "pinyin": "kè",
+      "spanish": "Cuarto (de hora)",
+      "english": "quarter of an hour",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "教室",
+      "pinyin": "jiàoshì",
+      "spanish": "Aula",
+      "english": "classroom",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "开始",
+      "pinyin": "kāishǐ",
+      "spanish": "empezar",
+      "english": "start",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "下午",
+      "pinyin": "xiàwǔ",
+      "spanish": "tarde",
+      "english": "afternoon",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "常常",
+      "pinyin": "chángcháng",
+      "spanish": "A menudo",
+      "english": "often",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "晚上",
+      "pinyin": "wǎnshang",
+      "spanish": "noche",
+      "english": "evening",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "有时候",
+      "pinyin": "yǒushíhou",
+      "spanish": "A veces",
+      "english": "sometimes",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "电视",
+      "pinyin": "diànshì",
+      "spanish": "Televisión",
+      "english": "television",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "上网",
+      "pinyin": "shàngwǎng",
+      "spanish": "Navegar por internet",
+      "english": "go online",
+      "page": 89
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "现在",
+      "pinyin": "xiànzài",
+      "spanish": "ahora",
+      "english": "now",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "事",
+      "pinyin": "shì",
+      "spanish": "Asunto, cosa que hacer",
+      "english": "Matter / affair",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "开",
+      "pinyin": "kāi",
+      "spanish": "abrir / conducir",
+      "english": "open / drive",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "门",
+      "pinyin": "mén",
+      "spanish": "Puerta",
+      "english": "Door",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "关",
+      "pinyin": "guān",
+      "spanish": "cerrar",
+      "english": "close",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "明天",
+      "pinyin": "míngtiān",
+      "spanish": "mañana",
+      "english": "tomorrow",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "英文",
+      "pinyin": "Yīngwén",
+      "spanish": "Idioma inglés",
+      "english": "English language",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "安排",
+      "pinyin": "ānpái",
+      "spanish": "Plan, arreglo",
+      "english": "plan / arrangement",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "上午",
+      "pinyin": "shàngwǔ",
+      "spanish": "mañana (a. m.)",
+      "english": "morning",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "朋友",
+      "pinyin": "péngyou",
+      "spanish": "amigo/a",
+      "english": "friend",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "见面",
+      "pinyin": "jiànmiàn",
+      "spanish": "Encontrarse, verse",
+      "english": "Meet / see someone",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "电影",
+      "pinyin": "diànyǐng",
+      "spanish": "Película, cine",
+      "english": "Film / movie",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "再见",
+      "pinyin": "zàijiàn",
+      "spanish": "adiós",
+      "english": "goodbye",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "买东西",
+      "pinyin": "mǎi dōngxi",
+      "spanish": "Hacer compras",
+      "english": "Go shopping",
+      "page": 94
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "喝咖啡",
+      "pinyin": "hē kāfēi",
+      "spanish": "Beber café",
+      "english": "Drink coffee",
+      "page": 94
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "游泳",
+      "pinyin": "yóuyǒng",
+      "spanish": "Nadar",
+      "english": "Swim",
+      "page": 95
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "跑步",
+      "pinyin": "pǎo bù",
+      "spanish": "Correr, trotar",
+      "english": "Run / jog",
+      "page": 95
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "睡觉",
+      "pinyin": "shuìjiào",
+      "spanish": "dormir",
+      "english": "sleep",
+      "page": 95
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "打球",
+      "pinyin": "dǎ qiú",
+      "spanish": "Practicar un deporte de pelota",
+      "english": "Play a ball game",
+      "page": 95
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "城市",
+      "pinyin": "chéngshì",
+      "spanish": "Ciudad",
+      "english": "city",
+      "page": 101
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "公园",
+      "pinyin": "gōngyuán",
+      "spanish": "Parque",
+      "english": "park",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "那里",
+      "pinyin": "nàlǐ",
+      "spanish": "allí",
+      "english": "there",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "山",
+      "pinyin": "shān",
+      "spanish": "Montaña",
+      "english": "mountain",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "水",
+      "pinyin": "shuǐ",
+      "spanish": "agua",
+      "english": "water",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "树",
+      "pinyin": "shù",
+      "spanish": "Árbol",
+      "english": "tree",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "花",
+      "pinyin": "huā",
+      "spanish": "Flor",
+      "english": "flower",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "风景",
+      "pinyin": "fēngjǐng",
+      "spanish": "Paisaje",
+      "english": "scenery",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "非常",
+      "pinyin": "fēicháng",
+      "spanish": "Muy, extremadamente",
+      "english": "very / extremely",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "漂亮",
+      "pinyin": "piàoliang",
+      "spanish": "bonito",
+      "english": "beautiful",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "空气",
+      "pinyin": "kōngqì",
+      "spanish": "Aire",
+      "english": "air",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "新鲜",
+      "pinyin": "xīnxiān",
+      "spanish": "Fresco",
+      "english": "fresh",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "多",
+      "pinyin": "duō",
+      "spanish": "mucho",
+      "english": "much / many",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "爬山",
+      "pinyin": "páshān",
+      "spanish": "Escalar montañas",
+      "english": "climb mountains",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "爬",
+      "pinyin": "pá",
+      "spanish": "Trepar, escalar",
+      "english": "Climb",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "呼吸",
+      "pinyin": "hūxī",
+      "spanish": "Respirar",
+      "english": "breathe",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "西山公园",
+      "pinyin": "Xīshān Gōngyuán",
+      "spanish": "Parque de las Colinas del Oeste",
+      "english": "West Mountain Park",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "忙",
+      "pinyin": "máng",
+      "spanish": "ocupado",
+      "english": "busy",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "听说",
+      "pinyin": "tīngshuō",
+      "spanish": "Oír decir",
+      "english": "hear that",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "出发",
+      "pinyin": "chūfā",
+      "spanish": "Partir, salir",
+      "english": "depart",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "找",
+      "pinyin": "zhǎo",
+      "spanish": "buscar / encontrar",
+      "english": "look for / find",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "大家",
+      "pinyin": "dàjiā",
+      "spanish": "Todos",
+      "english": "everyone",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "累",
+      "pinyin": "lèi",
+      "spanish": "cansado",
+      "english": "tired",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "觉得",
+      "pinyin": "juéde",
+      "spanish": "pensar / sentir que",
+      "english": "think / feel",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "休息",
+      "pinyin": "xiūxi",
+      "spanish": "Descansar",
+      "english": "rest",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "一下",
+      "pinyin": "yíxià",
+      "spanish": "Un poco, una vez",
+      "english": "briefly / once",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "小",
+      "pinyin": "xiǎo",
+      "spanish": "pequeño",
+      "english": "small",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "茶馆",
+      "pinyin": "cháguǎn",
+      "spanish": "Casa de té",
+      "english": "teahouse",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "茶",
+      "pinyin": "chá",
+      "spanish": "té",
+      "english": "tea",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "喝",
+      "pinyin": "hē",
+      "spanish": "beber",
+      "english": "drink",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "一点儿",
+      "pinyin": "yìdiǎnr",
+      "spanish": "Un poco",
+      "english": "a little",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "冷",
+      "pinyin": "lěng",
+      "spanish": "frío",
+      "english": "cold",
+      "page": 106
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "热",
+      "pinyin": "rè",
+      "spanish": "caliente",
+      "english": "hot",
+      "page": 106
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "饿",
+      "pinyin": "è",
+      "spanish": "hambriento",
+      "english": "hungry",
+      "page": 106
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "渴",
+      "pinyin": "kě",
+      "spanish": "sediento",
+      "english": "thirsty",
+      "page": 106
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "贵",
+      "pinyin": "guì",
+      "spanish": "caro",
+      "english": "expensive",
+      "page": 106
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "便宜",
+      "pinyin": "piányi",
+      "spanish": "barato",
+      "english": "cheap",
+      "page": 106
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "同屋",
+      "pinyin": "tóngwū",
+      "spanish": "Compañero de habitación",
+      "english": "Roommate",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "在",
+      "pinyin": "zài",
+      "spanish": "estar en",
+      "english": "be at / in",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "家",
+      "pinyin": "jiā",
+      "spanish": "casa / familia",
+      "english": "home / family",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "汽车",
+      "pinyin": "qìchē",
+      "spanish": "Automóvil",
+      "english": "Car",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "公司",
+      "pinyin": "gōngsī",
+      "spanish": "empresa",
+      "english": "company",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "工作",
+      "pinyin": "gōngzuò",
+      "spanish": "trabajar / trabajo",
+      "english": "work / job",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "从……到……",
+      "pinyin": "cóng… dào…",
+      "spanish": "Desde… hasta…",
+      "english": "From… to…",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "从",
+      "pinyin": "cóng",
+      "spanish": "Desde",
+      "english": "From / since",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "到",
+      "pinyin": "dào",
+      "spanish": "Hasta; llegar",
+      "english": "To / until / arrive",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "上班",
+      "pinyin": "shàng bān",
+      "spanish": "Ir a trabajar, estar de servicio",
+      "english": "Go to work / be on duty",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "周末",
+      "pinyin": "zhōumò",
+      "spanish": "Fin de semana",
+      "english": "Weekend",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "平时",
+      "pinyin": "píngshí",
+      "spanish": "Habitualmente, normalmente",
+      "english": "Usually / ordinarily",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "学校",
+      "pinyin": "xuéxiào",
+      "spanish": "escuela",
+      "english": "school",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "食堂",
+      "pinyin": "shítáng",
+      "spanish": "Comedor, cafetería",
+      "english": "Canteen / cafeteria",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "……的时候",
+      "pinyin": "… de shíhou",
+      "spanish": "Cuando…, en el momento de…",
+      "english": "When… / while…",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "时候",
+      "pinyin": "shíhou",
+      "spanish": "Momento, ocasión",
+      "english": "Time / occasion",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "做饭",
+      "pinyin": "zuò fàn",
+      "spanish": "Cocinar, preparar la comida",
+      "english": "Cook / prepare a meal",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "菜",
+      "pinyin": "cài",
+      "spanish": "plato / verdura",
+      "english": "dish / vegetable",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "聊天儿",
+      "pinyin": "liáo tiānr",
+      "spanish": "Charlar",
+      "english": "Chat",
+      "page": 113
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "晚饭",
+      "pinyin": "wǎnfàn",
+      "spanish": "Cena",
+      "english": "Dinner / supper",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "手机",
+      "pinyin": "shǒujī",
+      "spanish": "teléfono móvil",
+      "english": "mobile phone",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "号码",
+      "pinyin": "hàomǎ",
+      "spanish": "Número (de teléfono, habitación, etc.)",
+      "english": "Number (phone, room, etc.)",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "不用",
+      "pinyin": "búyòng",
+      "spanish": "No hacer falta, no necesitar",
+      "english": "Need not / no need to",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "用",
+      "pinyin": "yòng",
+      "spanish": "usar",
+      "english": "use",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "干",
+      "pinyin": "gàn",
+      "spanish": "Hacer, trabajar",
+      "english": "Do / work",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "宿舍",
+      "pinyin": "sùshè",
+      "spanish": "Dormitorio, residencia estudiantil",
+      "english": "Dormitory",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "画",
+      "pinyin": "huà",
+      "spanish": "Dibujar, pintar",
+      "english": "Draw / paint",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "画儿",
+      "pinyin": "huàr",
+      "spanish": "Dibujo, pintura",
+      "english": "Drawing / painting",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "喜欢",
+      "pinyin": "xǐhuan",
+      "spanish": "gustar",
+      "english": "like",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "中国画",
+      "pinyin": "Zhōngguóhuà",
+      "spanish": "Pintura tradicional china",
+      "english": "Traditional Chinese painting",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "一般",
+      "pinyin": "yìbān",
+      "spanish": "Normalmente; general, común",
+      "english": "Usually / general / ordinary",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "听",
+      "pinyin": "tīng",
+      "spanish": "escuchar",
+      "english": "listen",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "音乐",
+      "pinyin": "yīnyuè",
+      "spanish": "Música",
+      "english": "Music",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "东西",
+      "pinyin": "dōngxi",
+      "spanish": "cosa / objeto",
+      "english": "thing / object",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "一块儿",
+      "pinyin": "yíkuàir",
+      "spanish": "Juntos",
+      "english": "Together",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "收拾",
+      "pinyin": "shōushi",
+      "spanish": "Ordenar, recoger",
+      "english": "Tidy up / put in order",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "房间",
+      "pinyin": "fángjiān",
+      "spanish": "habitación",
+      "english": "room",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "北京",
+      "pinyin": "Běijīng",
+      "spanish": "Pekín",
+      "english": "Beijing",
+      "page": 118
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "上海",
+      "pinyin": "Shànghǎi",
+      "spanish": "Shanghái",
+      "english": "Shanghai",
+      "page": 118
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "南京",
+      "pinyin": "Nánjīng",
+      "spanish": "Nankín",
+      "english": "Nanjing",
+      "page": 118
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "电话",
+      "pinyin": "diànhuà",
+      "spanish": "Teléfono, llamada telefónica",
+      "english": "Telephone / phone call",
+      "page": 118
+    },
+    {
+      "lesson": 1,
+      "type": "phrase",
+      "hanzi": "你好！",
+      "pinyin": "Nǐ hǎo!",
+      "spanish": "¡Hola!",
+      "english": "Hello!",
+      "page": 4
+    },
+    {
+      "lesson": 1,
+      "type": "phrase",
+      "hanzi": "您好！",
+      "pinyin": "Nín hǎo!",
+      "spanish": "¡Hola! (formal)",
+      "english": "Hello! (polite)",
+      "page": 4
+    },
+    {
+      "lesson": 1,
+      "type": "phrase",
+      "hanzi": "老师好！",
+      "pinyin": "Lǎoshī hǎo!",
+      "spanish": "¡Hola, profesor!",
+      "english": "Hello, teacher!",
+      "page": 6
+    },
+    {
+      "lesson": 1,
+      "type": "phrase",
+      "hanzi": "上课！",
+      "pinyin": "Shàng kè!",
+      "spanish": "¡Comienza la clase!",
+      "english": "Class begins!",
+      "page": 8
+    },
+    {
+      "lesson": 1,
+      "type": "phrase",
+      "hanzi": "下课！",
+      "pinyin": "Xià kè!",
+      "spanish": "¡Termina la clase!",
+      "english": "Class is over!",
+      "page": 8
+    },
+    {
+      "lesson": 2,
+      "type": "phrase",
+      "hanzi": "早上好！",
+      "pinyin": "Zǎoshang hǎo!",
+      "spanish": "¡Buenos días!",
+      "english": "Good morning!",
+      "page": 11
+    },
+    {
+      "lesson": 2,
+      "type": "phrase",
+      "hanzi": "你是哪国人？",
+      "pinyin": "Nǐ shì nǎ guó rén?",
+      "spanish": "¿De qué país eres?",
+      "english": "Which country are you from?",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "phrase",
+      "hanzi": "我是美国人。",
+      "pinyin": "Wǒ shì Měiguó rén.",
+      "spanish": "Soy estadounidense.",
+      "english": "I am American.",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "phrase",
+      "hanzi": "你呢？",
+      "pinyin": "Nǐ ne?",
+      "spanish": "¿Y tú?",
+      "english": "What about you?",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "phrase",
+      "hanzi": "我是韩国人。",
+      "pinyin": "Wǒ shì Hánguó rén.",
+      "spanish": "Soy de Corea del Sur.",
+      "english": "I am South Korean.",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "phrase",
+      "hanzi": "他呢？",
+      "pinyin": "Tā ne?",
+      "spanish": "¿Y él?",
+      "english": "What about him?",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "phrase",
+      "hanzi": "他是日本人。",
+      "pinyin": "Tā shì Rìběn rén.",
+      "spanish": "Él es japonés.",
+      "english": "He is Japanese.",
+      "page": 12
+    },
+    {
+      "lesson": 2,
+      "type": "phrase",
+      "hanzi": "跟我读。",
+      "pinyin": "Gēn wǒ dú.",
+      "spanish": "Lee después de mí.",
+      "english": "Read after me.",
+      "page": 17
+    },
+    {
+      "lesson": 2,
+      "type": "phrase",
+      "hanzi": "念课文。",
+      "pinyin": "Niàn kèwén.",
+      "spanish": "Lee el texto en voz alta.",
+      "english": "Read the text aloud.",
+      "page": 17
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "请问，你叫什么名字？",
+      "pinyin": "Qǐngwèn, nǐ jiào shénme míngzi?",
+      "spanish": "Disculpa, ¿cómo te llamas?",
+      "english": "Excuse me, what is your name?",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "我叫林娜。",
+      "pinyin": "Wǒ jiào Lín Nà.",
+      "spanish": "Me llamo Lin Na.",
+      "english": "My name is Lin Na.",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "你呢？",
+      "pinyin": "Nǐ ne?",
+      "spanish": "¿Y tú?",
+      "english": "What about you?",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "我叫山田佑，姓山田。",
+      "pinyin": "Wǒ jiào Shāntián Yòu, xìng Shāntián.",
+      "spanish": "Me llamo Yamada Yu; mi apellido es Yamada.",
+      "english": "My name is Yamada Yu; my surname is Yamada.",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "认识你很高兴。",
+      "pinyin": "Rènshi nǐ hěn gāoxìng.",
+      "spanish": "Encantado de conocerte.",
+      "english": "Nice to meet you.",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "认识你我也很高兴。",
+      "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng.",
+      "spanish": "Yo también estoy encantado de conocerte.",
+      "english": "Nice to meet you too.",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "老师，您贵姓？",
+      "pinyin": "Lǎoshī, nín guìxìng?",
+      "spanish": "Profesor, ¿cuál es su apellido?",
+      "english": "Teacher, may I ask your surname?",
+      "page": 21
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "我姓李。",
+      "pinyin": "Wǒ xìng Lǐ.",
+      "spanish": "Mi apellido es Li.",
+      "english": "My surname is Li.",
+      "page": 21
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "李老师，您好！",
+      "pinyin": "Lǐ lǎoshī, nín hǎo!",
+      "spanish": "¡Hola, profesor Li!",
+      "english": "Hello, Teacher Li!",
+      "page": 21
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "我叫马丁。",
+      "pinyin": "Wǒ jiào Mǎdīng.",
+      "spanish": "Me llamo Martin.",
+      "english": "My name is Martin.",
+      "page": 21
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "你姓什么？",
+      "pinyin": "Nǐ xìng shénme?",
+      "spanish": "¿Cuál es tu apellido?",
+      "english": "What is your surname?",
+      "page": 23
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "有问题吗？",
+      "pinyin": "Yǒu wèntí ma?",
+      "spanish": "¿Hay alguna pregunta?",
+      "english": "Any questions?",
+      "page": 26
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "请再说一遍。",
+      "pinyin": "Qǐng zài shuō yí biàn.",
+      "spanish": "Por favor, repítelo.",
+      "english": "Please say it again.",
+      "page": 26
+    },
+    {
+      "lesson": 3,
+      "type": "phrase",
+      "hanzi": "请再念一遍。",
+      "pinyin": "Qǐng zài niàn yí biàn.",
+      "spanish": "Por favor, léelo otra vez en voz alta.",
+      "english": "Please read it aloud again.",
+      "page": 26
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "林娜是法国留学生。",
+      "pinyin": "Lín Nà shì Fǎguó liúxuéshēng.",
+      "spanish": "Lin Na es una estudiante extranjera de Francia.",
+      "english": "Lin Na is an international student from France.",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "她学习汉语。",
+      "pinyin": "Tā xuéxí Hànyǔ.",
+      "spanish": "Ella estudia chino.",
+      "english": "She studies Chinese.",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "他们一起上课，一起说汉语。",
+      "pinyin": "Tāmen yìqǐ shàng kè, yìqǐ shuō Hànyǔ.",
+      "spanish": "Ellos van juntos a clase y hablan chino juntos.",
+      "english": "They attend class and speak Chinese together.",
+      "page": 29
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "你学习法语吗？",
+      "pinyin": "Nǐ xuéxí Fǎyǔ ma?",
+      "spanish": "¿Estudias francés?",
+      "english": "Do you study French?",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "我不学习法语。",
+      "pinyin": "Wǒ bù xuéxí Fǎyǔ.",
+      "spanish": "No estudio francés.",
+      "english": "I do not study French.",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "你是中国人吗？",
+      "pinyin": "Nǐ shì Zhōngguó rén ma?",
+      "spanish": "¿Eres chino?",
+      "english": "Are you Chinese?",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "我是中国人。",
+      "pinyin": "Wǒ shì Zhōngguó rén.",
+      "spanish": "Soy chino.",
+      "english": "I am Chinese.",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "你也学习英语吗？",
+      "pinyin": "Nǐ yě xuéxí Yīngyǔ ma?",
+      "spanish": "¿También estudias inglés?",
+      "english": "Do you study English too?",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "我也学习英语。",
+      "pinyin": "Wǒ yě xuéxí Yīngyǔ.",
+      "spanish": "Yo también estudio inglés.",
+      "english": "I study English too.",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "他是谁？",
+      "pinyin": "Tā shì shéi?",
+      "spanish": "¿Quién es él?",
+      "english": "Who is he?",
+      "page": 31
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "他是我同学。",
+      "pinyin": "Tā shì wǒ tóngxué.",
+      "spanish": "Él es mi compañero de clase.",
+      "english": "He is my classmate.",
+      "page": 31
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "他是哪国人？",
+      "pinyin": "Tā shì nǎ guó rén?",
+      "spanish": "¿De qué país es él?",
+      "english": "Which country is he from?",
+      "page": 31
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "他是泰国人。",
+      "pinyin": "Tā shì Tàiguó rén.",
+      "spanish": "Él es tailandés.",
+      "english": "He is Thai.",
+      "page": 31
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "他也学习汉语吗？",
+      "pinyin": "Tā yě xuéxí Hànyǔ ma?",
+      "spanish": "¿Él también estudia chino?",
+      "english": "Does he study Chinese too?",
+      "page": 31
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "他也学习汉语。",
+      "pinyin": "Tā yě xuéxí Hànyǔ.",
+      "spanish": "Él también estudia chino.",
+      "english": "He studies Chinese too.",
+      "page": 31
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "准备好了吗？",
+      "pinyin": "Zhǔnbèi hǎo le ma?",
+      "spanish": "¿Están listos?",
+      "english": "Are you ready?",
+      "page": 38
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "请打开书，翻到第十页。",
+      "pinyin": "Qǐng dǎkāi shū, fān dào dì shí yè.",
+      "spanish": "Abre el libro en la página diez, por favor.",
+      "english": "Please open your book and turn to page ten.",
+      "page": 38
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "我家有四口人。",
+      "pinyin": "Wǒ jiā yǒu sì kǒu rén.",
+      "spanish": "En mi familia somos cuatro.",
+      "english": "There are four people in my family.",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "爸爸、妈妈、哥哥和我。",
+      "pinyin": "Bàba, māma, gēge hé wǒ.",
+      "spanish": "Mi papá, mi mamá, mi hermano mayor y yo.",
+      "english": "My father, mother, older brother and me.",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "我爸爸是职员。",
+      "pinyin": "Wǒ bàba shì zhíyuán.",
+      "spanish": "Mi papá es empleado de oficina.",
+      "english": "My father is an office worker.",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "妈妈是老师。",
+      "pinyin": "Māma shì lǎoshī.",
+      "spanish": "Mi mamá es profesora.",
+      "english": "My mother is a teacher.",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "哥哥和我都是大学生。",
+      "pinyin": "Gēge hé wǒ dōu shì dàxuéshēng.",
+      "spanish": "Mi hermano mayor y yo somos universitarios.",
+      "english": "My older brother and I are both university students.",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "你家有几口人？",
+      "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
+      "spanish": "¿Cuántas personas hay en tu familia?",
+      "english": "How many people are in your family?",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "我家有三口人。",
+      "pinyin": "Wǒ jiā yǒu sān kǒu rén.",
+      "spanish": "En mi familia somos tres.",
+      "english": "There are three people in my family.",
+      "page": 41
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "你家有什么人？",
+      "pinyin": "Nǐ jiā yǒu shénme rén?",
+      "spanish": "¿Quiénes forman tu familia?",
+      "english": "Who is in your family?",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "我家有爸爸、妈妈和我。",
+      "pinyin": "Wǒ jiā yǒu bàba, māma hé wǒ.",
+      "spanish": "Mi familia está formada por mi papá, mi mamá y yo.",
+      "english": "My family consists of my father, mother and me.",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "你爸爸、妈妈做什么工作？",
+      "pinyin": "Nǐ bàba, māma zuò shénme gōngzuò?",
+      "spanish": "¿En qué trabajan tu papá y tu mamá?",
+      "english": "What do your father and mother do for work?",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "我爸爸是律师，妈妈是医生。",
+      "pinyin": "Wǒ bàba shì lǜshī, māma shì yīshēng.",
+      "spanish": "Mi papá es abogado y mi mamá es médica.",
+      "english": "My father is a lawyer and my mother is a doctor.",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "你们班有多少个学生？",
+      "pinyin": "Nǐmen bān yǒu duōshao ge xuésheng?",
+      "spanish": "¿Cuántos estudiantes hay en su clase?",
+      "english": "How many students are in your class?",
+      "page": 42
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "你们班有几个法国人？",
+      "pinyin": "Nǐmen bān yǒu jǐ ge Fǎguó rén?",
+      "spanish": "¿Cuántos franceses hay en su clase?",
+      "english": "How many French students are in your class?",
+      "page": 43
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "我们班有两个法国人。",
+      "pinyin": "Wǒmen bān yǒu liǎng ge Fǎguó rén.",
+      "spanish": "En nuestra clase hay dos franceses.",
+      "english": "There are two French students in our class.",
+      "page": 43
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "我明白了。",
+      "pinyin": "Wǒ míngbai le.",
+      "spanish": "Ya entiendo.",
+      "english": "I understand now.",
+      "page": 49
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "我不懂。",
+      "pinyin": "Wǒ bù dǒng.",
+      "spanish": "No entiendo.",
+      "english": "I do not understand.",
+      "page": 49
+    },
+    {
+      "lesson": 6,
+      "type": "phrase",
+      "hanzi": "现在听写。",
+      "pinyin": "Xiànzài tīngxiě.",
+      "spanish": "Ahora haremos un dictado.",
+      "english": "Now it is time for dictation.",
+      "page": 61
+    },
+    {
+      "lesson": 6,
+      "type": "phrase",
+      "hanzi": "现在做练习。",
+      "pinyin": "Xiànzài zuò liànxí.",
+      "spanish": "Ahora haremos ejercicios.",
+      "english": "Now it is time for exercises.",
+      "page": 61
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "这是教学一楼，我们在这儿。",
+      "pinyin": "Zhè shì jiàoxué yī lóu, wǒmen zài zhèr.",
+      "spanish": "Este es el edificio de aulas número uno; estamos aquí.",
+      "english": "This is classroom building one; we are here.",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "图书馆在教学一楼北边。",
+      "pinyin": "Túshūguǎn zài jiàoxué yī lóu běibian.",
+      "spanish": "La biblioteca está al norte del edificio de aulas número uno.",
+      "english": "The library is north of classroom building one.",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "运动场和体育馆在教学一楼西边。",
+      "pinyin": "Yùndòngchǎng hé tǐyùguǎn zài jiàoxué yī lóu xībian.",
+      "spanish": "La cancha deportiva y el gimnasio están al oeste del edificio de aulas número uno.",
+      "english": "The sports ground and gym are west of classroom building one.",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "你去哪儿？",
+      "pinyin": "Nǐ qù nǎr?",
+      "spanish": "¿Adónde vas?",
+      "english": "Where are you going?",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "我去超市。",
+      "pinyin": "Wǒ qù chāoshì.",
+      "spanish": "Voy al supermercado.",
+      "english": "I am going to the supermarket.",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "中国银行在哪儿？",
+      "pinyin": "Zhōngguó Yínháng zài nǎr?",
+      "spanish": "¿Dónde está el Banco de China?",
+      "english": "Where is the Bank of China?",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "你知道吗？",
+      "pinyin": "Nǐ zhīdào ma?",
+      "spanish": "¿Lo sabes?",
+      "english": "Do you know?",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "我跟你一起去吧。",
+      "pinyin": "Wǒ gēn nǐ yìqǐ qù ba.",
+      "spanish": "Voy contigo.",
+      "english": "Let me go with you.",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "太好了！",
+      "pinyin": "Tài hǎo le!",
+      "spanish": "¡Qué bien!",
+      "english": "Great!",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "请问，哪儿有卫生间？",
+      "pinyin": "Qǐngwèn, nǎr yǒu wèishēngjiān?",
+      "spanish": "Disculpe, ¿dónde hay un baño?",
+      "english": "Excuse me, where is there a restroom?",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "对不起，我不知道。",
+      "pinyin": "Duìbuqǐ, wǒ bù zhīdào.",
+      "spanish": "Lo siento, no lo sé.",
+      "english": "Sorry, I do not know.",
+      "page": 67
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "没关系。",
+      "pinyin": "Méi guānxi.",
+      "spanish": "No pasa nada.",
+      "english": "That is all right.",
+      "page": 67
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "商店里边有。",
+      "pinyin": "Shāngdiàn lǐbian yǒu.",
+      "spanish": "Hay uno dentro de la tienda.",
+      "english": "There is one inside the store.",
+      "page": 67
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "商店在什么地方？",
+      "pinyin": "Shāngdiàn zài shénme dìfang?",
+      "spanish": "¿Dónde está la tienda?",
+      "english": "Where is the store?",
+      "page": 67
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "周一交作业。",
+      "pinyin": "Zhōuyī jiāo zuòyè.",
+      "spanish": "Entrega la tarea el lunes.",
+      "english": "Hand in your homework on Monday.",
+      "page": 74
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "做课后练习三。",
+      "pinyin": "Zuò kè hòu liànxí sān.",
+      "spanish": "Haz el ejercicio tres que sigue al texto.",
+      "english": "Do exercise three after the text.",
+      "page": 74
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "今天九月二十八日，星期二。",
+      "pinyin": "Jīntiān jiǔ yuè èrshíbā rì, xīngqī'èr.",
+      "spanish": "Hoy es martes 28 de septiembre.",
+      "english": "Today is Tuesday, September twenty-eighth.",
+      "page": 77
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "今天是你的生日，对吗？",
+      "pinyin": "Jīntiān shì nǐ de shēngrì, duì ma?",
+      "spanish": "Hoy es tu cumpleaños, ¿verdad?",
+      "english": "Today is your birthday, right?",
+      "page": 77
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "今天几号？",
+      "pinyin": "Jīntiān jǐ hào?",
+      "spanish": "¿Qué día del mes es hoy?",
+      "english": "What is the date today?",
+      "page": 77
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "今天是我的生日。",
+      "pinyin": "Jīntiān shì wǒ de shēngrì.",
+      "spanish": "Hoy es mi cumpleaños.",
+      "english": "Today is my birthday.",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "我们请你吃饭，怎么样？",
+      "pinyin": "Wǒmen qǐng nǐ chī fàn, zěnmeyàng?",
+      "spanish": "¿Qué te parece si te invitamos a comer?",
+      "english": "How about we treat you to a meal?",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "太好了！谢谢你们！",
+      "pinyin": "Tài hǎo le! Xièxie nǐmen!",
+      "spanish": "¡Qué bien! ¡Gracias a todos!",
+      "english": "Great! Thank you all!",
+      "page": 78
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "祝你生日快乐！",
+      "pinyin": "Zhù nǐ shēngrì kuàilè!",
+      "spanish": "¡Feliz cumpleaños!",
+      "english": "Happy birthday!",
+      "page": 79
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "这是我们的礼物。",
+      "pinyin": "Zhè shì wǒmen de lǐwù.",
+      "spanish": "Este es nuestro regalo.",
+      "english": "This is our gift.",
+      "page": 79
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "是什么礼物？",
+      "pinyin": "Shì shénme lǐwù?",
+      "spanish": "¿Qué regalo es?",
+      "english": "What is the gift?",
+      "page": 79
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "一本中文书和一支笔。",
+      "pinyin": "Yì běn Zhōngwén shū hé yì zhī bǐ.",
+      "spanish": "Un libro en chino y un bolígrafo.",
+      "english": "A Chinese book and a pen.",
+      "page": 79
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "十月十号星期几？",
+      "pinyin": "Shí yuè shí hào xīngqī jǐ?",
+      "spanish": "¿Qué día de la semana es el 10 de octubre?",
+      "english": "What day of the week is October tenth?",
+      "page": 79
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "有时间，没问题。",
+      "pinyin": "Yǒu shíjiān, méi wèntí.",
+      "spanish": "Tengo tiempo, no hay problema.",
+      "english": "I have time; no problem.",
+      "page": 79
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "你的生日是几月几号？",
+      "pinyin": "Nǐ de shēngrì shì jǐ yuè jǐ hào?",
+      "spanish": "¿Qué día y mes es tu cumpleaños?",
+      "english": "What month and day is your birthday?",
+      "page": 82
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "你昨天怎么没来上课？",
+      "pinyin": "Nǐ zuótiān zěnme méi lái shàng kè?",
+      "spanish": "¿Por qué no viniste ayer a clase?",
+      "english": "Why did you not come to class yesterday?",
+      "page": 87
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "我期中考试没考好。",
+      "pinyin": "Wǒ qīzhōng kǎoshì méi kǎo hǎo.",
+      "spanish": "No me fue bien en el examen parcial.",
+      "english": "I did not do well on the midterm exam.",
+      "page": 87
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "我期中考试不及格。",
+      "pinyin": "Wǒ qīzhōng kǎoshì bù jígé.",
+      "spanish": "Reprobé el examen parcial.",
+      "english": "I failed the midterm exam.",
+      "page": 87
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "我每天六点半起床。",
+      "pinyin": "Wǒ měi tiān liù diǎn bàn qǐ chuáng.",
+      "spanish": "Me levanto todos los días a las seis y media.",
+      "english": "I get up at half past six every day.",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "起床以后先洗澡，然后吃早饭。",
+      "pinyin": "Qǐ chuáng yǐhòu xiān xǐ zǎo, ránhòu chī zǎofàn.",
+      "spanish": "Después de levantarme, primero me ducho y luego desayuno.",
+      "english": "After getting up, I shower first and then have breakfast.",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "我们每天八点开始上课，十一点半下课。",
+      "pinyin": "Wǒmen měi tiān bā diǎn kāishǐ shàng kè, shíyī diǎn bàn xià kè.",
+      "spanish": "Todos los días empezamos las clases a las ocho y terminamos a las once y media.",
+      "english": "We start class at eight and finish at half past eleven every day.",
+      "page": 90
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "你有事吗？",
+      "pinyin": "Nǐ yǒu shì ma?",
+      "spanish": "¿Necesitas algo?",
+      "english": "Do you need anything?",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "现在几点？",
+      "pinyin": "Xiànzài jǐ diǎn?",
+      "spanish": "¿Qué hora es?",
+      "english": "What time is it now?",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "图书馆每天几点开门？",
+      "pinyin": "Túshūguǎn měi tiān jǐ diǎn kāi mén?",
+      "spanish": "¿A qué hora abre la biblioteca cada día?",
+      "english": "What time does the library open every day?",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "几点关门？",
+      "pinyin": "Jǐ diǎn guān mén?",
+      "spanish": "¿A qué hora cierra?",
+      "english": "What time does it close?",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "你今天有什么安排？",
+      "pinyin": "Nǐ jīntiān yǒu shénme ānpái?",
+      "spanish": "¿Qué planes tienes para hoy?",
+      "english": "What are your plans for today?",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "我想请你看中国电影。",
+      "pinyin": "Wǒ xiǎng qǐng nǐ kàn Zhōngguó diànyǐng.",
+      "spanish": "Quiero invitarte a ver una película china.",
+      "english": "I would like to invite you to see a Chinese film.",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "电影几点开始？",
+      "pinyin": "Diànyǐng jǐ diǎn kāishǐ?",
+      "spanish": "¿A qué hora empieza la película?",
+      "english": "What time does the film start?",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "下午两点半开始。",
+      "pinyin": "Xiàwǔ liǎng diǎn bàn kāishǐ.",
+      "spanish": "Empieza a las dos y media de la tarde.",
+      "english": "It starts at half past two in the afternoon.",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "我们两点一刻去吧。",
+      "pinyin": "Wǒmen liǎng diǎn yí kè qù ba.",
+      "spanish": "Vayamos a las dos y cuarto.",
+      "english": "Let us go at quarter past two.",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "再见！",
+      "pinyin": "Zàijiàn!",
+      "spanish": "¡Adiós!",
+      "english": "Goodbye!",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "差一刻七点。",
+      "pinyin": "Chà yí kè qī diǎn.",
+      "spanish": "Son las siete menos cuarto.",
+      "english": "It is quarter to seven.",
+      "page": 94
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "差十分八点。",
+      "pinyin": "Chà shí fēn bā diǎn.",
+      "spanish": "Son las ocho menos diez.",
+      "english": "It is ten to eight.",
+      "page": 94
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "八点集合，请大家准时。",
+      "pinyin": "Bā diǎn jíhé, qǐng dàjiā zhǔnshí.",
+      "spanish": "Nos reunimos a las ocho; sean puntuales, por favor.",
+      "english": "We meet at eight; please be on time.",
+      "page": 100
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "不用谢！",
+      "pinyin": "Búyòng xiè!",
+      "spanish": "¡De nada!",
+      "english": "You are welcome!",
+      "page": 100
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "西山公园在哪儿？",
+      "pinyin": "Xīshān Gōngyuán zài nǎr?",
+      "spanish": "¿Dónde está el parque de las Colinas del Oeste?",
+      "english": "Where is West Mountain Park?",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "西山公园怎么样？",
+      "pinyin": "Xīshān Gōngyuán zěnmeyàng?",
+      "spanish": "¿Qué tal es el parque de las Colinas del Oeste?",
+      "english": "What is West Mountain Park like?",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "风景非常漂亮，空气也非常新鲜。",
+      "pinyin": "Fēngjǐng fēicháng piàoliang, kōngqì yě fēicháng xīnxiān.",
+      "spanish": "El paisaje es muy bonito y el aire es muy fresco.",
+      "english": "The scenery is beautiful and the air is very fresh.",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "这个星期天我们也去爬山。",
+      "pinyin": "Zhège xīngqītiān wǒmen yě qù pá shān.",
+      "spanish": "Este domingo también iremos a subir la montaña.",
+      "english": "We are going mountain climbing this Sunday too.",
+      "page": 102
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "这个星期天你忙不忙？",
+      "pinyin": "Zhège xīngqītiān nǐ máng bu máng?",
+      "spanish": "¿Estás ocupado este domingo?",
+      "english": "Are you busy this Sunday?",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "我不忙。",
+      "pinyin": "Wǒ bù máng.",
+      "spanish": "No estoy ocupado.",
+      "english": "I am not busy.",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "你去不去？",
+      "pinyin": "Nǐ qù bu qù?",
+      "spanish": "¿Vas a ir?",
+      "english": "Are you going or not?",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "你们去哪儿爬山？",
+      "pinyin": "Nǐmen qù nǎr pá shān?",
+      "spanish": "¿Adónde van a subir la montaña?",
+      "english": "Where are you going mountain climbing?",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "我们早上八点出发。",
+      "pinyin": "Wǒmen zǎoshang bā diǎn chūfā.",
+      "spanish": "Salimos a las ocho de la mañana.",
+      "english": "We set off at eight in the morning.",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "我七点半去找你。",
+      "pinyin": "Wǒ qī diǎn bàn qù zhǎo nǐ.",
+      "spanish": "Voy a buscarte a las siete y media.",
+      "english": "I will come to see you at half past seven.",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "大家累不累？",
+      "pinyin": "Dàjiā lèi bu lèi?",
+      "spanish": "¿Están todos cansados?",
+      "english": "Is everyone tired?",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "我也觉得很累。",
+      "pinyin": "Wǒ yě juéde hěn lèi.",
+      "spanish": "Yo también me siento muy cansado.",
+      "english": "I feel very tired too.",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "我们休息一下吧。",
+      "pinyin": "Wǒmen xiūxi yíxià ba.",
+      "spanish": "Descansemos un momento.",
+      "english": "Let us rest for a moment.",
+      "page": 104
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "劳驾，帮我叫辆出租车！",
+      "pinyin": "Láojià, bāng wǒ jiào liàng chūzūchē!",
+      "spanish": "Disculpe, ayúdeme a pedir un taxi.",
+      "english": "Excuse me, please call me a taxi.",
+      "page": 112
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "明天见！",
+      "pinyin": "Míngtiān jiàn!",
+      "spanish": "¡Hasta mañana!",
+      "english": "See you tomorrow!",
+      "page": 112
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "不见不散！",
+      "pinyin": "Bú jiàn bú sàn!",
+      "spanish": "¡Nos vemos allí sin falta!",
+      "english": "Be there or be square!",
+      "page": 112
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "我在学校食堂吃饭。",
+      "pinyin": "Wǒ zài xuéxiào shítáng chī fàn.",
+      "spanish": "Como en el comedor de la escuela.",
+      "english": "I eat at the school canteen.",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "我的同屋是中国人。",
+      "pinyin": "Wǒ de tóngwū shì Zhōngguó rén.",
+      "spanish": "Mi compañero de habitación es chino.",
+      "english": "My roommate is Chinese.",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "他在一家汽车公司工作。",
+      "pinyin": "Tā zài yì jiā qìchē gōngsī gōngzuò.",
+      "spanish": "Él trabaja en una empresa automotriz.",
+      "english": "He works at a car company.",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "他每天都很忙。",
+      "pinyin": "Tā měi tiān dōu hěn máng.",
+      "spanish": "Él está ocupado todos los días.",
+      "english": "He is busy every day.",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "休息的时候，我们在家做饭。",
+      "pinyin": "Xiūxi de shíhou, wǒmen zài jiā zuò fàn.",
+      "spanish": "Cuando descansamos, cocinamos en casa.",
+      "english": "When we have time off, we cook at home.",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "我们一起吃饭聊天儿。",
+      "pinyin": "Wǒmen yìqǐ chī fàn liáo tiānr.",
+      "spanish": "Comemos y charlamos juntos.",
+      "english": "We eat and chat together.",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "请问你找谁？",
+      "pinyin": "Qǐngwèn nǐ zhǎo shéi?",
+      "spanish": "Disculpa, ¿a quién buscas?",
+      "english": "May I ask who you are looking for?",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "他不在。",
+      "pinyin": "Tā bú zài.",
+      "spanish": "Él no está.",
+      "english": "He is not here.",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "现在他在朋友家吃晚饭。",
+      "pinyin": "Xiànzài tā zài péngyou jiā chī wǎnfàn.",
+      "spanish": "Ahora está cenando en casa de un amigo.",
+      "english": "He is having dinner at a friend's home now.",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "他的手机号码是多少？",
+      "pinyin": "Tā de shǒujī hàomǎ shì duōshao?",
+      "spanish": "¿Cuál es su número de celular?",
+      "english": "What is his mobile phone number?",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "谢谢你！",
+      "pinyin": "Xièxie nǐ!",
+      "spanish": "¡Gracias!",
+      "english": "Thank you!",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "不用谢。",
+      "pinyin": "Búyòng xiè.",
+      "spanish": "De nada.",
+      "english": "You are welcome.",
+      "page": 115
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "周末你们都干什么？",
+      "pinyin": "Zhōumò nǐmen dōu gàn shénme?",
+      "spanish": "¿Qué hacen ustedes los fines de semana?",
+      "english": "What do you all do on weekends?",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "没事的时候，我在宿舍上网。",
+      "pinyin": "Méi shì de shíhou, wǒ zài sùshè shàng wǎng.",
+      "spanish": "Cuando no tengo nada que hacer, navego por internet en el dormitorio.",
+      "english": "When I have nothing to do, I go online in my dormitory.",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "你学习中国画吗？",
+      "pinyin": "Nǐ xuéxí Zhōngguóhuà ma?",
+      "spanish": "¿Estudias pintura tradicional china?",
+      "english": "Do you study traditional Chinese painting?",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "我喜欢中国画。",
+      "pinyin": "Wǒ xǐhuan Zhōngguóhuà.",
+      "spanish": "Me gusta la pintura tradicional china.",
+      "english": "I like traditional Chinese painting.",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "我一般在家看书、听音乐。",
+      "pinyin": "Wǒ yìbān zài jiā kàn shū, tīng yīnyuè.",
+      "spanish": "Normalmente leo y escucho música en casa.",
+      "english": "I usually read and listen to music at home.",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "你的电话号码是多少？",
+      "pinyin": "Nǐ de diànhuà hàomǎ shì duōshao?",
+      "spanish": "¿Cuál es tu número de teléfono?",
+      "english": "What is your telephone number?",
+      "page": 118
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "你的手机号码是多少？",
+      "pinyin": "Nǐ de shǒujī hàomǎ shì duōshao?",
+      "spanish": "¿Cuál es tu número de celular?",
+      "english": "What is your mobile phone number?",
+      "page": 118
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "你的房间是多少号？",
+      "pinyin": "Nǐ de fángjiān shì duōshao hào?",
+      "spanish": "¿Cuál es el número de tu habitación?",
+      "english": "What is your room number?",
+      "page": 118
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "你一般在哪儿吃饭？",
+      "pinyin": "Nǐ yìbān zài nǎr chī fàn?",
+      "spanish": "¿Dónde sueles comer?",
+      "english": "Where do you usually eat?",
+      "page": 122
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "你平时喜欢做什么？",
+      "pinyin": "Nǐ píngshí xǐhuan zuò shénme?",
+      "spanish": "¿Qué te gusta hacer normalmente?",
+      "english": "What do you usually like to do?",
+      "page": 122
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "最近怎么样？",
+      "pinyin": "Zuìjìn zěnmeyàng?",
+      "spanish": "¿Qué tal últimamente?",
+      "english": "How have you been lately?",
+      "page": 123
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "你有事吗？",
+      "pinyin": "Nǐ yǒu shì ma?",
+      "spanish": "¿Necesitas algo?",
+      "english": "Do you need anything?",
+      "page": 123
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "我是法国人。",
+      "pinyin": "Wǒ shì Fǎguó rén.",
+      "spanish": "Soy francés.",
+      "english": "I am French.",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "你学习什么？",
+      "pinyin": "Nǐ xuéxí shénme?",
+      "spanish": "¿Qué estudias?",
+      "english": "What do you study?",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "我学习汉语。",
+      "pinyin": "Wǒ xuéxí Hànyǔ.",
+      "spanish": "Estudio chino.",
+      "english": "I study Chinese.",
+      "page": 30
+    },
+    {
+      "lesson": 4,
+      "type": "phrase",
+      "hanzi": "我学习英语。",
+      "pinyin": "Wǒ xuéxí Yīngyǔ.",
+      "spanish": "Estudio inglés.",
+      "english": "I study English.",
+      "page": 30
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "十六个。",
+      "pinyin": "Shíliù ge.",
+      "spanish": "Dieciséis.",
+      "english": "Sixteen.",
+      "page": 43
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "你们班有韩国人吗？",
+      "pinyin": "Nǐmen bān yǒu Hánguó rén ma?",
+      "spanish": "¿Hay coreanos en su clase?",
+      "english": "Are there any Korean students in your class?",
+      "page": 43
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "有。",
+      "pinyin": "Yǒu.",
+      "spanish": "Sí, hay.",
+      "english": "Yes, there are.",
+      "page": 43
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "有几个韩国人？",
+      "pinyin": "Yǒu jǐ ge Hánguó rén?",
+      "spanish": "¿Cuántos coreanos hay?",
+      "english": "How many Korean students are there?",
+      "page": 43
+    },
+    {
+      "lesson": 5,
+      "type": "phrase",
+      "hanzi": "有四个韩国人。",
+      "pinyin": "Yǒu sì ge Hánguó rén.",
+      "spanish": "Hay cuatro coreanos.",
+      "english": "There are four Korean students.",
+      "page": 43
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "这是留学生楼。",
+      "pinyin": "Zhè shì liúxuéshēng lóu.",
+      "spanish": "Este es el edificio para estudiantes extranjeros.",
+      "english": "This is the international students' building.",
+      "page": 64
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "留学生楼在运动场南边。",
+      "pinyin": "Liúxuéshēng lóu zài yùndòngchǎng nánbian.",
+      "spanish": "El edificio de estudiantes extranjeros está al sur de la cancha deportiva.",
+      "english": "The international students' building is south of the sports ground.",
+      "page": 65
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "知道，在超市东边。",
+      "pinyin": "Zhīdào, zài chāoshì dōngbian.",
+      "spanish": "Sí, está al este del supermercado.",
+      "english": "Yes, it is east of the supermarket.",
+      "page": 66
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "请问，你知道哪儿有卫生间吗？",
+      "pinyin": "Qǐngwèn, nǐ zhīdào nǎr yǒu wèishēngjiān ma?",
+      "spanish": "Disculpe, ¿sabe dónde hay un baño?",
+      "english": "Excuse me, do you know where there is a restroom?",
+      "page": 67
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "在前边。",
+      "pinyin": "Zài qiánbian.",
+      "spanish": "Está más adelante.",
+      "english": "It is up ahead.",
+      "page": 67
+    },
+    {
+      "lesson": 7,
+      "type": "phrase",
+      "hanzi": "你看，那儿就是。",
+      "pinyin": "Nǐ kàn, nàr jiù shì.",
+      "spanish": "Mira, es justo allí.",
+      "english": "Look, it is right there.",
+      "page": 67
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "今天九月二十八号。",
+      "pinyin": "Jīntiān jiǔ yuè èrshíbā hào.",
+      "spanish": "Hoy es 28 de septiembre.",
+      "english": "Today is September twenty-eighth.",
+      "page": 77
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "十月十号是我的生日。",
+      "pinyin": "Shí yuè shí hào shì wǒ de shēngrì.",
+      "spanish": "Mi cumpleaños es el 10 de octubre.",
+      "english": "My birthday is October tenth.",
+      "page": 79
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "好啊！",
+      "pinyin": "Hǎo a!",
+      "spanish": "¡Está bien!",
+      "english": "Sure!",
+      "page": 79
+    },
+    {
+      "lesson": 8,
+      "type": "phrase",
+      "hanzi": "星期日。",
+      "pinyin": "Xīngqīrì.",
+      "spanish": "Domingo.",
+      "english": "Sunday.",
+      "page": 79
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "一点四十。",
+      "pinyin": "Yì diǎn sìshí.",
+      "spanish": "Es la una cuarenta.",
+      "english": "It is one forty.",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "我两点去图书馆看书。",
+      "pinyin": "Wǒ liǎng diǎn qù túshūguǎn kàn shū.",
+      "spanish": "Voy a la biblioteca a leer a las dos.",
+      "english": "I am going to the library to read at two.",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "你看什么书？",
+      "pinyin": "Nǐ kàn shénme shū?",
+      "spanish": "¿Qué libros lees?",
+      "english": "What books do you read?",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "我看英文书。",
+      "pinyin": "Wǒ kàn Yīngwén shū.",
+      "spanish": "Leo libros en inglés.",
+      "english": "I read English books.",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "早上八点开门。",
+      "pinyin": "Zǎoshang bā diǎn kāi mén.",
+      "spanish": "Abre a las ocho de la mañana.",
+      "english": "It opens at eight in the morning.",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "晚上八点关门。",
+      "pinyin": "Wǎnshang bā diǎn guān mén.",
+      "spanish": "Cierra a las ocho de la noche.",
+      "english": "It closes at eight in the evening.",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "太好了，明天我也去。",
+      "pinyin": "Tài hǎo le, míngtiān wǒ yě qù.",
+      "spanish": "Qué bien, mañana también iré.",
+      "english": "Great, I will go tomorrow too.",
+      "page": 91
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "下午我有时间。",
+      "pinyin": "Xiàwǔ wǒ yǒu shíjiān.",
+      "spanish": "Tengo tiempo por la tarde.",
+      "english": "I have time in the afternoon.",
+      "page": 92
+    },
+    {
+      "lesson": 9,
+      "type": "phrase",
+      "hanzi": "你有什么事？",
+      "pinyin": "Nǐ yǒu shénme shì?",
+      "spanish": "¿Qué necesitas?",
+      "english": "What do you need?",
+      "page": 92
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "星期天我们去爬山，你去不去？",
+      "pinyin": "Xīngqītiān wǒmen qù pá shān, nǐ qù bu qù?",
+      "spanish": "El domingo vamos a subir la montaña, ¿vienes?",
+      "english": "We are going mountain climbing on Sunday; are you coming?",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "去西山。",
+      "pinyin": "Qù Xīshān.",
+      "spanish": "Vamos a las Colinas del Oeste.",
+      "english": "We are going to West Mountain.",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "前边有一个小茶馆。",
+      "pinyin": "Qiánbian yǒu yí ge xiǎo cháguǎn.",
+      "spanish": "Más adelante hay una pequeña casa de té.",
+      "english": "There is a small teahouse up ahead.",
+      "page": 105
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "我们去那儿喝一点儿茶，好不好？",
+      "pinyin": "Wǒmen qù nàr hē yìdiǎnr chá, hǎo bu hǎo?",
+      "spanish": "¿Qué tal si vamos allí a beber un poco de té?",
+      "english": "Shall we go there for a little tea?",
+      "page": 105
+    },
+    {
+      "lesson": 10,
+      "type": "phrase",
+      "hanzi": "好啊！",
+      "pinyin": "Hǎo a!",
+      "spanish": "¡Está bien!",
+      "english": "Sure!",
+      "page": 105
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "有时候周末也去上班。",
+      "pinyin": "Yǒushíhou zhōumò yě qù shàng bān.",
+      "spanish": "A veces también va a trabajar los fines de semana.",
+      "english": "Sometimes he goes to work on weekends too.",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "我做韩国菜，他做中国菜。",
+      "pinyin": "Wǒ zuò Hánguó cài, tā zuò Zhōngguó cài.",
+      "spanish": "Yo preparo comida coreana y él prepara comida china.",
+      "english": "I cook Korean food and he cooks Chinese food.",
+      "page": 114
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "我在一个学校学习画画儿。",
+      "pinyin": "Wǒ zài yí ge xuéxiào xuéxí huà huàr.",
+      "spanish": "Estudio dibujo en una escuela.",
+      "english": "I study drawing at a school.",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "你们周末干什么？",
+      "pinyin": "Nǐmen zhōumò gàn shénme?",
+      "spanish": "¿Qué hacen los fines de semana?",
+      "english": "What do you do on weekends?",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "有时候也去超市买东西。",
+      "pinyin": "Yǒushíhou yě qù chāoshì mǎi dōngxi.",
+      "spanish": "A veces también voy de compras al supermercado.",
+      "english": "Sometimes I go shopping at the supermarket too.",
+      "page": 116
+    },
+    {
+      "lesson": 11,
+      "type": "phrase",
+      "hanzi": "我和我同屋一块儿收拾房间。",
+      "pinyin": "Wǒ hé wǒ tóngwū yíkuàir shōushi fángjiān.",
+      "spanish": "Mi compañero de habitación y yo ordenamos el cuarto juntos.",
+      "english": "My roommate and I tidy up the room together.",
+      "page": 116
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "读",
+      "pinyin": "dú",
+      "spanish": "Leer en voz alta",
+      "english": "Read aloud",
+      "page": 17
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "念",
+      "pinyin": "niàn",
+      "spanish": "Leer o recitar en voz alta",
+      "english": "Read aloud / recite",
+      "page": 17
+    },
+    {
+      "lesson": 2,
+      "type": "word",
+      "hanzi": "课文",
+      "pinyin": "kèwén",
+      "spanish": "Texto de una lección",
+      "english": "Lesson text",
+      "page": 17
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "山田",
+      "pinyin": "Shāntián",
+      "spanish": "Yamada (apellido japonés)",
+      "english": "Yamada (Japanese surname)",
+      "page": 20
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "遍",
+      "pinyin": "biàn",
+      "spanish": "Clasificador de repeticiones completas",
+      "english": "Measure word for complete repetitions",
+      "page": 26
+    },
+    {
+      "lesson": 3,
+      "type": "word",
+      "hanzi": "再",
+      "pinyin": "zài",
+      "spanish": "De nuevo, otra vez",
+      "english": "Again / once more",
+      "page": 26
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "打开",
+      "pinyin": "dǎkāi",
+      "spanish": "Abrir",
+      "english": "Open",
+      "page": 38
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "翻",
+      "pinyin": "fān",
+      "spanish": "Pasar una página, dar vuelta",
+      "english": "Turn over / turn a page",
+      "page": 38
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "第",
+      "pinyin": "dì",
+      "spanish": "Prefijo de números ordinales",
+      "english": "Ordinal number prefix",
+      "page": 38
+    },
+    {
+      "lesson": 4,
+      "type": "word",
+      "hanzi": "页",
+      "pinyin": "yè",
+      "spanish": "Página",
+      "english": "Page",
+      "page": 38
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "明白",
+      "pinyin": "míngbai",
+      "spanish": "Entender, comprender",
+      "english": "Understand",
+      "page": 49
+    },
+    {
+      "lesson": 5,
+      "type": "word",
+      "hanzi": "懂",
+      "pinyin": "dǒng",
+      "spanish": "Entender",
+      "english": "Understand",
+      "page": 49
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "现在",
+      "pinyin": "xiànzài",
+      "spanish": "Ahora",
+      "english": "Now",
+      "page": 61
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "听写",
+      "pinyin": "tīngxiě",
+      "spanish": "Dictado",
+      "english": "Dictation",
+      "page": 61
+    },
+    {
+      "lesson": 6,
+      "type": "word",
+      "hanzi": "练习",
+      "pinyin": "liànxí",
+      "spanish": "Ejercicio, practicar",
+      "english": "Exercise / practice",
+      "page": 61
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "周一",
+      "pinyin": "zhōuyī",
+      "spanish": "Lunes (forma abreviada)",
+      "english": "Monday (short form)",
+      "page": 74
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "交",
+      "pinyin": "jiāo",
+      "spanish": "Entregar",
+      "english": "Hand in",
+      "page": 74
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "作业",
+      "pinyin": "zuòyè",
+      "spanish": "Tarea, deberes",
+      "english": "Homework",
+      "page": 74
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "课后",
+      "pinyin": "kè hòu",
+      "spanish": "Después de clase o del texto",
+      "english": "After class / after the text",
+      "page": 74
+    },
+    {
+      "lesson": 7,
+      "type": "word",
+      "hanzi": "练习",
+      "pinyin": "liànxí",
+      "spanish": "Ejercicio, practicar",
+      "english": "Exercise / practice",
+      "page": 74
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "期中",
+      "pinyin": "qīzhōng",
+      "spanish": "Mitad del período escolar",
+      "english": "Midterm",
+      "page": 87
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "考试",
+      "pinyin": "kǎoshì",
+      "spanish": "Examen",
+      "english": "Exam",
+      "page": 87
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "考",
+      "pinyin": "kǎo",
+      "spanish": "Presentar un examen, evaluar",
+      "english": "Take an exam / test",
+      "page": 87
+    },
+    {
+      "lesson": 8,
+      "type": "word",
+      "hanzi": "及格",
+      "pinyin": "jígé",
+      "spanish": "Aprobar un examen",
+      "english": "Pass an exam",
+      "page": 87
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "集合",
+      "pinyin": "jíhé",
+      "spanish": "Reunirse",
+      "english": "Gather / meet",
+      "page": 100
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "准时",
+      "pinyin": "zhǔnshí",
+      "spanish": "Puntual, a tiempo",
+      "english": "Punctual / on time",
+      "page": 100
+    },
+    {
+      "lesson": 9,
+      "type": "word",
+      "hanzi": "谢",
+      "pinyin": "xiè",
+      "spanish": "Agradecer",
+      "english": "Thank",
+      "page": 100
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "西山",
+      "pinyin": "Xīshān",
+      "spanish": "Colinas del Oeste",
+      "english": "West Mountain",
+      "page": 103
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "劳驾",
+      "pinyin": "láojià",
+      "spanish": "Disculpe (para pedir ayuda)",
+      "english": "Excuse me (requesting help)",
+      "page": 112
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "帮",
+      "pinyin": "bāng",
+      "spanish": "Ayudar",
+      "english": "Help",
+      "page": 112
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "辆",
+      "pinyin": "liàng",
+      "spanish": "Clasificador para vehículos",
+      "english": "Measure word for vehicles",
+      "page": 112
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "出租车",
+      "pinyin": "chūzūchē",
+      "spanish": "Taxi",
+      "english": "Taxi",
+      "page": 112
+    },
+    {
+      "lesson": 10,
+      "type": "word",
+      "hanzi": "散",
+      "pinyin": "sàn",
+      "spanish": "Separarse, dispersarse",
+      "english": "Disperse / leave",
+      "page": 112
+    },
+    {
+      "lesson": 11,
+      "type": "word",
+      "hanzi": "最近",
+      "pinyin": "zuìjìn",
+      "spanish": "Últimamente, recientemente",
+      "english": "Lately / recently",
+      "page": 123
+    }
+  ]
+}
