@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import { themeScript } from '@/lib/theme';
 import { CommunityProvider } from '@/components/community-provider';
 import { LanguageProvider } from '@/components/language-provider';
 
@@ -41,9 +42,6 @@ export const viewport: Viewport = {
   themeColor: '#f7f4ee',
   interactiveWidget: 'resizes-content',
 };
-
-// Aplica la versión elegida antes de pintar para evitar un destello de color.
-const themeScript = `try{if(localStorage.getItem('chino-theme')==='bw'){document.documentElement.dataset.theme='bw';var m=document.querySelector('meta[name="theme-color"]');m&&m.setAttribute('content','#ffffff')}}catch(e){}`;
 
 export default function RootLayout({
   children,

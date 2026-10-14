@@ -79,6 +79,24 @@ function WritingBoard({ character, label, guided, restart, onComplete, onFeedbac
     let instance: HanziWriter | null = null;
     const element = target.current;
     if (!element) return;
+    const colors = () => {
+      const style = getComputedStyle(element);
+      const value = (name: string, fallback: string) => style.getPropertyValue(name).trim() || fallback;
+      return {
+        strokeColor: value('--writing-stroke', '#006c58'),
+        drawingColor: value('--writing-drawing', '#143c34'),
+        outlineColor: value('--writing-outline', '#dce9e3'),
+        highlightColor: value('--writing-highlight', '#dc9c39'),
+        highlightCompleteColor: value('--writing-complete', '#008968'),
+      };
+    };
+    const themeObserver = new MutationObserver(() => {
+      if (!instance) return;
+      for (const [name, color] of Object.entries(colors())) {
+        void instance.updateColor(name as keyof ReturnType<typeof colors>, color, { duration: 0 });
+      }
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     callbacks.current.onStatus('loading');
     async function load() {
       try {
@@ -89,8 +107,7 @@ function WritingBoard({ character, label, guided, restart, onComplete, onFeedbac
             onLoadCharDataError: () => undefined,
             width: element.clientWidth, height: element.clientWidth, padding: 24,
             showCharacter: false, showOutline: guided,
-            strokeColor: '#006c58', drawingColor: '#143c34', outlineColor: '#dce9e3',
-            highlightColor: '#dc9c39', highlightCompleteColor: '#008968',
+            ...colors(),
             drawingWidth: 5, strokeAnimationSpeed: 0.8, delayBetweenStrokes: 220,
             charDataLoader: async (char): Promise<CharacterJson> => {
               // Serve curated stroke data locally; never send handwriting to an external service.
@@ -134,7 +151,7 @@ function WritingBoard({ character, label, guided, restart, onComplete, onFeedbac
     });
     resize.observe(element);
     return () => {
-      active = false; request.abort(); events.abort(); resize.disconnect();
+      active = false; request.abort(); events.abort(); resize.disconnect(); themeObserver.disconnect();
       instance?.cancelQuiz(); void instance?.pauseAnimation();
       if (writerRef.current === instance) writerRef.current = null;
       element.replaceChildren();

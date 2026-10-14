@@ -91,7 +91,6 @@
   "Desarma una frase": "Break down a phrase",
   "Toca una palabra en los ejemplos para ver su significado. En el desglose puedes escucharla por separado.": "Tap a word in an example to see its meaning. Play it separately in the breakdown.",
   "Conserva tu avance": "Save your progress",
-  "Sin cuenta, tu progreso queda en este dispositivo. Usa Entrar para sincronizarlo; el botón B/N cambia el contraste.": "Without an account, progress stays on this device. Sign in to sync it; B/W changes contrast.",
   "SINCRONIZANDO…": "SYNCING…",
   "SIN CONEXIÓN · GUARDADO LOCAL": "OFFLINE · SAVED LOCALLY",
   "PROGRESO SINCRONIZADO": "PROGRESS SYNCED",
@@ -280,8 +279,6 @@
   "Crear mi cuenta": "Create my account",
   "No compartimos tus datos. Tus grabaciones de pronunciación no se guardan.": "We do not share your data. Pronunciation recordings are not saved.",
   "Volver a color": "Return to color",
-  "Versión blanco y negro": "Black and white mode",
-  "B/N": "B/W",
   "Personas": "People",
   "Preguntas": "Questions",
   "Gramática": "Grammar",
@@ -368,5 +365,11 @@
   "No se pudo enviar. Revisa tu conexión e inténtalo otra vez.": "Could not send. Check your connection and try again.",
   "Comunidad": "Community",
   "Palabra": "Word",
-  "Frase": "Phrase"
+  "Frase": "Phrase",
+  "Apariencia": "Appearance",
+  "Activar modo noche": "Turn on dark mode",
+  "Activar modo claro": "Turn on light mode",
+  "Modo noche": "Dark mode",
+  "Modo claro": "Light mode",
+  "Sin cuenta, tu progreso queda en este dispositivo. Usa Entrar para sincronizarlo; el modo noche se activa en Ajustes.": "Without an account, progress stays on this device. Sign in to sync it; turn on dark mode in Settings."
 }
