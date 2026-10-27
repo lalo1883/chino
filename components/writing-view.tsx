@@ -64,6 +64,9 @@ function pointerTarget(element: string | HTMLElement, events: AbortController, w
 
 type Feedback = { kind: 'ready' | 'correct' | 'mistake' | 'complete'; stroke: number; mistakes: number; total: number };
 
+// Palabras del cuaderno de la lección 9, en el orden de la foto.
+const lessonNineWords = ['每天', '点', '半', '起床', '然后', '教室', '上网', '现在', '开', '关'];
+
 function WritingBoard({ character, label, guided, restart, onComplete, onFeedback, onStatus, writerRef }: {
   character: string; label: string; guided: boolean; restart: number; onComplete: () => void;
   onFeedback: (feedback: Feedback) => void; onStatus: (status: 'loading' | 'ready' | 'error') => void;
@@ -165,6 +168,7 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
   const { language } = useLanguage();
   const text = (es: string, en: string) => language === 'en' ? en : es;
   const [lessons, setLessons] = useState<LessonRange>();
+  const [notebook, setNotebook] = useState(false);
   const [index, setIndex] = useState(0);
   const [characterIndex, setCharacterIndex] = useState(0);
   const [guided, setGuided] = useState(true);
@@ -176,10 +180,18 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
   const writer = useRef<HanziWriter | null>(null);
   const animationRun = useRef(0);
   useEffect(() => () => { animationRun.current++; }, []);
-  const items = useMemo(() => communityContent.filter(item => item.type === 'word' && matchesLessonRange(item, lessons) && /\p{Script=Han}/u.test(item.hanzi)), [lessons,communityContent]);
+  const notebookItems = useMemo(() => lessonNineWords.flatMap(hanzi => {
+    const word = communityContent.find(item => item.type === 'word' && item.hanzi === hanzi && item.lessons?.includes(9));
+    return word ? [word] : [];
+  }), [communityContent]);
+  const items = useMemo(() => notebook ? notebookItems : communityContent.filter(item => item.type === 'word' && matchesLessonRange(item, lessons) && /\p{Script=Han}/u.test(item.hanzi)), [lessons, communityContent, notebook, notebookItems]);
   const item: LibraryItem | undefined = items[index % Math.max(1, items.length)];
   const characters = Array.from(item?.hanzi || '').filter(char => /\p{Script=Han}/u.test(char));
   const character = characters[characterIndex] || characters[0];
+  const resetPractice = (nextIndex = 0) => {
+    setIndex(nextIndex); setCharacterIndex(0); setFinished(new Set());
+    animationRun.current++; setAnimating(false); setStatus('loading'); setRestart(value => value + 1);
+  };
   const changeItem = (delta: number) => {
     setIndex(current => (current + delta + items.length) % items.length);
     animationRun.current++; setCharacterIndex(0); setFinished(new Set()); setAnimating(false); setRestart(value => value + 1);
@@ -206,7 +218,13 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
   if (feedback.kind === 'complete') message = text(`¡Carácter completo! ${feedback.mistakes} correcciones.`, `Character complete! ${feedback.mistakes} corrections.`);
   return <section className="writing-view">
     <header className="writing-heading"><div><span className="writing-eyebrow">WRITING · 汉字</span><h1>{text('De pinyin a papel.', 'From pinyin to paper.')}</h1><p>{text('Escribe con el dedo, el mouse o el trackpad. Cada trazo recibe una corrección al instante.', 'Write with your finger, mouse or trackpad. Get instant feedback on every stroke.')}</p></div></header>
-    <div className="writing-filters"><StudyPanel title={text("Lecciones", "Lessons")} label={lessons ? `${text("Lecciones", "Lessons")} · ${lessons.from}–${lessons.to}` : text("Lecciones", "Lessons")}><LessonFilter value={lessons} onChange={value => { setLessons(value); setIndex(0); setCharacterIndex(0); setFinished(new Set()); animationRun.current++; setAnimating(false); setRestart(value => value + 1); }} /></StudyPanel></div>
+    <section className="writing-notebook" aria-labelledby="writing-notebook-title">
+      <div className="writing-notebook-heading"><div><span className="writing-eyebrow">{text('LECCIÓN 9 · TU CUADERNO', 'LESSON 9 · YOUR NOTEBOOK')}</span><h2 id="writing-notebook-title">{text('Tus 10 palabras para practicar', 'Your 10 practice words')}</h2><p>{text('Elige una palabra y practica sus caracteres con el pinyin a la vista.', 'Choose a word and practice its characters with the pinyin in view.')}</p></div><button type="button" aria-pressed={notebook} onClick={() => { setNotebook(!notebook); resetPractice(); }}>{notebook ? text('Volver a todas las palabras', 'Back to all words') : text('Practicar estas 10 palabras', 'Practice these 10 words')}</button></div>
+      <div className="writing-notebook-words" aria-label={text('Palabras del cuaderno de la lección 9', 'Lesson 9 notebook words')}>
+        {notebookItems.map((word, wordIndex) => <button type="button" key={word.id} aria-pressed={notebook && item?.id === word.id} onClick={() => { setNotebook(true); resetPractice(wordIndex); }}><span lang="zh-Hans">{word.hanzi}</span><small lang="zh-Latn-pinyin">{word.pinyin}</small></button>)}
+      </div>
+    </section>
+    <div className="writing-filters"><StudyPanel title={text("Lecciones", "Lessons")} label={lessons ? `${text("Lecciones", "Lessons")} · ${lessons.from}–${lessons.to}` : text("Lecciones", "Lessons")}><LessonFilter value={lessons} onChange={value => { setLessons(value); setNotebook(false); resetPractice(); }} /></StudyPanel></div>
     {!item || !character ? <p>{text('No hay palabras en estas lecciones.', 'No words in these lessons.')}</p> : <div className="writing-workspace">
       <aside className="writing-prompt"><span className="writing-eyebrow">{text('ESCRIBE ESTA PALABRA', 'WRITE THIS WORD')}</span><h2>{item.pinyin}</h2><p><Translation item={item}/></p><button type="button" className="writing-audio" onClick={() => playClip(item.audio, speed)}>{text('♪ Escuchar', '♪ Listen')}</button>
         <div className="writing-character-tabs" aria-label={text('Caracteres de la palabra', 'Characters in this word')}>{characters.map((char, i) => <button type="button" key={`${i}-${char}`} aria-pressed={i === characterIndex} onClick={() => { animationRun.current++; setCharacterIndex(i); setAnimating(false); setRestart(value => value + 1); }}><span>{guided || finished.has(i) ? char : i + 1}</span>{finished.has(i) && <small>✓</small>}</button>)}</div>
