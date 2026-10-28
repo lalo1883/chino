@@ -14,10 +14,40 @@
 .writing-notebook-words span { font-size: 25px; font-weight: 500; }
 .writing-notebook-words small { font-size: 13px; font-weight: 500; }
 .writing-notebook button[aria-pressed=true] { background: var(--jade-soft, #e3f1eb); border-color: var(--jade, #006c58); color: var(--jade, #006c58); }
+.writing-notebook summary { cursor: pointer; font-size: 14px; font-weight: 650; }
+.writing-notebook[open] summary { margin-bottom: 18px; }
+.writing-personal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.writing-personal > small { display: block; margin-top: 12px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.writing-session-label { color: var(--muted); font-size: 13px; }
+.writing-selection-dialog { width: min(760px, calc(100% - 24px)); max-height: 90dvh; padding: 0; border: 1px solid var(--line); border-radius: 20px; background: var(--card, #fff); color: var(--ink); }
+.writing-selection-dialog::backdrop { background: #102c2666; }
+.writing-selection-dialog form { padding: 20px; }
+.writing-selection-dialog header, .writing-selection-dialog footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.writing-selection-dialog h2 { margin: 6px 0 0; font-size: 24px; }
+.writing-selection-dialog header > button { min-width: 44px; min-height: 44px; }
+.writing-selection-filters { display: grid; grid-template-columns: 1fr 180px; gap: 12px; margin: 20px 0 12px; }
+.writing-selection-filters > label:not(.writing-selection-check) { display: grid; gap: 6px; font-size: 13px; }
+.writing-selection-filters input[type=search], .writing-selection-filters select { width: 100%; min-width: 0; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: inherit; font: inherit; }
+.writing-selection-filters .lesson-filter { grid-column: 1 / -1; margin: 0; }
+.writing-selection-check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.writing-selection-dialog input[type=checkbox] { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--jade, #006c58); }
+.writing-selection-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 14px 0; }
+.writing-selection-actions > span { flex: 1 1 180px; font-size: 12px; color: var(--muted); }
+.writing-selection-results { display: grid; gap: 8px; }
+.writing-selection-row { display: flex; gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; }
+.writing-selection-row:has(input:checked) { border-color: var(--jade, #006c58); background: var(--jade-soft); }
+.writing-selection-row > span { display: grid; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
+.writing-selection-row b { font-size: 23px; font-weight: 500; }
+.writing-selection-row em { font-size: 14px; font-style: normal; color: var(--jade); }
+.writing-selection-row span span { font-size: 13px; }
+.writing-selection-row small { color: var(--muted); font-size: 11px; }
+.writing-selection-dialog footer { position: sticky; bottom: -20px; background: var(--card, #fff); padding: 14px 0; margin-top: 14px; border-top: 1px solid var(--line); }
+.writing-selection-dialog input:focus-visible, .writing-selection-dialog select:focus-visible { outline: 3px solid #dfab58; outline-offset: 3px; }
+@media (max-width: 650px) { .writing-selection-filters { grid-template-columns: 1fr; } .writing-selection-filters input[type=search], .writing-selection-filters select { font-size: 16px; min-height: 44px; } .writing-selection-dialog form { padding: 16px; } .writing-selection-dialog footer { bottom: -16px; } .writing-selection-dialog footer button { flex: 1; } }
 @media (max-width: 650px) { .writing-notebook { padding: 16px; } .writing-notebook-words { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .writing-workspace { display: grid; grid-template-columns: minmax(200px, .85fr) minmax(260px, 1.15fr); gap: 28px; align-items: start; }
 .writing-prompt { padding: 26px 6px 20px; }
-.writing-prompt h2 { margin: 12px 0 4px; font-size: clamp(28px, 4vw, 42px); line-height: 1.3; font-weight: 600; }
+.writing-prompt h2 { margin: 12px 0 4px; font-size: clamp(28px, 4vw, 42px); line-height: 1.3; font-weight: 600; overflow-wrap: anywhere; }
 .writing-prompt > p { color: var(--muted, #6b8286); line-height: 1.6; }
 .writing-view button { cursor: pointer; border: 1px solid var(--line, #dce8e2); border-radius: 12px; background: var(--paper, #fff); color: var(--ink, #143c34); font: inherit; font-size: 13px; font-weight: 650; padding: 10px 14px; transition: background .15s ease, border-color .15s ease; }
 .writing-view button:hover:not(:disabled) { background: #edf7f1; border-color: #77a897; }

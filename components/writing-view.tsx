@@ -11,6 +11,8 @@ import { useLanguage } from './language-provider';
 import { StudyPanel } from './study-panel';
 import { LessonFilter } from './lesson-filter';
 import { playClip } from './library-view';
+import { WritingSelection } from './writing-selection';
+import { parseWritingSelection, resolveWritingSelection, WRITING_SELECTION_KEY } from '@/lib/writing-selection';
 import './writing-view.css';
 
 type CreateTarget = NonNullable<HanziWriterOptions['rendererOverride']['createRenderTarget']>;
@@ -168,7 +170,10 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
   const { language } = useLanguage();
   const text = (es: string, en: string) => language === 'en' ? en : es;
   const [lessons, setLessons] = useState<LessonRange>();
-  const [notebook, setNotebook] = useState(false);
+  const [mode, setMode] = useState<'all' | 'notebook' | 'selection'>('all');
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [editingSelection, setEditingSelection] = useState(false);
+  const [selectionSaved, setSelectionSaved] = useState(true);
   const [index, setIndex] = useState(0);
   const [characterIndex, setCharacterIndex] = useState(0);
   const [guided, setGuided] = useState(true);
@@ -180,11 +185,20 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
   const writer = useRef<HanziWriter | null>(null);
   const animationRun = useRef(0);
   useEffect(() => () => { animationRun.current++; }, []);
+  useEffect(() => {
+    try {
+      // Restore browser preferences after hydration, as in the language provider.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedIds(parseWritingSelection(localStorage.getItem(WRITING_SELECTION_KEY)));
+    } catch { /* Private browsing can disable storage; selection still works for this session. */ }
+  }, []);
+  const selectedItems = useMemo(() => resolveWritingSelection(communityContent, selectedIds), [communityContent, selectedIds]);
+  const selectedWordCount = selectedItems.filter(entry => entry.type === 'word').length;
   const notebookItems = useMemo(() => lessonNineWords.flatMap(hanzi => {
     const word = communityContent.find(item => item.type === 'word' && item.hanzi === hanzi && item.lessons?.includes(9));
     return word ? [word] : [];
   }), [communityContent]);
-  const items = useMemo(() => notebook ? notebookItems : communityContent.filter(item => item.type === 'word' && matchesLessonRange(item, lessons) && /\p{Script=Han}/u.test(item.hanzi)), [lessons, communityContent, notebook, notebookItems]);
+  const items = useMemo(() => mode === 'selection' ? selectedItems : mode === 'notebook' ? notebookItems : communityContent.filter(item => item.type === 'word' && matchesLessonRange(item, lessons) && /\p{Script=Han}/u.test(item.hanzi)), [lessons, communityContent, mode, notebookItems, selectedItems]);
   const item: LibraryItem | undefined = items[index % Math.max(1, items.length)];
   const characters = Array.from(item?.hanzi || '').filter(char => /\p{Script=Han}/u.test(char));
   const character = characters[characterIndex] || characters[0];
@@ -218,15 +232,26 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
   if (feedback.kind === 'complete') message = text(`¡Carácter completo! ${feedback.mistakes} correcciones.`, `Character complete! ${feedback.mistakes} corrections.`);
   return <section className="writing-view">
     <header className="writing-heading"><div><span className="writing-eyebrow">WRITING · 汉字</span><h1>{text('De pinyin a papel.', 'From pinyin to paper.')}</h1><p>{text('Escribe con el dedo, el mouse o el trackpad. Cada trazo recibe una corrección al instante.', 'Write with your finger, mouse or trackpad. Get instant feedback on every stroke.')}</p></div></header>
-    <section className="writing-notebook" aria-labelledby="writing-notebook-title">
-      <div className="writing-notebook-heading"><div><span className="writing-eyebrow">{text('LECCIÓN 9 · TU CUADERNO', 'LESSON 9 · YOUR NOTEBOOK')}</span><h2 id="writing-notebook-title">{text('Tus 10 palabras para practicar', 'Your 10 practice words')}</h2><p>{text('Elige una palabra y practica sus caracteres con el pinyin a la vista.', 'Choose a word and practice its characters with the pinyin in view.')}</p></div><button type="button" aria-pressed={notebook} onClick={() => { setNotebook(!notebook); resetPractice(); }}>{notebook ? text('Volver a todas las palabras', 'Back to all words') : text('Practicar estas 10 palabras', 'Practice these 10 words')}</button></div>
-      <div className="writing-notebook-words" aria-label={text('Palabras del cuaderno de la lección 9', 'Lesson 9 notebook words')}>
-        {notebookItems.map((word, wordIndex) => <button type="button" key={word.id} aria-pressed={notebook && item?.id === word.id} onClick={() => { setNotebook(true); resetPractice(wordIndex); }}><span lang="zh-Hans">{word.hanzi}</span><small lang="zh-Latn-pinyin">{word.pinyin}</small></button>)}
-      </div>
+    <section className="writing-notebook writing-personal" aria-labelledby="writing-personal-title">
+      <div className="writing-notebook-heading"><div><span className="writing-eyebrow">{text('TU PRÓXIMO EXAMEN', 'YOUR NEXT EXAM')}</span><h2 id="writing-personal-title">{text('Mi selección de estudio', 'My study selection')}</h2><p>{selectedItems.length ? text(`Palabras: ${selectedWordCount} · Frases: ${selectedItems.length - selectedWordCount}. Practica únicamente lo que elegiste.`, `Words: ${selectedWordCount} · Phrases: ${selectedItems.length - selectedWordCount}. Practice only what you chose.`) : text('Elige las palabras y frases que te van a dictar y arma tu propia práctica.', 'Choose the words and phrases for your dictation and build your own practice.')}</p></div><button type="button" onClick={() => setEditingSelection(true)}>{selectedItems.length ? text('Editar selección', 'Edit selection') : text('Elegir palabras y frases', 'Choose words and phrases')}</button></div>
+      {selectedItems.length > 0 && <div className="writing-personal-actions"><button type="button" className="writing-next" aria-pressed={mode === 'selection'} onClick={() => { setMode('selection'); resetPractice(); }}>{mode === 'selection' ? text('Reiniciar mi práctica', 'Restart my practice') : text('Practicar mi selección', 'Practice my selection')}</button><button type="button" onClick={() => { setMode('all'); resetPractice(); }}>{text('Practicar todas las palabras', 'Practice all words')}</button></div>}
+      <small>{selectionSaved ? text('Tu selección se guarda en este navegador para la próxima vez.', 'Your selection is saved in this browser for next time.') : text('No se pudo guardar en este navegador. Puedes practicar tu selección durante esta sesión.', 'Could not save in this browser. You can practice your selection during this session.')}</small>
     </section>
-    <div className="writing-filters"><StudyPanel title={text("Lecciones", "Lessons")} label={lessons ? `${text("Lecciones", "Lessons")} · ${lessons.from}–${lessons.to}` : text("Lecciones", "Lessons")}><LessonFilter value={lessons} onChange={value => { setLessons(value); setNotebook(false); resetPractice(); }} /></StudyPanel></div>
-    {!item || !character ? <p>{text('No hay palabras en estas lecciones.', 'No words in these lessons.')}</p> : <div className="writing-workspace">
-      <aside className="writing-prompt"><span className="writing-eyebrow">{text('ESCRIBE ESTA PALABRA', 'WRITE THIS WORD')}</span><h2>{item.pinyin}</h2><p><Translation item={item}/></p><button type="button" className="writing-audio" onClick={() => playClip(item.audio, speed)}>{text('♪ Escuchar', '♪ Listen')}</button>
+    {editingSelection && <WritingSelection items={communityContent} selected={selectedItems.map(entry => entry.id)} onClose={() => setEditingSelection(false)} onSave={ids => {
+      setSelectedIds(ids); setMode('selection'); resetPractice();
+      try { localStorage.setItem(WRITING_SELECTION_KEY, JSON.stringify(ids)); setSelectionSaved(true); } catch { setSelectionSaved(false); }
+    }} />}
+    <details className="writing-notebook">
+      <summary>{text('Acceso rápido · Lección 9 · Tu cuaderno', 'Quick practice · Lesson 9 · Your notebook')}</summary>
+      <div className="writing-notebook-heading"><div><h2>{text('Tus 10 palabras para practicar', 'Your 10 practice words')}</h2><p>{text('Elige una palabra y practica sus caracteres con el pinyin a la vista.', 'Choose a word and practice its characters with the pinyin in view.')}</p></div><button type="button" aria-pressed={mode === 'notebook'} onClick={() => { setMode(mode === 'notebook' ? 'all' : 'notebook'); resetPractice(); }}>{mode === 'notebook' ? text('Volver a todas las palabras', 'Back to all words') : text('Practicar estas 10 palabras', 'Practice these 10 words')}</button></div>
+      <div className="writing-notebook-words" aria-label={text('Palabras del cuaderno de la lección 9', 'Lesson 9 notebook words')}>
+        {notebookItems.map((word, wordIndex) => <button type="button" key={word.id} aria-pressed={mode === 'notebook' && item?.id === word.id} onClick={() => { setMode('notebook'); resetPractice(wordIndex); }}><span lang="zh-Hans">{word.hanzi}</span><small lang="zh-Latn-pinyin">{word.pinyin}</small></button>)}
+      </div>
+    </details>
+    {mode === 'all' && <div className="writing-filters"><StudyPanel title={text("Lecciones", "Lessons")} label={lessons ? `${text("Lecciones", "Lessons")} · ${lessons.from}–${lessons.to}` : text("Lecciones", "Lessons")}><LessonFilter value={lessons} onChange={value => { setLessons(value); resetPractice(); }} /></StudyPanel></div>}
+    <p className="writing-session-label">{mode === 'selection' ? text('Practicando mi selección', 'Practicing my selection') : mode === 'notebook' ? text('Practicando el cuaderno · Lección 9', 'Practicing the notebook · Lesson 9') : text('Práctica por lecciones', 'Practice by lesson')}</p>
+    {!item || !character ? <p>{mode === 'selection' ? text('Tu selección está vacía. Elige palabras o frases para comenzar.', 'Your selection is empty. Choose words or phrases to begin.') : text('No hay palabras en estas lecciones.', 'No words in these lessons.')}</p> : <div className="writing-workspace">
+      <aside className="writing-prompt"><span className="writing-eyebrow">{item.type === 'phrase' ? text('ESCRIBE ESTA FRASE', 'WRITE THIS PHRASE') : text('ESCRIBE ESTA PALABRA', 'WRITE THIS WORD')}</span><h2>{item.pinyin}</h2><p><Translation item={item}/></p><button type="button" className="writing-audio" onClick={() => playClip(item.audio, speed, false, item.hanzi)}>{text('♪ Escuchar', '♪ Listen')}</button>
         <div className="writing-character-tabs" aria-label={text('Caracteres de la palabra', 'Characters in this word')}>{characters.map((char, i) => <button type="button" key={`${i}-${char}`} aria-pressed={i === characterIndex} onClick={() => { animationRun.current++; setCharacterIndex(i); setAnimating(false); setRestart(value => value + 1); }}><span>{guided || finished.has(i) ? char : i + 1}</span>{finished.has(i) && <small>✓</small>}</button>)}</div>
         <label className="writing-guide"><input type="checkbox" checked={guided} onChange={event => { animationRun.current++; setAnimating(false); setGuided(event.target.checked); }} />{text('Mostrar guía', 'Show outline')}</label>
         <details className="writing-help"><summary>{text("Cómo practicar", "How to practice")}</summary><p>{text('De arriba hacia abajo, de izquierda a derecha. Se comprueban forma, dirección y orden de los trazos del carácter esperado.', 'Top to bottom, left to right. Shape, direction and stroke order are checked against the expected character.')}</p></details>
@@ -237,7 +262,7 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
         <div className="writing-tools"><button type="button" disabled={status !== 'ready' || animating} onClick={() => void animate()}>{animating ? text('Mostrando…', 'Showing…') : text('Ver trazos', 'Show strokes')}</button><button type="button" disabled={status !== 'ready' || animating} onClick={() => { setFinished(previous => { const next = new Set(previous); next.delete(characterIndex); return next; }); setRestart(value => value + 1); }}>{text('Borrar y repetir', 'Clear & retry')}</button><button type="button" disabled={status !== 'ready' || animating || feedback.kind === 'complete'} onClick={() => void writer.current?.highlightStroke(feedback.stroke)}>{text('Pista', 'Hint')}</button></div>
       </div>
     </div>}
-    {items.length > 0 && <footer className="writing-footer"><button type="button" onClick={() => changeItem(-1)}>{text('← Anterior', '← Previous')}</button><span>{index + 1} / {items.length} {text('palabras', 'words')}</span><button type="button" className="writing-next" onClick={() => { if (characterIndex < characters.length - 1) { animationRun.current++; setAnimating(false); setCharacterIndex(value => value + 1); setRestart(value => value + 1); } else changeItem(1); }}>{characterIndex < characters.length - 1 ? text('Siguiente carácter →', 'Next character →') : text('Siguiente palabra →', 'Next word →')}</button></footer>}
+    {items.length > 0 && <footer className="writing-footer"><button type="button" onClick={() => changeItem(-1)}>{text('← Anterior', '← Previous')}</button><span>{index + 1} / {items.length} {mode === 'selection' ? text('elementos', 'items') : text('palabras', 'words')}</span><button type="button" className="writing-next" onClick={() => { if (characterIndex < characters.length - 1) { animationRun.current++; setAnimating(false); setCharacterIndex(value => value + 1); setRestart(value => value + 1); } else changeItem(1); }}>{characterIndex < characters.length - 1 ? text('Siguiente carácter →', 'Next character →') : mode === 'selection' ? text('Siguiente →', 'Next →') : text('Siguiente palabra →', 'Next word →')}</button></footer>}
     <p className="writing-attribution">{text('Corrección de trazos con', 'Stroke feedback by')} <a href="https://hanziwriter.org/" target="_blank" rel="noreferrer">Hanzi Writer</a> · <a href="/hanzi/ATTRIBUTION.txt" target="_blank" rel="noreferrer">Make Me a Hanzi</a></p>
   </section>;
 }
