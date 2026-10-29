@@ -12,10 +12,21 @@ import { makeSession, SESSION_SIZES, type Review } from '@/lib/learning';
 import { playClip, stopClip, SegmentTable, type PracticeFilter } from './library-view';
 import { TappableSentence } from './tappable-sentence';
 import { UiIcon } from './ui-icon';
+import { WritingView } from './writing-view';
 
 const KINDS = [['all', 'Todo'], ['word', 'Palabras'], ['phrase', 'Frases']] as const;
 const KIND_ICONS = { all: 'grid', word: 'cards', phrase: 'book' } as const;
 const KIND_DESCRIPTIONS = { all: 'mezclado', word: 'individuales', phrase: 'completas' } as const;
+
+function FlashcardWriting({ card, speed }: { card: LibraryItem; speed: number }) {
+  const { language } = useLanguage();
+  const [open, setOpen] = useState(false);
+  if (!/\p{Script=Han}/u.test(card.hanzi)) return null;
+  return <details className="flashcard-writing" data-writing-practice onToggle={event => setOpen(event.currentTarget.open)}>
+    <summary>{language === 'en' ? 'Practice writing' : 'Practicar escritura'}</summary>
+    {open && <WritingView practiceItem={card} speed={speed} />}
+  </details>;
+}
 
 export function StudySession({ speed, records, onReview, ready, initialFilter }: { speed: number; records: Record<string, Review>; onReview: (id: string, rating: Review['rating']) => void; ready: boolean; initialFilter?: PracticeFilter }) {
   useCommunityContent();
@@ -89,7 +100,7 @@ export function StudySession({ speed, records, onReview, ready, initialFilter }:
   }, [active, done]);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (!active || !card || event.target instanceof HTMLElement && (event.target.closest('dialog') || ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(event.target.tagName))) return;
+      if (!active || !card || event.target instanceof HTMLElement && (event.target.closest('dialog, [data-writing-practice]') || ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(event.target.tagName))) return;
       if (event.code === 'Space') { event.preventDefault(); if (feedback !== null) nextCard(); else setRevealed(true); }
       if (event.key === '1') answer(false);
       if (event.key === '2') answer(true);
@@ -127,6 +138,7 @@ export function StudySession({ speed, records, onReview, ready, initialFilter }:
         <button className="practice-listen" onClick={listen} aria-label={t(`Escuchar ${card.hanzi}`)}><UiIcon name="audio" />{t("Escuchar pronunciación")}</button>
         {revealed ? <div className="practice-answer"><div className="deck-pinyin">{card.pinyin}</div><h2><Translation item={card}/></h2>
           {feedback === null && <><p className="recall-question">{t("¿La recordaste antes de ver la respuesta?")}</p><div className="binary-rating"><button onClick={() => answer(false)}><UiIcon name="close" /><span>{t("No me la supe")}<small>{t("La practicamos otra vez")}</small></span></button><button onClick={() => answer(true)}><UiIcon name="check" /><span>{t("Me la supe")}<small>{t("Seguimos avanzando")}</small></span></button></div></>}
+          <FlashcardWriting card={card} speed={speed} />
           {example && <div className="session-example"><div className="session-example-head">{t("Ejemplo")}</div><div className="practice-example"><button onClick={() => playClip(example.audio, speed)} aria-label={t(`Escuchar ${example.hanzi}`)}><UiIcon name="audio" /></button><div><b><TappableSentence hanzi={example.hanzi} breakdown={example.breakdown} speed={speed} highlight={card.hanzi} /></b><em>{example.pinyin}</em><span><Translation item={example}/></span></div></div></div>}
           <details className="session-breakdown"><summary>{t("Ver desglose")}</summary><SegmentTable parts={card.breakdown || [{hanzi:card.hanzi,pinyin:card.pinyin,meaning:card.spanish}]} caption={t(`Desglose de ${card.hanzi}`)} speed={speed} /></details>
           {feedback !== null && <button className="practice-primary next-card" onClick={nextCard}>{position + 1 === queue.length ? t('Terminar sesión') : t('Siguiente tarjeta')}<UiIcon name="arrow" /></button>}

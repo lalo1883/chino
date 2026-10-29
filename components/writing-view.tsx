@@ -165,7 +165,7 @@ function WritingBoard({ character, label, guided, restart, onComplete, onFeedbac
   return <div className="writing-board" ref={target} role="img" aria-label={label} />;
 }
 
-export function WritingView({ speed, onPractice }: { speed: number; onPractice?: () => void }) {
+export function WritingView({ speed, onPractice, practiceItem }: { speed: number; onPractice?: () => void; practiceItem?: LibraryItem }) {
   const communityContent=useCommunityContent();
   const { language } = useLanguage();
   const text = (es: string, en: string) => language === 'en' ? en : es;
@@ -198,7 +198,7 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
     const word = communityContent.find(item => item.type === 'word' && item.hanzi === hanzi && item.lessons?.includes(9));
     return word ? [word] : [];
   }), [communityContent]);
-  const items = useMemo(() => mode === 'selection' ? selectedItems : mode === 'notebook' ? notebookItems : communityContent.filter(item => item.type === 'word' && matchesLessonRange(item, lessons) && /\p{Script=Han}/u.test(item.hanzi)), [lessons, communityContent, mode, notebookItems, selectedItems]);
+  const items = useMemo(() => practiceItem ? [practiceItem] : mode === 'selection' ? selectedItems : mode === 'notebook' ? notebookItems : communityContent.filter(item => item.type === 'word' && matchesLessonRange(item, lessons) && /\p{Script=Han}/u.test(item.hanzi)), [practiceItem, lessons, communityContent, mode, notebookItems, selectedItems]);
   const item: LibraryItem | undefined = items[index % Math.max(1, items.length)];
   const characters = Array.from(item?.hanzi || '').filter(char => /\p{Script=Han}/u.test(char));
   const character = characters[characterIndex] || characters[0];
@@ -230,7 +230,8 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
   if (feedback.kind === 'correct') message = text(`Bien. Sigue con el trazo ${feedback.stroke + 1}.`, `Good. Continue with stroke ${feedback.stroke + 1}.`);
   if (feedback.kind === 'mistake') message = text(`Repite el trazo ${feedback.stroke + 1}: revisa la forma y la dirección.`, `Try stroke ${feedback.stroke + 1} again: check its shape and direction.`);
   if (feedback.kind === 'complete') message = text(`¡Carácter completo! ${feedback.mistakes} correcciones.`, `Character complete! ${feedback.mistakes} corrections.`);
-  return <section className="writing-view">
+  return <section className={`writing-view${practiceItem ? ' writing-inline' : ''}`}>
+    {!practiceItem && <>
     <header className="writing-heading"><div><span className="writing-eyebrow">WRITING · 汉字</span><h1>{text('De pinyin a papel.', 'From pinyin to paper.')}</h1><p>{text('Escribe con el dedo, el mouse o el trackpad. Cada trazo recibe una corrección al instante.', 'Write with your finger, mouse or trackpad. Get instant feedback on every stroke.')}</p></div></header>
     <section className="writing-notebook writing-personal" aria-labelledby="writing-personal-title">
       <div className="writing-notebook-heading"><div><span className="writing-eyebrow">{text('TU PRÓXIMO EXAMEN', 'YOUR NEXT EXAM')}</span><h2 id="writing-personal-title">{text('Mi selección de estudio', 'My study selection')}</h2><p>{selectedItems.length ? text(`Palabras: ${selectedWordCount} · Frases: ${selectedItems.length - selectedWordCount}. Practica únicamente lo que elegiste.`, `Words: ${selectedWordCount} · Phrases: ${selectedItems.length - selectedWordCount}. Practice only what you chose.`) : text('Elige las palabras y frases que te van a dictar y arma tu propia práctica.', 'Choose the words and phrases for your dictation and build your own practice.')}</p></div><button type="button" onClick={() => setEditingSelection(true)}>{selectedItems.length ? text('Editar selección', 'Edit selection') : text('Elegir palabras y frases', 'Choose words and phrases')}</button></div>
@@ -250,6 +251,7 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
     </details>
     {mode === 'all' && <div className="writing-filters"><StudyPanel title={text("Lecciones", "Lessons")} label={lessons ? `${text("Lecciones", "Lessons")} · ${lessons.from}–${lessons.to}` : text("Lecciones", "Lessons")}><LessonFilter value={lessons} onChange={value => { setLessons(value); resetPractice(); }} /></StudyPanel></div>}
     <p className="writing-session-label">{mode === 'selection' ? text('Practicando mi selección', 'Practicing my selection') : mode === 'notebook' ? text('Practicando el cuaderno · Lección 9', 'Practicing the notebook · Lesson 9') : text('Práctica por lecciones', 'Practice by lesson')}</p>
+    </>}
     {!item || !character ? <p>{mode === 'selection' ? text('Tu selección está vacía. Elige palabras o frases para comenzar.', 'Your selection is empty. Choose words or phrases to begin.') : text('No hay palabras en estas lecciones.', 'No words in these lessons.')}</p> : <div className="writing-workspace">
       <aside className="writing-prompt"><span className="writing-eyebrow">{item.type === 'phrase' ? text('ESCRIBE ESTA FRASE', 'WRITE THIS PHRASE') : text('ESCRIBE ESTA PALABRA', 'WRITE THIS WORD')}</span><h2>{item.pinyin}</h2><p><Translation item={item}/></p><button type="button" className="writing-audio" onClick={() => playClip(item.audio, speed, false, item.hanzi)}>{text('♪ Escuchar', '♪ Listen')}</button>
         <div className="writing-character-tabs" aria-label={text('Caracteres de la palabra', 'Characters in this word')}>{characters.map((char, i) => <button type="button" key={`${i}-${char}`} aria-pressed={i === characterIndex} onClick={() => { animationRun.current++; setCharacterIndex(i); setAnimating(false); setRestart(value => value + 1); }}><span>{guided || finished.has(i) ? char : i + 1}</span>{finished.has(i) && <small>✓</small>}</button>)}</div>
@@ -262,7 +264,9 @@ export function WritingView({ speed, onPractice }: { speed: number; onPractice?:
         <div className="writing-tools"><button type="button" disabled={status !== 'ready' || animating} onClick={() => void animate()}>{animating ? text('Mostrando…', 'Showing…') : text('Ver trazos', 'Show strokes')}</button><button type="button" disabled={status !== 'ready' || animating} onClick={() => { setFinished(previous => { const next = new Set(previous); next.delete(characterIndex); return next; }); setRestart(value => value + 1); }}>{text('Borrar y repetir', 'Clear & retry')}</button><button type="button" disabled={status !== 'ready' || animating || feedback.kind === 'complete'} onClick={() => void writer.current?.highlightStroke(feedback.stroke)}>{text('Pista', 'Hint')}</button></div>
       </div>
     </div>}
-    {items.length > 0 && <footer className="writing-footer"><button type="button" onClick={() => changeItem(-1)}>{text('← Anterior', '← Previous')}</button><span>{index + 1} / {items.length} {mode === 'selection' ? text('elementos', 'items') : text('palabras', 'words')}</span><button type="button" className="writing-next" onClick={() => { if (characterIndex < characters.length - 1) { animationRun.current++; setAnimating(false); setCharacterIndex(value => value + 1); setRestart(value => value + 1); } else changeItem(1); }}>{characterIndex < characters.length - 1 ? text('Siguiente carácter →', 'Next character →') : mode === 'selection' ? text('Siguiente →', 'Next →') : text('Siguiente palabra →', 'Next word →')}</button></footer>}
+    {practiceItem && characters.length > 1 && <div className="writing-inline-navigation"><button type="button" disabled={characterIndex >= characters.length - 1} onClick={() => { animationRun.current++; setAnimating(false); setCharacterIndex(value => value + 1); setRestart(value => value + 1); }}>{text('Siguiente carácter →', 'Next character →')}</button></div>}
+    {practiceItem && characters.length > 0 && finished.size === characters.length && <p className="writing-feedback complete" role="status">{text('¡Completaste la escritura de esta tarjeta!', 'You finished writing this card!')}</p>}
+    {!practiceItem && items.length > 0 && <footer className="writing-footer"><button type="button" onClick={() => changeItem(-1)}>{text('← Anterior', '← Previous')}</button><span>{index + 1} / {items.length} {mode === 'selection' ? text('elementos', 'items') : text('palabras', 'words')}</span><button type="button" className="writing-next" onClick={() => { if (characterIndex < characters.length - 1) { animationRun.current++; setAnimating(false); setCharacterIndex(value => value + 1); setRestart(value => value + 1); } else changeItem(1); }}>{characterIndex < characters.length - 1 ? text('Siguiente carácter →', 'Next character →') : mode === 'selection' ? text('Siguiente →', 'Next →') : text('Siguiente palabra →', 'Next word →')}</button></footer>}
     <p className="writing-attribution">{text('Corrección de trazos con', 'Stroke feedback by')} <a href="https://hanziwriter.org/" target="_blank" rel="noreferrer">Hanzi Writer</a> · <a href="/hanzi/ATTRIBUTION.txt" target="_blank" rel="noreferrer">Make Me a Hanzi</a></p>
   </section>;
 }

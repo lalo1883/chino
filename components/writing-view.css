@@ -79,3 +79,13 @@
 .writing-attribution { text-align: center; margin-top: 22px; font-size: 10px; color: var(--muted, #6b8286); }
 .writing-attribution a { color: inherit; }
 @media (max-width: 650px) { .writing-view { padding-top: 22px; } .writing-workspace { grid-template-columns: 1fr; gap: 16px; } .writing-prompt { padding: 8px 0 0; } .writing-prompt h2 { margin-top: 6px; } .writing-prompt > p { margin: 3px 0 8px; } .writing-view .writing-audio { margin: 0 0 12px; } .writing-character-tabs { margin-bottom: 12px; } .writing-prompt .writing-help { max-width: none; margin: 10px 0 0; } .writing-paper { padding: 14px; border-radius: 18px; } .writing-footer { flex-wrap: wrap; } .writing-footer > span { order: -1; width: 100%; text-align: center; } }
+
+.flashcard-writing { margin: 20px 0; border: 1px solid var(--line); border-radius: 14px; background: var(--card); text-align: left; }
+.flashcard-writing > summary { padding: 16px; min-height: 48px; box-sizing: border-box; cursor: pointer; color: var(--jade); font-size: 14px; font-weight: 650; }
+.flashcard-writing > summary:focus-visible { outline: 3px solid #dfab58; outline-offset: 3px; border-radius: 14px; }
+.shell .flashcard-writing .writing-inline { padding: 0 14px 14px; }
+.shell .writing-inline .writing-workspace { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.shell .writing-inline .writing-prompt { padding: 0; }
+.shell .writing-inline .writing-prompt h2 { margin: 6px 0; font-size: 26px; }
+.shell .writing-inline .writing-board-wrap { max-width: 280px; }
+.writing-inline-navigation { display: flex; justify-content: flex-end; margin-top: 12px; }
