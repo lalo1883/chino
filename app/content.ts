@@ -1,4 +1,4 @@
-import { englishFor } from '../lib/translations.ts';
+import { createStudySearch } from '../lib/study-search.ts';
 import { courseEntries, lessonsFor, matchesLessonRange, normalizeLessonHanzi, type LessonRange } from './course-lessons.ts';
 import { exampleSource } from './examples.ts';
 
@@ -600,13 +600,13 @@ export type LibraryFilter = { kind: 'all' | 'word' | 'phrase'; book: boolean; ca
 export const ALL_CATEGORIES = 'Todas';
 
 export function filterLibrary(items: LibraryItem[], filter: LibraryFilter) {
-  const query = (filter.query || '').trim().toLocaleLowerCase();
+  const matchesSearch = createStudySearch(filter.query || '');
   return items.filter((item) =>
     (filter.kind === 'all' || item.type === filter.kind) &&
     (!filter.book || item.book) &&
     matchesLessonRange(item, filter.lessons) &&
     (filter.category === ALL_CATEGORIES || item.category === filter.category) &&
-    (!query || `${item.hanzi} ${item.pinyin} ${item.spanish} ${englishFor(item.hanzi, item.spanish)}`.toLocaleLowerCase().includes(query)));
+    matchesSearch(item));
 }
 
 /** Categorías disponibles (con cantidad) para un tipo de tarjeta y origen. */
